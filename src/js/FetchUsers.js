@@ -11,11 +11,11 @@ var FetchUsers = function (settings) {
     myData,
     htmlElements,
     updateStatusDiv,
-    resolve
+    resolve,
+    limit
 	} = settings;
 
   var successFetch = function (res) {
-    // console.log("successFetch", this);
     obj.receivedResponses += 1;
     var data = res.data.user[Object.keys(res.data.user)[0]];
     updateStatusDiv(`received users - ${data.edges.length} (${obj.relType}/${obj.receivedResponses})`);
@@ -23,7 +23,7 @@ var FetchUsers = function (settings) {
       var found = false;
       if (obj.checkDuplicates) { //only when the second run happens (or we started with already opened result page)
         for (let j = 0; j < myData.length; j++) {
-          if (data.edges[i].node.username === myData[j].username) {
+          if (data.edges[i].node.id === myData[j].id) {
             found = true;
             myData[j]['user_' + obj.relType] = true;
             break;

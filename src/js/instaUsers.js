@@ -2,7 +2,6 @@
 /* globals instaDefOptions, instaUserInfo, exportUtils, FetchUsers */
 /* jshint -W106 */
 
-
 $(function () {
 
 	'use strict';
@@ -38,6 +37,8 @@ $(function () {
 
 	function startFetching(request) {
 
+    //console.log(request);
+
 		var fetchSettings = {
 			request: null,
 			userName: request.userName,
@@ -45,10 +46,12 @@ $(function () {
 			delay: request.delay,
 			csrfToken: request.csrfToken,
 			userId: request.userId,
+      requestRelType: request.relType,
 			relType: 'All' === request.relType ? request.follows_count > request.followed_by_count ? 'follows' : 'followed_by' : request.relType,
 			callBoth: 'All' === request.relType,
 			checkDuplicates: myData.length > 0, //probably we are starting with already opened page , now it is obsolete, and actually should be False
-			follows_count: request.follows_count,
+			limit : 0 + request.limit,
+      follows_count: request.follows_count,
 			followed_by_count: request.followed_by_count,
 			follows_processed: 0,
 			followed_by_processed: 0,
@@ -101,7 +104,7 @@ $(function () {
 		return new Promise(function (resolve) {
 
 			var f = new FetchUsers(Object.assign({}, {
-				obj, myData, htmlElements, updateStatusDiv, resolve
+				obj, myData, htmlElements, updateStatusDiv, resolve, limit
 			}));
 
 			f.fetchInstaUsers();
@@ -132,7 +135,7 @@ $(function () {
 				includeLabels: true,
 				includeGroupHeader: false,
 				includeFooter: false,
-				fileName: `user_${obj.userName}_${exportUtils.formatDate(new Date())}.xlsx`,
+				fileName: `user_${obj.userName}_${obj.requestRelType}_${exportUtils.formatDate(new Date())}.xlsx`,
 				replaceStr: exportUtils.replaceStr
 			});
 		});
@@ -229,6 +232,16 @@ $(function () {
 
 		userName = obj.userName;
 
+    //modify col model if only one relationship is needed
+    if ('All' !== obj.requestRelType) {
+      for (var i = 0; i < colModel.length; i++) {
+        if (colModel[i].delete === obj.requestRelType) {
+          colModel.splice(i, 1);
+          break;
+        }
+      }
+    }
+
 		$('#jqGrid').jqGrid({
 			pager: '#jqGridPager',
 			datatype: 'local',
@@ -240,7 +253,7 @@ $(function () {
 			colModel: colModel,
 			viewrecords: true, // show the current page, data rang and total records on the toolbar
 			loadonce: true,
-			caption: 'Users of ' + obj.userName,
+			caption: 'All' === obj.requestRelType ? `${obj.requestRelType} users of ${obj.userName}` : `${obj.userName} ${obj.requestRelType}`
 		}).jqGrid('filterToolbar', {
 			searchOperators: true
 		}).jqGrid('navGrid', '#jqGridPager', {
@@ -327,6 +340,7 @@ $(function () {
 		},
 		search: true
 	}, {
+    delete: 'follows',
 		label: 'Follows <br/>user',
 		name: 'user_followed_by', //relationship: followed_by - the list of the user's followers
 		width: '80',
@@ -342,6 +356,7 @@ $(function () {
 		},
 		search: true
 	}, {
+    delete: 'followed_by',
 		label: 'Followed <br/>by user',
 		name: 'user_follows', //relationship: follows - from the list of the followed person by user
 		width: '80',
@@ -450,6 +465,7 @@ $(function () {
 		},
 		search: true
 	}, {
+    delete: 'follows',
 		label: 'Follows <br/>user',
 		name: 'user_followed_by', //relationship: followed_by - the list of the user's followers
 		width: '80',
@@ -465,6 +481,7 @@ $(function () {
 		},
 		search: true
 	}, {
+    delete: 'followed_by',
 		label: 'Followed <br/>by user',
 		name: 'user_follows', //relationship: follows - from the list of the followed person by user
 		width: '80',
@@ -480,7 +497,6 @@ $(function () {
 		},
 		search: true
 	}];
-
 
 });
 
