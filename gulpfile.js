@@ -14,6 +14,8 @@ gulp.task('zip', () => {
 
 gulp.task('build', ['clean'], () => {
 
+  log(`gulp build started at ${new Date()}`);
+
   var uglifyjs = require('uglify-es');
   var composer = require('gulp-uglify/composer');
   var minify = composer(uglifyjs, console);

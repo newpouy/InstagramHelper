@@ -34,7 +34,7 @@ $(function () {
 					user_followed_by_viewer: obj.followed_by_viewer,
 					follows_count: obj.follows_count,
 					followed_by_count: obj.followed_by_count,
-          limit: document.getElementById("first").value,
+          limit: 0 + +document.getElementById('first').value,
 					relType: $('input[name=relType]:checked').attr('id')
 				});
 			});

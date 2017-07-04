@@ -11,9 +11,10 @@ var FetchUsers = function (settings) {
     myData,
     htmlElements,
     updateStatusDiv,
-    resolve,
-    limit
+    resolve
 	} = settings;
+
+  //console.log(obj);
 
   var successFetch = function (res) {
     obj.receivedResponses += 1;
@@ -39,10 +40,13 @@ var FetchUsers = function (settings) {
     }
     updateProgressBar(obj, data.edges.length);
 
-    if (data.page_info.has_next_page) { //need to continue
-      obj.end_cursor = data.page_info.end_cursor;
-      setTimeout(() => this.fetchInstaUsers(), calculateTimeOut(obj));
-      return;
+    //Have we already achieved the limit?
+    if ((obj.limit === 0) || (obj[obj.relType + '_processed'] < obj.limit)) {
+      if (data.page_info.has_next_page) { //need to continue
+        obj.end_cursor = data.page_info.end_cursor;
+        setTimeout(() => this.fetchInstaUsers(), calculateTimeOut(obj));
+        return;
+      }
     }
     htmlElements[obj.relType].asProgress('finish').asProgress('stop'); //stopProgressBar(obj);
     if (obj.callBoth) {

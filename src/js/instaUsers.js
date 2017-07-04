@@ -50,7 +50,7 @@ $(function () {
 			relType: 'All' === request.relType ? request.follows_count > request.followed_by_count ? 'follows' : 'followed_by' : request.relType,
 			callBoth: 'All' === request.relType,
 			checkDuplicates: myData.length > 0, //probably we are starting with already opened page , now it is obsolete, and actually should be False
-			limit : 0 + request.limit,
+			limit : request.limit, //return only first Nth found
       follows_count: request.follows_count,
 			followed_by_count: request.followed_by_count,
 			follows_processed: 0,
@@ -104,7 +104,7 @@ $(function () {
 		return new Promise(function (resolve) {
 
 			var f = new FetchUsers(Object.assign({}, {
-				obj, myData, htmlElements, updateStatusDiv, resolve, limit
+				obj, myData, htmlElements, updateStatusDiv, resolve
 			}));
 
 			f.fetchInstaUsers();
@@ -135,7 +135,7 @@ $(function () {
 				includeLabels: true,
 				includeGroupHeader: false,
 				includeFooter: false,
-				fileName: `user_${obj.userName}_${obj.requestRelType}_${exportUtils.formatDate(new Date())}.xlsx`,
+				fileName: `user_${obj.userName}_${obj.requestRelType}_${obj.limit > 0 ? 'limit_' + obj.limit+ '_': ''}${exportUtils.formatDate(new Date())}.xlsx`,
 				replaceStr: exportUtils.replaceStr
 			});
 		});
@@ -146,31 +146,42 @@ $(function () {
 
 	function prepareHtmlElements(obj) {
 
+    var followed_by_count = ((obj.limit > 0) && (obj.limit < obj.followed_by_count)) ? obj.limit : obj.followed_by_count;
+    var followedChanged = (obj.limit > 0) && (obj.limit < obj.followed_by_count);
+    var follows_count = ((obj.limit > 0) && (obj.limit < obj.follows_count)) ? obj.limit : obj.follows_count;
+    var followsChanged = (obj.limit > 0) && (obj.limit < obj.follows_count);
+
 		if (obj.callBoth || ('followed_by' === obj.relType)) {
 			document.getElementById('followed_by_title').textContent = `${obj.userName} is followed by ${obj.followed_by_count} users`;
+      if (followedChanged) {
+        document.getElementById('followed_by_title').textContent += `; you set the return limit, therefore the collection will be stopped when ${followed_by_count}+ returned`;
+      }
 			document.getElementById('followed_by_title').style.display = 'block';
 			htmlElements.followed_by.show().asProgress({
 				namespace: 'progress',
 				min: 0,
-				max: obj.followed_by_count,
-				goal: obj.followed_by_count,
+				max: followed_by_count,
+				goal: followed_by_count,
 				labelCallback(n) {
 					const percentage = this.getPercentage(n);
-					return `Followed by:${obj.followed_by_processed}/${obj.followed_by_count}/${percentage}%`;
+					return `Followed by:${obj.followed_by_processed}/${followed_by_count}/${percentage}%`;
 				}
 			});
 		}
 		if (obj.callBoth || ('follows' === obj.relType)) {
 			document.getElementById('follows_title').textContent = `${obj.userName} follows ${obj.follows_count} users`;
+      if (followsChanged) {
+        document.getElementById('follows_title').textContent += `; you set the return limit, therefore the collection will be stopped when ${follows_count}+ returned`;
+      }
 			document.getElementById('follows_title').style.display = 'block';
 			htmlElements.follows.show().asProgress({
 				namespace: 'progress',
 				min: 0,
-				max: obj.follows_count,
-				goal: obj.follows_count,
+				max: follows_count,
+				goal: follows_count,
 				labelCallback(n) {
 					const percentage = this.getPercentage(n);
-					return `Follows:${obj.follows_processed}/${obj.follows_count}/${percentage}%`;
+					return `Follows:${obj.follows_processed}/${follows_count}/${percentage}%`;
 				}
 			});
 		}
@@ -180,6 +191,7 @@ $(function () {
 		clearInterval(obj.timerInterval);
 		var timer = document.querySelector('#timer');
 		htmlElements.detailedinfo.asProgress('finish').asProgress('stop');
+		document.getElementById('cancelDetInfo').remove();
 
 		var diffFollowed = '', diffFollows = '';
 		if (obj.followed_by_count !== obj.followed_by_processed) {
@@ -189,7 +201,7 @@ $(function () {
 			diffFollows = `(actually returned ${obj.follows_processed})`;
 		}
 
-		updateStatusDiv(`${resolved ? 'Completed' : 'Detailed info collection was cancelled'},
+		updateStatusDiv(`Completed${obj.limit > 0 ? ' with limit ' + obj.limit : ''}${!resolved ? ', detailed info collection was cancelled' : ''},
 			spent time - ${timer.textContent},
 			created list length - ${myData.length} (follows - ${obj.follows_count}${diffFollows},
 			followed by - ${obj.followed_by_count}${diffFollowed}),
