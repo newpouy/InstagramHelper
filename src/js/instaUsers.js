@@ -135,7 +135,7 @@ $(function () {
 				includeLabels: true,
 				includeGroupHeader: false,
 				includeFooter: false,
-				fileName: `user_${obj.userName}_${obj.requestRelType}_${obj.limit > 0 ? 'limit_' + obj.limit+ '_': ''}${exportUtils.formatDate(new Date())}.xlsx`,
+				fileName: `${obj.requestRelType}_users_${obj.userName}${obj.limit > 0 ? '_limit_' + obj.limit: ''}_${exportUtils.formatDate(new Date())}.xlsx`,
 				replaceStr: exportUtils.replaceStr
 			});
 		});

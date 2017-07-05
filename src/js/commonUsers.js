@@ -71,7 +71,8 @@ $(function () {
 			startTime: startTime,
 			timerInterval: timerInterval,
 			myData: [],
-			receivedResponses: 0
+			receivedResponses: 0,
+      limit: 0
 		};
 
 		var fetchSettings_2 = {
@@ -92,7 +93,8 @@ $(function () {
 			startTime: startTime,
 			timerInterval: timerInterval,
 			myData: [],
-			receivedResponses: 0
+			receivedResponses: 0,
+      limit: 0
 		};
 
 		prepareHtmlElements(fetchSettings_1, fetchSettings_2);
