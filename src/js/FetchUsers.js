@@ -35,6 +35,10 @@ var FetchUsers = function (settings) {
         data.edges[i].node.user_follows = false; //explicitly set the value for correct search
         data.edges[i].node.user_followed_by = false; //explicitly set the value for correct search
         data.edges[i].node['user_' + obj.relType] = true;
+        console.log(data.edges[i].node);
+        if (data.edges[i].node.requested_by_viewer) {
+          data.edges[i].node.followed_by_viewer = null;
+        }
         myData.push(data.edges[i].node);
       }
     }

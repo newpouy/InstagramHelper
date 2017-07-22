@@ -35,6 +35,10 @@ instaUserInfo.getUserProfile = function (username) {
 				var follows_count = data.user.follows.count;
 				var followed_by_count = data.user.followed_by.count;
 				var media_count = data.user.media.count;
+
+        followed_by_viewer = requested_by_viewer ? null : followed_by_viewer;
+				follows_viewer = has_requested_viewer ? null : follows_viewer;
+
 				var obj = {};
 				Object.assign(obj, {
 					id,

@@ -401,28 +401,34 @@ $(function () {
 			label: 'Follows <br/>you',
 			name: 'follows_viewer',
 			width: '80',
-			formatter: 'checkbox',
 			align: 'center',
 			stype: 'select',
 			searchoptions: {
 				sopt: ['eq'],
-				value: ':Any;true:Yes;false:No'
-			},
+  			value: ':Any;true:Yes;false:No;null:Requested you'
+	  	},
+		  formatter: function (cellvalue, model, row) {
+        var className = row.has_requested_viewer ? 'ui-state-disabled' : '';
+        return `<input type='checkbox' ${ row.follows_viewer || row.has_requested_viewer ? "checked='checked'" : ""} class='${className}' value='${row.follows_viewer}' offval='no' disabled='disabled'>`;
+		  },
 			cellattr: function () {
-				return 'style="background-color: #fbf9ee;"  title="Follows you"';
+				return 'style="background-color: #fbf9ee;" title="Follows you"';
 			},
 			search: true
 		}, {
 			label: 'Followed <br>by you',
 			name: 'followed_by_viewer',
 			width: '80',
-			formatter: 'checkbox',
 			align: 'center',
 			stype: 'select',
 			searchoptions: {
 				sopt: ['eq'],
-				value: ':Any;true:Yes;false:No'
+				value: ':Any;true:Yes;false:No;null:Requested by you'
 			},
+		  formatter: function (cellvalue, model, row) {
+        var className = row.requested_by_viewer ? 'ui-state-disabled' : '';
+        return `<input type='checkbox' ${ row.follows_viewer || row.has_requested_viewer ? "checked='checked'" : ""} class='${className}' value='${row.follows_viewer}' offval='no' disabled='disabled'>`;
+		  },
 			cellattr: function () {
 				return 'style="background-color: #fbf9ee;" title="Followed by you"';
 			},
