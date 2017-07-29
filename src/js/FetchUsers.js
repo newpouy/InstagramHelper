@@ -7,7 +7,7 @@ var FetchUsers = function (settings) {
   'use strict';
 
   var {
-		obj,
+	obj,
     myData,
     htmlElements,
     updateStatusDiv,
@@ -35,7 +35,7 @@ var FetchUsers = function (settings) {
         data.edges[i].node.user_follows = false; //explicitly set the value for correct search
         data.edges[i].node.user_followed_by = false; //explicitly set the value for correct search
         data.edges[i].node['user_' + obj.relType] = true;
-        console.log(data.edges[i].node);
+        //console.log(data.edges[i].node);
         if (data.edges[i].node.requested_by_viewer) {
           data.edges[i].node.followed_by_viewer = null;
         }
@@ -64,33 +64,40 @@ var FetchUsers = function (settings) {
     resolve(obj);
   };
 
-  var retryError = function () {
-    console.log('HTTP error', new Date());
-    updateStatusDiv(instaMessages.getMessage('HTTP429', +instaDefOptions.retryInterval / 60000), 'red');
+  var retryError = function (message) {
+    //console.log('HTTP error', new Date());
+    updateStatusDiv(message, 'red');
     instaTimeout.setTimeout(3000)
       .then(function () {
         return instaCountdown.doCountdown('status', '', (new Date()).getTime() + +instaDefOptions.retryInterval);
       })
       .then( () => {
-        console.log('Continue execution after HTTP error', new Date());
+        console.log('Continue execution after HTTP error', new Date()); //eslint-disable-line no-console
         this.fetchInstaUsers();
       });
   };
 
   var errorFetch = function (jqXHR, exception) {
-    console.log('error ajax');
-    //todo: handle 502?
-    console.log(arguments);
+    console.log('error ajax'); //eslint-disable-line no-console
+    console.log(arguments); //eslint-disable-line no-console
+    var message;
     if (jqXHR.status === 0) {
-      setTimeout(() => this.fetchInstaUsers(), instaDefOptions.retryInterval);
-      alert(instaMessages.getMessage('NOTCONNECTED', +instaDefOptions.retryInterval / 60000));
+      //setTimeout(() => this.fetchInstaUsers(), instaDefOptions.retryInterval);
+      //alert(instaMessages.getMessage('NOTCONNECTED', +instaDefOptions.retryInterval / 60000));
+      console.log('Not connected.', new Date()); //eslint-disable-line no-console
+      message = instaMessages.getMessage('NOTCONNECTED', +instaDefOptions.retryInterval / 60000);
+      this.retryError(message);
     } else if (jqXHR.status === 429) {
-      console.log('HTTP429 error.', new Date());
-      this.retryError();
+      console.log('HTTP429 error.', new Date()); //eslint-disable-line no-console
+      message = instaMessages.getMessage('HTTP429', +instaDefOptions.retryInterval / 60000);
+      this.retryError(message);
+    } else if ((jqXHR.status === 500) || (jqXHR.status === 502) || (jqXHR.status === 503)) {
+      //alert(instaMessages.getMessage('HTTP50X', jqXHR.status, +instaDefOptions.retryInterval / 60000));
+      console.log('HTTP50X error - ' + jqXHR.status, new Date()); //eslint-disable-line no-console
+      message = instaMessages.getMessage('HTTP50X', jqXHR.status, +instaDefOptions.retryInterval / 60000);
+      this.retryError(message);
     } else if (jqXHR.status === 404) {
       alert(instaMessages.getMessage('HTTP404'));
-    } else if (jqXHR.status === 500) {
-      alert(instaMessages.getMessage('HTTP500'));
     } else if (exception === 'parsererror') {
       alert(instaMessages.getMessage('JSONPARSEERROR'));
     } else if (exception === 'timeout') {

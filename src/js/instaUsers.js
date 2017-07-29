@@ -81,7 +81,8 @@ $(function () {
 	};
 
 	function getFullInfo(obj, arr, resolve, reject) {
-		instaUserInfo.getUserProfile(arr[obj.processedUsers].username).then(function (user) {
+		//console.log(arr[obj.processedUsers]);
+		instaUserInfo.getUserProfile(arr[obj.processedUsers].username, arr[obj.processedUsers].id).then(function (user) {
 			myData[obj.processedUsers] = $.extend({}, myData[obj.processedUsers], user);
 			obj.receivedResponses++;
 			htmlElements.detailedinfo.asProgress('go', obj.processedUsers++);

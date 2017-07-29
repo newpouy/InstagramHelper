@@ -3,7 +3,7 @@
 
 var instaUserInfo = function () {};
 
-instaUserInfo.getUserProfile = function (username) {
+instaUserInfo.getUserProfile = function (username, userId) {
 
 	'use strict';
 
@@ -11,11 +11,39 @@ instaUserInfo.getUserProfile = function (username) {
 		getUserProfile(username, resolve, reject);
 	});
 
+	function promiseGetUsernameById(userId) {
+		return new Promise(function (resolve, reject) {
+			getUsernameById(userId, resolve, reject);
+		});
+	}
+
+	function getUsernameById(userId, resolve, reject) {
+		var link = `https://www.instagram.com/web/friendships/${userId}/follow/`;
+		$.ajax({
+			url: link,
+			success: function (data) {
+				var arr = data.match(instaDefOptions.regFindUser);
+				if ((arr||[]).length > 0) {
+					resolve(arr[1]);
+				} else {
+					reject();
+				}
+			},
+			error: function (jqXHR) {
+				console.log(`Error making ajax request to get ${userId} profile, status - ${jqXHR.status}`); //eslint-disable-line no-console
+				console.log(arguments); //eslint-disable-line no-console
+				reject();
+			},
+			async: true
+		});
+	}
+
 	function getUserProfile(username, resolve, reject) {
 		var link = `https://www.instagram.com/${username}/?__a=1`;
 		$.ajax({
 			url: link,
 			success: function (data) {
+				//console.log(data);
 				var {
 					id,
 					username,
@@ -36,7 +64,7 @@ instaUserInfo.getUserProfile = function (username) {
 				var followed_by_count = data.user.followed_by.count;
 				var media_count = data.user.media.count;
 
-        followed_by_viewer = requested_by_viewer ? null : followed_by_viewer;
+				followed_by_viewer = requested_by_viewer ? null : followed_by_viewer;
 				follows_viewer = has_requested_viewer ? null : follows_viewer;
 
 				var obj = {};
@@ -64,13 +92,13 @@ instaUserInfo.getUserProfile = function (username) {
 			error: function (jqXHR) {
 				console.log(`Error making ajax request to get ${username} profile, status - ${jqXHR.status}`); //eslint-disable-line no-console
 				console.log(arguments); //eslint-disable-line no-console
+				//var message;
 				if (jqXHR.status === 0) {
 					setTimeout(function () {
 						getUserProfile(username, resolve, reject);
 					}, instaDefOptions.retryInterval);
 					alert(instaMessages.getMessage('NOTCONNECTED', +instaDefOptions.retryInterval / 60000));
 				} else if (jqXHR.status === 429) {
-					//TODO: improve error handling
 					console.log('HTTP429 error getting the user profile.', new Date()); //eslint-disable-line no-console
 					setTimeout(function () {
 						console.log('Continue execution after HTTP429 error.', new Date()); //eslint-disable-line no-console
@@ -78,16 +106,30 @@ instaUserInfo.getUserProfile = function (username) {
 					}, instaDefOptions.retryInterval);
 					alert(instaMessages.getMessage('HTTP429', +instaDefOptions.retryInterval / 60000));
 
-				} else if (jqXHR.status === 502) {
-					//TODO: improve error handling
-					console.log('HTTP502 error getting the user profile.', new Date()); //eslint-disable-line no-console
+				} else if ((jqXHR.status === 500) || (jqXHR.status === 502) || (jqXHR.status === 503) ) {
+					console.log('HTTP50X error getting the user profile - ' + jqXHR.status, new Date()); //eslint-disable-line no-console
 					setTimeout(function () {
-						console.log('Continue execution after HTTP502 error.', new Date()); //eslint-disable-line no-console
+						console.log('Continue execution after HTTP50X error.', new Date()); //eslint-disable-line no-console
 						getUserProfile(username, resolve, reject);
-					}, 30000);
-
-					alert('HTTP502 error, continue after 30 seconds');
-
+					}, instaDefOptions.retryInterval);
+					alert(instaMessages.getMessage('HTTP50X', jqXHR.status, +instaDefOptions.retryInterval / 60000));
+				} else if (jqXHR.status === 404) {
+					console.log('HTTP404 error getting the user profile.', new Date()); //eslint-disable-line no-console
+					if (userId) {
+						//alert('HTTP404 error - ' + userId);
+						//console.log(userId);
+						//console.log("new username", userId, username);
+						promiseGetUsernameById(userId).then (function(username) {
+							//console.log(userId, username);
+							getUserProfile(username, resolve, reject);
+						}).catch(function() {
+							alert('The error trying to find a new username for - ' + userId);
+							//todo:
+						});
+					} else {
+						alert('404 error trying to retrieve user profile, and no userid is specified');
+						reject();
+					}
 				} else {
 					alert(instaMessages.getMessage('ERRGETTINGUSER', username, jqXHR.status));
 					reject();

@@ -123,7 +123,7 @@ $(function () {
 	}
 
 	function getFullInfo(arr, index, resolve) {
-		instaUserInfo.getUserProfile(arr[index].username).then(function (obj) {
+		instaUserInfo.getUserProfile(arr[index].username, arr[index].id).then(function (obj) {
 			obj.user_1_followed_by = arr[index].user_1_followed_by;
 			obj.user_1_follows = arr[index].user_1_follows;
 			obj.user_2_followed_by = arr[index].user_2_followed_by;
@@ -189,7 +189,7 @@ $(function () {
 				});
 			}
 		}
-		console.log(`intersect arrays took ${new Date() - startTime}ms`);
+		console.log(`intersect arrays took ${new Date() - startTime}ms`); //eslint-disable-line no-console
 		return result;
 	}
 
@@ -208,8 +208,8 @@ $(function () {
 	}
 
 	function updateStatusDiv(div, message, color) {
-		console.log(htmlElements);
-		console.log(arguments);
+		//console.log(htmlElements);
+		//console.log(arguments);
 		htmlElements[div].textContent = message;
 		htmlElements[div].style.color = color || 'black';
 	}
@@ -405,12 +405,12 @@ $(function () {
 			stype: 'select',
 			searchoptions: {
 				sopt: ['eq'],
-  			value: ':Any;true:Yes;false:No;null:Requested you'
-	  	},
-		  formatter: function (cellvalue, model, row) {
+        value: ':Any;true:Yes;false:No;null:Requested you'
+      },
+      formatter: function (cellvalue, model, row) {
         var className = row.has_requested_viewer ? 'ui-state-disabled' : '';
         return `<input type='checkbox' ${ row.follows_viewer || row.has_requested_viewer ? "checked='checked'" : ""} class='${className}' value='${row.follows_viewer}' offval='no' disabled='disabled'>`;
-		  },
+      },
 			cellattr: function () {
 				return 'style="background-color: #fbf9ee;" title="Follows you"';
 			},
@@ -425,11 +425,11 @@ $(function () {
 				sopt: ['eq'],
 				value: ':Any;true:Yes;false:No;null:Requested by you'
 			},
-		  formatter: function (cellvalue, model, row) {
+      formatter: function (cellvalue, model, row) {
         var className = row.requested_by_viewer ? 'ui-state-disabled' : '';
         return `<input type='checkbox' ${ row.follows_viewer || row.has_requested_viewer ? "checked='checked'" : ""} class='${className}' value='${row.follows_viewer}' offval='no' disabled='disabled'>`;
-		  },
-			cellattr: function () {
+      },
+      cellattr: function () {
 				return 'style="background-color: #fbf9ee;" title="Followed by you"';
 			},
 			search: true
