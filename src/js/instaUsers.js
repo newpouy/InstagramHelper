@@ -83,6 +83,7 @@ $(function () {
 	function getFullInfo(obj, arr, resolve, reject) {
 		//console.log(arr[obj.processedUsers]);
 		instaUserInfo.getUserProfile(arr[obj.processedUsers].username, arr[obj.processedUsers].id).then(function (user) {
+			//todo: delete user when JSON is not returned by get user profile?
 			myData[obj.processedUsers] = $.extend({}, myData[obj.processedUsers], user);
 			obj.receivedResponses++;
 			htmlElements.detailedinfo.asProgress('go', obj.processedUsers++);
