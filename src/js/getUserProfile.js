@@ -136,6 +136,10 @@ instaUserInfo.getUserProfile = function (settings) {
       console.log('Not connected.', new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('NOTCONNECTED', +instaDefOptions.retryInterval / 60000);
       retryError(message, resolve, reject);
+    } else if (jqXHR.status === 403) {
+      console.log('HTTP403 error getting the user profile.', new Date()); //eslint-disable-line no-console
+      message = instaMessages.getMessage(instaMessages.getMessage('HTTP403', +instaDefOptions.retryInterval / 60000));
+      retryError(message, resolve, reject);
     } else if (jqXHR.status === 429) {
       console.log('HTTP429 error getting the user profile.', new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage(instaMessages.getMessage('HTTP429', +instaDefOptions.retryInterval / 60000));
