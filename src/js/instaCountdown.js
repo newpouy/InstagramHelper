@@ -31,7 +31,7 @@ instaCountdown.doCountdown = function (element, prefix, stopTime, color) {
                   seconds = '0' + seconds;
                 }
                 var text = minutes + ':' + seconds;
-                el.innerHTML = `${prefix}Paused because of HTTP429 error. Continue in ${text}`;
+                el.innerHTML = `${prefix}Paused because of HTTP error. Continue in ${text}`;
             }
         }, 1000);
 

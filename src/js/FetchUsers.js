@@ -65,7 +65,6 @@ var FetchUsers = function (settings) {
   };
 
   var retryError = function (message) {
-    //console.log('HTTP error', new Date());
     updateStatusDiv(message, 'red');
     instaTimeout.setTimeout(3000)
       .then(function () {

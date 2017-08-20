@@ -27,9 +27,9 @@ $(function () {
 			var timerInterval = startTimer(document.querySelector('#timer'), new Date());
 			request.timerInterval = timerInterval;
 			var promise1 =
-        instaDefOptions.you === request.user_1.userName ? instaUserInfo.getUserProfile(request.viewerUserName) : request.user_1.userName;
+        instaDefOptions.you === request.user_1.userName ? instaUserInfo.getUserProfile({username: request.viewerUserName}) : request.user_1.userName;
 			var promise2 =
-        instaDefOptions.you === request.user_2.userName ? instaUserInfo.getUserProfile(request.viewerUserName) : request.user_2.userName;
+        instaDefOptions.you === request.user_2.userName ? instaUserInfo.getUserProfile({username: request.viewerUserName}) : request.user_2.userName;
 			Promise.all([promise1, promise2]).then(values => {
 				if (typeof values[0] === 'object') {
 					request.user_1.userName = request.viewerUserName;
@@ -123,7 +123,7 @@ $(function () {
 	}
 
 	function getFullInfo(arr, index, resolve) {
-		instaUserInfo.getUserProfile(arr[index].username, arr[index].id).then(function (obj) {
+		instaUserInfo.getUserProfile({username: arr[index].username, userId: arr[index].id}).then(function (obj) {
 			obj.user_1_followed_by = arr[index].user_1_followed_by;
 			obj.user_1_follows = arr[index].user_1_follows;
 			obj.user_2_followed_by = arr[index].user_2_followed_by;

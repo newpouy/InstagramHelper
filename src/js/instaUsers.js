@@ -20,7 +20,7 @@ $(function () {
 	chrome.runtime.onMessage.addListener(function (request) {
 		if (request.action === 'get_insta_users') {
 
-			var promise = instaDefOptions.you === request.userName ? instaUserInfo.getUserProfile(request.viewerUserName) : request.userName;
+			var promise = instaDefOptions.you === request.userName ? instaUserInfo.getUserProfile({username: request.viewerUserName}) : request.userName;
 			Promise.all([promise]).then(values => {
 				if (typeof values[0] === 'object') {
 					request.userName = request.viewerUserName;
@@ -82,7 +82,7 @@ $(function () {
 
 	function getFullInfo(obj, arr, resolve, reject) {
 		//console.log(arr[obj.processedUsers]);
-		instaUserInfo.getUserProfile(arr[obj.processedUsers].username, arr[obj.processedUsers].id).then(function (user) {
+		instaUserInfo.getUserProfile({username: arr[obj.processedUsers].username, userId: arr[obj.processedUsers].id, updateStatusDiv: updateStatusDiv}).then(function (user) {
 			//todo: delete user when JSON is not returned by get user profile?
 			myData[obj.processedUsers] = $.extend({}, myData[obj.processedUsers], user);
 			obj.receivedResponses++;

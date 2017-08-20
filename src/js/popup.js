@@ -18,7 +18,7 @@ $(function () {
 		promiseChrome.promiseCheckOpenTab({
 			url: chrome.extension.getURL('instaUsers.html')
 		}).then(function () {
-			var promiseUserInfo = instaDefOptions.you === userName ? userName : instaUserInfo.getUserProfile(userName);
+			var promiseUserInfo = instaDefOptions.you === userName ? userName : instaUserInfo.getUserProfile({username: userName});
 			var promiseQueryActiveTab = promiseChrome.promiseQuery({
 					active: true,
 					currentWindow: true
@@ -62,8 +62,8 @@ $(function () {
 		promiseChrome.promiseCheckOpenTab({
 			url: chrome.extension.getURL('commonUsers.html')
 		}).then(function () {
-			var promiseUserInfo1 = instaDefOptions.you === userName_1 ? userName_1 : instaUserInfo.getUserProfile(userName_1);
-			var promiseUserInfo2 = instaDefOptions.you === userName_2 ? userName_2 : instaUserInfo.getUserProfile(userName_2);
+			var promiseUserInfo1 = instaDefOptions.you === userName_1 ? userName_1 : instaUserInfo.getUserProfile({username: userName_1});
+			var promiseUserInfo2 = instaDefOptions.you === userName_2 ? userName_2 : instaUserInfo.getUserProfile({username: userName_2});
 			var promiseQueryActiveTab = promiseChrome.promiseQuery({
 					active: true,
 					currentWindow: true
@@ -109,7 +109,7 @@ window.onload = function () {
 		var arr = tabs[0].url.match(/(?:taken-by=|instagram.com\/)(.[^\/]+)/); //eslint-disable-line no-useless-escape
 
 		if (arr) {
-			instaUserInfo.getUserProfile(arr[1]).then(function (obj) {
+			instaUserInfo.getUserProfile({username: arr[1]}).then(function (obj) {
 
 				var $html = '';
 				delete obj.profile_pic_url_hd;
