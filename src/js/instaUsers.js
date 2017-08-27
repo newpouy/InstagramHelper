@@ -46,19 +46,22 @@ $(function () {
 			delay: request.delay,
 			csrfToken: request.csrfToken,
 			userId: request.userId,
-      requestRelType: request.relType,
+			requestRelType: request.relType,
 			relType: 'All' === request.relType ? request.follows_count > request.followed_by_count ? 'follows' : 'followed_by' : request.relType,
 			callBoth: 'All' === request.relType,
 			checkDuplicates: myData.length > 0, //probably we are starting with already opened page , now it is obsolete, and actually should be False
 			limit : request.limit, //return only first Nth found
-      follows_count: request.follows_count,
+			follows_count: request.follows_count,
 			followed_by_count: request.followed_by_count,
 			follows_processed: 0,
 			followed_by_processed: 0,
 			startTime: new Date(),
 			timerInterval: startTimer(document.querySelector('#timer'), new Date()),
 			receivedResponses: 0,	//received HTTP responses
-			processedUsers: 0 	//processed users in get full info
+			processedUsers: 0, 	//processed users in get full info
+			followProcessedUsers: 0, //processed users for mass follow
+			followedUsers: 0,
+			requestedUsers: 0
 		};
 		prepareHtmlElements(fetchSettings);
 		promiseFetchInstaUsers(fetchSettings).then(function (obj) {
@@ -67,6 +70,13 @@ $(function () {
 			showDetailsDiv(obj);
 
 			prepareHtmlElementsUserDetails(fetchSettings, myData);
+
+			$('#massFollow').on('click', function () {
+				promiseMassFollow(fetchSettings, myData).then(function () {
+					updateStatusDiv(`Follow was completed: processed - ${fetchSettings.followProcessedUsers}, followed/requested - ${fetchSettings.followedUsers}`);
+				})
+			});
+						
 			promiseGetFullInfo(fetchSettings, myData).then(function () {
 				generationCompleted(fetchSettings, true);
 			}).catch(function(){
@@ -102,6 +112,40 @@ $(function () {
 		});
 	}
 
+	function massFollow(obj, arr, resolve, reject) {
+				
+		if (obj.followProcessedUsers >= arr.length) {
+			resolve();
+			return;
+		}
+		updateStatusDiv(`Mass following users: ${obj.followProcessedUsers + 1} of ${arr.length}`);
+		
+		//console.log(arr[obj.followProcessedUsers]);
+		
+		if ((arr[obj.followProcessedUsers].followed_by_viewer === null) || (arr[obj.followProcessedUsers].followed_by_viewer)) { //requested or already followed
+			//console.log(`${arr[obj.followProcessedUsers].username} is already followed or requested.`);
+			obj.followProcessedUsers++;
+			massFollow(obj, arr, resolve, reject);
+		} else { //is not followed yet
+			var username = arr[obj.followProcessedUsers].username;
+			var userId = arr[obj.followProcessedUsers].id;
+			console.log(`${username} is not followed yet.`);
+			updateStatusDiv(`${username} is not followed yet: processed ${obj.followProcessedUsers + 1} of ${arr.length}/followed - ${obj.followedUsers}`);
+			//console.log(arr[obj.followProcessedUsers]);
+			instaFollowUser.follow({username: username, userId: userId, csrfToken : obj.csrfToken, updateStatusDiv: updateStatusDiv}).then(function (result) {
+				obj.followProcessedUsers++;
+				obj.receivedResponses++;
+				obj.followedUsers++;
+				//htmlElements.detailedinfo.asProgress('go', obj.followProcessedUsers); //TODO: Update the progress bar
+				setTimeout(function () {
+					massFollow(obj, arr, resolve, reject);
+				}, obj.delay);
+			});
+		}
+		
+	}
+	
+	
 	function promiseFetchInstaUsers(obj) {
 		return new Promise(function (resolve) {
 
@@ -141,7 +185,7 @@ $(function () {
 				replaceStr: exportUtils.replaceStr
 			});
 		});
-
+		
 		$('#cancelDetInfo').on('click', () => cancelProcessing = confirm('Do you want to cancel?'));
 
 	}
@@ -226,6 +270,15 @@ $(function () {
 		});
 	}
 
+	function promiseMassFollow(obj, arr) {
+		return new Promise(function (resolve, reject) {
+			obj.followProcessedUsers = 0;
+			obj.followedUsers = 0;
+			obj.requestedUsers = 0;
+			massFollow(obj, arr, resolve, reject);
+		});
+	}
+	
 	function prepareHtmlElementsUserDetails(obj, arr) {
 		updateStatusDiv(`Found users ${arr.length}`);
 		document.getElementById('detailedinfo_title').textContent = 'Getting the detailed info';

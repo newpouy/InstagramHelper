@@ -4,7 +4,7 @@
 
 	'use strict';
 
-  chrome.runtime.onMessage.addListener(function (request) {
+	chrome.runtime.onMessage.addListener(function (request) {
 
 		let promiseChrome = new PromiseChrome();
 		let url;
@@ -53,7 +53,7 @@
 		};
 
 	}, {
-		urls: ['https://www.instagram.com/query/']
+		urls: ['https://www.instagram.com/query/', 'https://www.instagram.com/web/friendships/*']
 	},
 		['blocking', 'requestHeaders']);
 })();

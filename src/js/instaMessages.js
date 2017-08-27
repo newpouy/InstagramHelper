@@ -5,9 +5,9 @@ var instaMessages = (function () {
 
 	var m = {
 		HTTP404: 'Requested page not found. [404]',
-		HTTP403: '403 Error getting the user profile. [403]',
+		HTTP403: 'Got HTTP 403 Error. [403]',
 		HTTP429: 'Instagram returned HTTP 429 Error Code that means too many requests were already generated. The execution will continue in ${0} minutes!',
-		HTTP50X: 'Got HTTP ${0} Error Code. The execution will continue in ${1} minutes!',
+		HTTP50X: 'Got HTTP ${0} Error. The execution will continue in ${1} minutes!',
 		NOTCONNECTED: 'Not connected. Verify Network. Request will be retried in ${0} munutes!',
 		NOTLOGGEDIN: 'You are not logged in, cannot get the list of users.',
 		NOTALLOWEDUSER: 'You cannot get the followers/following users of user ${0}, its account is private and you are not following it.',
@@ -16,7 +16,8 @@ var instaMessages = (function () {
 		AJAXABORT: 'Ajax request aborted.',
 		UNCAUGHT: 'Uncaught Error: ${0}',
 		THESAMEUSERS: 'You are going to find the common users between the same users, please provide the different first or second user name.',
-		ERRGETTINGUSER: 'error getting the ${0} user profile, status - ${1}.',
+		ERRGETTINGUSER: 'Error getting the ${0} user profile, status - ${1}.',
+		ERRFOLLOWUSER: 'Error trying to follow ${0} user, status - ${1}.',
 		USERNAMEISREQ: 'Please provide the user name.',
 		USERNAMEISREQPAR: 'Please specify the ${0} user name.',
 		TABISOPEN: 'Found already open tab with results, please close this tab before processing!'
