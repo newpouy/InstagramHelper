@@ -5,6 +5,7 @@ var instaDefOptions = (function() {
 	return {
 		you : '<<YOU>>',
 		defDelay : 1000,
+    defFollowDelay : 10000,
 		defPageSize : 20,
 		gridPageSize : 500,
 		noDelayForInit : true,

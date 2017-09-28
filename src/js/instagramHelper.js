@@ -28,13 +28,15 @@
 		if (('get_insta_users' === request.action) || ('get_common_users' === request.action)) {
 			(new PromiseChrome()).promiseGetStorage({
 				pageSize: instaDefOptions.defPageSize,
-				delay: instaDefOptions.defDelay
+				delay: instaDefOptions.defDelay,
+        followDelay: instaDefOptions.defFollowDelay
 			}).then(function (items) {
 
 				var sharedData = getSharedData();
 
 				request.pageSize = items.pageSize;
 				request.delay = items.delay;
+        request.followDelay = items.followDelay;
 				request.csrfToken = sharedData.config.csrf_token;
 
 				if (sharedData.config.viewer === null) {

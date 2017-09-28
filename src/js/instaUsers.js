@@ -43,7 +43,8 @@ $(function () {
 			request: null,
 			userName: request.userName,
 			pageSize: request.pageSize,
-			delay: request.delay,
+      delay: request.delay,
+      followDelay: request.followDelay,
 			csrfToken: request.csrfToken,
 			userId: request.userId,
 			requestRelType: request.relType,
@@ -76,7 +77,7 @@ $(function () {
 					updateStatusDiv(`Follow was completed: processed - ${fetchSettings.followProcessedUsers}, followed/requested - ${fetchSettings.followedUsers}`);
 				})
 			});
-						
+
 			promiseGetFullInfo(fetchSettings, myData).then(function () {
 				generationCompleted(fetchSettings, true);
 			}).catch(function(){
@@ -113,15 +114,15 @@ $(function () {
 	}
 
 	function massFollow(obj, arr, resolve, reject) {
-				
+
 		if (obj.followProcessedUsers >= arr.length) {
 			resolve();
 			return;
 		}
 		updateStatusDiv(`Mass following users: ${obj.followProcessedUsers + 1} of ${arr.length}`);
-		
+
 		//console.log(arr[obj.followProcessedUsers]);
-		
+
 		if ((arr[obj.followProcessedUsers].followed_by_viewer === null) || (arr[obj.followProcessedUsers].followed_by_viewer)) { //requested or already followed
 			//console.log(`${arr[obj.followProcessedUsers].username} is already followed or requested.`);
 			obj.followProcessedUsers++;
@@ -137,15 +138,15 @@ $(function () {
 				obj.receivedResponses++;
 				obj.followedUsers++;
 				//htmlElements.detailedinfo.asProgress('go', obj.followProcessedUsers); //TODO: Update the progress bar
-				setTimeout(function () {
+        setTimeout(function () {
 					massFollow(obj, arr, resolve, reject);
-				}, obj.delay);
+				}, obj.followDelay);
 			});
 		}
-		
+
 	}
-	
-	
+
+
 	function promiseFetchInstaUsers(obj) {
 		return new Promise(function (resolve) {
 
@@ -185,7 +186,7 @@ $(function () {
 				replaceStr: exportUtils.replaceStr
 			});
 		});
-		
+
 		$('#cancelDetInfo').on('click', () => cancelProcessing = confirm('Do you want to cancel?'));
 
 	}
@@ -278,7 +279,7 @@ $(function () {
 			massFollow(obj, arr, resolve, reject);
 		});
 	}
-	
+
 	function prepareHtmlElementsUserDetails(obj, arr) {
 		updateStatusDiv(`Found users ${arr.length}`);
 		document.getElementById('detailedinfo_title').textContent = 'Getting the detailed info';

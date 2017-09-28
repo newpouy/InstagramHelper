@@ -3,7 +3,7 @@ var instaFollowUser = function () { };
 instaFollowUser.follow = function (settings) {
 
   'use strict';
-  
+
   var {
     username, userId, csrfToken, updateStatusDiv
   } = settings;
@@ -13,19 +13,20 @@ instaFollowUser.follow = function (settings) {
   });
 
   function successFollow(data, resolve) {
-	  //todo: is it follower or requested only
-	  console.log("successFollow");
-	  console.log(arguments);
-	  resolve();
+    //todo: is it follower or requested only
+    console.log("successFollow");
+    console.log(arguments);
+    updateStatusDiv(`User ${username} was successfully followed`);
+    resolve();
   }
 
-  function retryError (message, resolve, reject) {
-    updateStatusDiv(message, 'red'); //todo: check if I have updateStatusDiv
+  function retryError(message, resolve, reject) {
+    updateStatusDiv(message, 'red');
     instaTimeout.setTimeout(3000)
       .then(function () {
         return instaCountdown.doCountdown('status', '', (new Date()).getTime() + +instaDefOptions.retryInterval);
       })
-      .then( () => {
+      .then(() => {
         console.log('Continue execution after HTTP error', new Date()); //eslint-disable-line no-console
         follow(userId, csrfToken, resolve, reject);
       });
@@ -60,19 +61,19 @@ instaFollowUser.follow = function (settings) {
 
   function follow(userId, csrfToken, resolve, reject) {
     var link = `https://www.instagram.com/web/friendships/${userId}/follow/`;
-	//console.log(link);
+    //console.log(link);
     $.ajax({
       url: link,
-	  method: 'POST',
+      method: 'POST',
       success: function (data) {
         successFollow(data, resolve);
       },
       error: function (jqXHR) {
         errorFollow(jqXHR, resolve, reject);
-      },	  
-	  headers: {
+      },
+      headers: {
         'X-CSRFToken': csrfToken,
-		'x-instagram-ajax' : 1,
+        'x-instagram-ajax': 1,
         'eferer': 'https://www.instagram.com/' //+ obj.userName + '/'
       },
       async: true
