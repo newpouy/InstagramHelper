@@ -68,7 +68,7 @@ var FetchUsers = function (settings) {
     updateStatusDiv(message, 'red');
     instaTimeout.setTimeout(3000)
       .then(function () {
-        return instaCountdown.doCountdown('status', '', (new Date()).getTime() + +instaDefOptions.retryInterval);
+        return instaCountdown.doCountdown('status', 'Users fetching', (new Date()).getTime() + +instaDefOptions.retryInterval);
       })
       .then( () => {
         console.log('Continue execution after HTTP error', new Date()); //eslint-disable-line no-console

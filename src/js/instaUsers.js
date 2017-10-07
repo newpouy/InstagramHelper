@@ -29,7 +29,7 @@ $(function () {
 					request.followed_by_count = values[0].followed_by_count;
 					request.userId = values[0].id;
 					request.user_followed_by_viewer = false;
-				}
+        }
 				startFetching(request);
 			});
 		}
@@ -37,14 +37,12 @@ $(function () {
 
 	function startFetching(request) {
 
-    //console.log(request);
-
 		var fetchSettings = {
 			request: null,
 			userName: request.userName,
 			pageSize: request.pageSize,
-      delay: request.delay,
-      followDelay: request.followDelay,
+			delay: request.delay,
+			followDelay: request.followDelay,
 			csrfToken: request.csrfToken,
 			userId: request.userId,
 			requestRelType: request.relType,
@@ -62,7 +60,8 @@ $(function () {
 			processedUsers: 0, 	//processed users in get full info
 			followProcessedUsers: 0, //processed users for mass follow
 			followedUsers: 0,
-			requestedUsers: 0
+      requestedUsers: 0,
+      viewerUserId: request.viewerUserId
 		};
 		prepareHtmlElements(fetchSettings);
 		promiseFetchInstaUsers(fetchSettings).then(function (obj) {
@@ -73,9 +72,13 @@ $(function () {
 			prepareHtmlElementsUserDetails(fetchSettings, myData);
 
 			$('#massFollow').on('click', function () {
-				promiseMassFollow(fetchSettings, myData).then(function () {
-					updateStatusDiv(`Follow was completed: processed - ${fetchSettings.followProcessedUsers}, followed/requested - ${fetchSettings.followedUsers}`);
-				})
+				if (confirm(`Following will be done with the interval of ${request.followDelay/1000}sec.\nYou can change the interval value in the settings.
+                    \nDon't set it to too small value, because Instagrm.com potentially could ban your account for doing that.
+                    \n\nContinue?`)) {
+					promiseMassFollow(fetchSettings, myData).then(function () {
+						updateStatusDiv(`Follow was completed: ${fetchSettings.followProcessedUsers} processed/${fetchSettings.followedUsers} followed/${fetchSettings.requestedUsers} requested`);
+					});
+				}
 			});
 
 			promiseGetFullInfo(fetchSettings, myData).then(function () {
@@ -121,24 +124,35 @@ $(function () {
 		}
 		updateStatusDiv(`Mass following users: ${obj.followProcessedUsers + 1} of ${arr.length}`);
 
-		//console.log(arr[obj.followProcessedUsers]);
+    //console.log(obj);
+    //console.log(arr[obj.followProcessedUsers]);
 
 		if ((arr[obj.followProcessedUsers].followed_by_viewer === null) || (arr[obj.followProcessedUsers].followed_by_viewer)) { //requested or already followed
 			//console.log(`${arr[obj.followProcessedUsers].username} is already followed or requested.`);
 			obj.followProcessedUsers++;
 			massFollow(obj, arr, resolve, reject);
-		} else { //is not followed yet
+    } else if (arr[obj.followProcessedUsers].id === obj.viewerUserId) { //shame - it is me
+      console.log('it is me', arr[obj.followProcessedUsers].id);
+      //console.log(arr[obj.followProcessedUsers]);
+      obj.followProcessedUsers++;
+			massFollow(obj, arr, resolve, reject);
+    } else { //is not followed yet
 			var username = arr[obj.followProcessedUsers].username;
 			var userId = arr[obj.followProcessedUsers].id;
 			console.log(`${username} is not followed yet.`);
-			updateStatusDiv(`${username} is not followed yet: processed ${obj.followProcessedUsers + 1} of ${arr.length}/followed - ${obj.followedUsers}`);
-			//console.log(arr[obj.followProcessedUsers]);
+			updateStatusDiv(`${username} is not followed yet: processed ${obj.followProcessedUsers + 1} of ${arr.length}/followed - ${obj.followedUsers}/requested - ${obj.requestedUsers}`);
 			instaFollowUser.follow({username: username, userId: userId, csrfToken : obj.csrfToken, updateStatusDiv: updateStatusDiv}).then(function (result) {
 				obj.followProcessedUsers++;
 				obj.receivedResponses++;
-				obj.followedUsers++;
-				//htmlElements.detailedinfo.asProgress('go', obj.followProcessedUsers); //TODO: Update the progress bar
-        setTimeout(function () {
+				if ('following' === result) {
+					obj.followedUsers++;
+				} else if ('requested' === result) {
+					obj.requestedUsers++;
+				} else {
+					console.log('Not recognized result - ' + result);
+				}
+				updateStatusDiv(`The request to follow ${username} was successful with response - ${result}/processed ${obj.followProcessedUsers + 1} of ${arr.length}/followed - ${obj.followedUsers}/requested - ${obj.requestedUsers}`);
+				setTimeout(function () {
 					massFollow(obj, arr, resolve, reject);
 				}, obj.followDelay);
 			});

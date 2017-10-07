@@ -44,6 +44,7 @@
 					return;
 				}
 				request.viewerUserName = sharedData.config.viewer.username;
+				request.viewerUserId = sharedData.config.viewer.id;
 
 				if ('get_common_users' === request.action) {
 					if ((request.viewerUserName === request.user_1.userName) || (request.viewerUserName === request.user_2.userName)) {

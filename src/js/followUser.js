@@ -1,3 +1,5 @@
+/* globals alert, $, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
+
 var instaFollowUser = function () { };
 
 instaFollowUser.follow = function (settings) {
@@ -13,18 +15,17 @@ instaFollowUser.follow = function (settings) {
   });
 
   function successFollow(data, resolve) {
-    //todo: is it follower or requested only
-    console.log("successFollow");
-    console.log(arguments);
-    updateStatusDiv(`User ${username} was successfully followed`);
-    resolve();
+    //console.log("successFollow");
+    //console.log(arguments);
+    updateStatusDiv(`The request to follow ${username} was successful with response - ${data.result}`);
+    resolve(data.result);
   }
 
   function retryError(message, resolve, reject) {
     updateStatusDiv(message, 'red');
     instaTimeout.setTimeout(3000)
       .then(function () {
-        return instaCountdown.doCountdown('status', '', (new Date()).getTime() + +instaDefOptions.retryInterval);
+        return instaCountdown.doCountdown('status', 'Following', (new Date()).getTime() + +instaDefOptions.retryInterval);
       })
       .then(() => {
         console.log('Continue execution after HTTP error', new Date()); //eslint-disable-line no-console
@@ -43,15 +44,15 @@ instaFollowUser.follow = function (settings) {
       retryError(message, resolve, reject);
     } else if (jqXHR.status === 403) {
       console.log('HTTP403 error trying to follow user.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage(instaMessages.getMessage('HTTP403', +instaDefOptions.retryInterval / 60000));
+      message = instaMessages.getMessage('HTTP403', +instaDefOptions.retryInterval / 60000);
       retryError(message, resolve, reject);
     } else if (jqXHR.status === 429) {
       console.log('HTTP403 error trying to follow user.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage(instaMessages.getMessage('HTTP429', +instaDefOptions.retryInterval / 60000));
+      message = instaMessages.getMessage('HTTP429', +instaDefOptions.retryInterval / 60000);
       retryError(message, resolve, reject);
     } else if ((jqXHR.status === 500) || (jqXHR.status === 502) || (jqXHR.status === 503)) {
       console.log('HTTP50X error trying to follow user - ' + jqXHR.status, new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage(instaMessages.getMessage('HTTP50X', jqXHR.status, +instaDefOptions.retryInterval / 60000));
+      message = instaMessages.getMessage('HTTP50X', jqXHR.status, +instaDefOptions.retryInterval / 60000);
       retryError(message, resolve, reject);
     } else {
       alert(instaMessages.getMessage('ERRFOLLOWUSER', username, jqXHR.status));

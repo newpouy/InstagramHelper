@@ -1,4 +1,4 @@
-/* globals alert, Promise, $, instaDefOptions, instaMessages */
+/* globals alert, Promise, $, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
 /* jshint -W106 */
 
 var instaUserInfo = function () { };
@@ -119,7 +119,7 @@ instaUserInfo.getUserProfile = function (settings) {
     updateStatusDiv(message, 'red'); //todo: check if I have updateStatusDiv
     instaTimeout.setTimeout(3000)
       .then(function () {
-        return instaCountdown.doCountdown('status', '', (new Date()).getTime() + +instaDefOptions.retryInterval);
+        return instaCountdown.doCountdown('status', 'Getting users profiles', (new Date()).getTime() + +instaDefOptions.retryInterval);
       })
       .then( () => {
         console.log('Continue execution after HTTP error', new Date()); //eslint-disable-line no-console
@@ -138,15 +138,15 @@ instaUserInfo.getUserProfile = function (settings) {
       retryError(message, resolve, reject);
     } else if (jqXHR.status === 403) {
       console.log('HTTP403 error getting the user profile.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage(instaMessages.getMessage('HTTP403', +instaDefOptions.retryInterval / 60000));
+      message = instaMessages.getMessage('HTTP403', +instaDefOptions.retryInterval / 60000);
       retryError(message, resolve, reject);
     } else if (jqXHR.status === 429) {
       console.log('HTTP429 error getting the user profile.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage(instaMessages.getMessage('HTTP429', +instaDefOptions.retryInterval / 60000));
+      message = instaMessages.getMessage('HTTP429', +instaDefOptions.retryInterval / 60000);
       retryError(message, resolve, reject);
     } else if ((jqXHR.status === 500) || (jqXHR.status === 502) || (jqXHR.status === 503)) {
       console.log('HTTP50X error getting the user profile - ' + jqXHR.status, new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage(instaMessages.getMessage('HTTP50X', jqXHR.status, +instaDefOptions.retryInterval / 60000));
+      message = instaMessages.getMessage('HTTP50X', jqXHR.status, +instaDefOptions.retryInterval / 60000);
       retryError(message, resolve, reject);
     } else if (jqXHR.status === 404) {
       console.log('HTTP404 error getting the user profile.', username, new Date()); //eslint-disable-line no-console
@@ -157,7 +157,6 @@ instaUserInfo.getUserProfile = function (settings) {
           getUserProfile(username, resolve, reject);
         }).catch(function () {
           alert('The error trying to find a new username for - ' + userId);
-          //todo:
         });
       } else {
         alert('404 error trying to retrieve user profile, and no userid is specified');
