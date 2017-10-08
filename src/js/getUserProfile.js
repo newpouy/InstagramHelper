@@ -115,13 +115,13 @@ instaUserInfo.getUserProfile = function (settings) {
     }
   }
 
-  function retryError (message, resolve, reject) {
+  function retryError(message, resolve, reject) {
     updateStatusDiv(message, 'red'); //todo: check if I have updateStatusDiv
     instaTimeout.setTimeout(3000)
       .then(function () {
         return instaCountdown.doCountdown('status', 'Getting users profiles', (new Date()).getTime() + +instaDefOptions.retryInterval);
       })
-      .then( () => {
+      .then(() => {
         console.log('Continue execution after HTTP error', new Date()); //eslint-disable-line no-console
         getUserProfile(username, resolve, reject);
       });

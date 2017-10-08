@@ -70,7 +70,7 @@ var FetchUsers = function (settings) {
       .then(function () {
         return instaCountdown.doCountdown('status', 'Users fetching', (new Date()).getTime() + +instaDefOptions.retryInterval);
       })
-      .then( () => {
+      .then(() => {
         console.log('Continue execution after HTTP error', new Date()); //eslint-disable-line no-console
         this.fetchInstaUsers();
       });

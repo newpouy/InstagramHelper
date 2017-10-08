@@ -3,17 +3,17 @@
 
 var instaTimeout = (function () {
 
-	'use strict';
+  'use strict';
 
-	var setTimeout = function(ms) {
-		return new Promise(function (resolve) {
-			window.setTimeout(function() {
-				resolve();
-			}, ms);
-		});
-	};
+  var setTimeout = function (ms) {
+    return new Promise(function (resolve) {
+      window.setTimeout(function () {
+        resolve();
+      }, ms);
+    });
+  };
 
-	return {
-		setTimeout: setTimeout
-	};
+  return {
+    setTimeout: setTimeout
+  };
 }());
