@@ -54,7 +54,9 @@
     };
 
   }, {
-      urls: ['https://www.instagram.com/query/', 'https://www.instagram.com/web/friendships/*']
+      urls: ['https://www.instagram.com/query/',
+        'https://www.instagram.com/web/friendships/*',
+        'https://www.instagram.com/web/likes/*']
     },
     ['blocking', 'requestHeaders']);
 })();

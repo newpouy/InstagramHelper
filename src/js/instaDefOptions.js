@@ -6,7 +6,9 @@ var instaDefOptions = (function () {
     you: '<<YOU>>',
     defDelay: 1000,
     defFollowDelay: 3000,
+    defLikeDelay: 3000,
     defPageSize: 20,
+    defFetchMedia: 12, //how many posts to requests in getting the feed //not sure if a big amount helps to speed up the process
     gridPageSize: 500,
     noDelayForInit: true,
     requestsToSkipDelay: 200,
@@ -19,7 +21,8 @@ var instaDefOptions = (function () {
     newLine: /<br\s*\/>(?=.)/gi, //should be followed by at least one symbol
     queryId: {
       followed_by: '17851374694183129',
-      follows: '17874545323001329'
+      follows: '17874545323001329',
+      feed: '17842794232208280'
     }
   };
 }());

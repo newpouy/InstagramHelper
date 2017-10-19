@@ -29,7 +29,8 @@
       (new PromiseChrome()).promiseGetStorage({
         pageSize: instaDefOptions.defPageSize,
         delay: instaDefOptions.defDelay,
-        followDelay: instaDefOptions.defFollowDelay
+        followDelay: instaDefOptions.defFollowDelay,
+        likeDelay: instaDefOptions.defLikeDelay
       }).then(function (items) {
 
         var sharedData = getSharedData();
@@ -37,6 +38,7 @@
         request.pageSize = items.pageSize;
         request.delay = items.delay;
         request.followDelay = items.followDelay;
+        request.likeDelay = items.likeDelay;
         request.csrfToken = sharedData.config.csrf_token;
 
         if (sharedData.config.viewer === null) {

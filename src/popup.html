@@ -1,40 +1,41 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Insta Helper (Scraper)</title>
-  </head>
-  <body>
+
+<head>
+  <title>Insta Helper (Scraper)</title>
+</head>
+
+<body>
   <div style="border: 1px solid; padding: 5px;">
     <div id="main" style="border: 0.5px solid; padding: 3px; margin: 3px;">
-    <label>UserName:</label>
-    <input type="text" id="username" style="width: 95%" />
-    <br />
-    <input type="radio" name="relType" id="All" checked="checked" />
-    <label for="All">All</label>
-    <br />
-    <input type="radio" name="relType" id="follows" />
-    <label for="follows">User Follows</label>
-    <br />
-    <input type="radio" name="relType" id="followed_by" />
-    <label for="followed_by">User is Followed by</label>
-    <br /><br />
-    Limit the output to first found users: <input id="first" min="0" step="10" type="number" value="0"></input>
+      <label>UserName:</label>
+      <input type="text" id="username" style="width: 95%" />
+      <br />
+      <input type="radio" name="relType" id="All" checked="checked" />
+      <label for="All">All</label>
+      <br />
+      <input type="radio" name="relType" id="follows" />
+      <label for="follows">User Follows</label>
+      <br />
+      <input type="radio" name="relType" id="followed_by" />
+      <label for="followed_by">User is Followed by</label>
+      <br /><br /> Limit the output to first found users: <input id="first" min="0" step="10" type="number" value="0"></input>
     </div>
     <div id="details" style="border: 0.5px solid; padding: 3px; margin: 3px; white-space: nowrap;"></div>
     <input id="instaUsers" type="submit" value="Get Insta Users" />
   </div>
   <div style="border: 1px solid; padding: 5px;">
     <div style="border: 0px solid; padding: 3px; margin: 3px;">
-    <label>UserName 1:</label>
-    <input type="text" id="username_1" style="width: 95%" />
-    <br />
-    <label>UserName 2:</label>
-    <input type="text" id="username_2" style="width: 95%" />
-    <br /></div>
+      <label>UserName 1:</label>
+      <input type="text" id="username_1" style="width: 95%" />
+      <br />
+      <label>UserName 2:</label>
+      <input type="text" id="username_2" style="width: 95%" />
+      <br /></div>
     <input id="findCommonUsers" type="submit" value="Find Common Users" />
   </div>
   <div style="border: 1px solid; padding: 5px;">
-    <input id="liker" type="submit" value="Liker" />
+    <input id="liker" type="submit" value="Like the posts in your feed!" />
   </div>
   <script src="js/ga.js"></script>
   <script src="lib/jquery-3.1.1.min.js"></script>
@@ -42,5 +43,7 @@
   <script src="js/PromiseChrome.js"></script>
   <script src="js/instaDefOptions.js"></script>
   <script src="js/instaMessages.js"></script>
-  <script src="js/popup.js"></script></body>
+  <script src="js/popup.js"></script>
+</body>
+
 </html>

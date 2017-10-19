@@ -1,14 +1,54 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Liker</title>
-  </head>
-  <body>
+<html style="height:98%">
 
+<head>
+  <title>Liker</title>
+  <link rel="stylesheet" type="text/css" media="screen" href="css/liker.css" />
+</head>
+
+<body style="height:98%">
+
+
+  <div class="table container">
+    <div class="table-row header">
+      <div id="status" style="width:100%;padding: 5px; font-weight: bold;"></div>
+      <div id="liker_options" style="border: 0.5px solid; padding: 3px; margin: 3px; display: inline-block;">
+        <strong>
+			<label>It will like the posts in your feed.</label><br/>
+			<label>It is useful when you are following 1k+ users,</label><br/>
+			<label>and you want to make them all happy :)</label><br/>
+			</strong>
+        <br/>
+        <strong><label>Please specify when to stop the liking:</label></strong>
+        <br/>
+        <input type="radio" name="relType" id="AlreadyLiked" />
+        <label for="AlreadyLiked">When met already liked post</label>
+        <br />
+        <input type="radio" name="relType" id="AmountPosts" checked="checked" />
+        <label for="AmountPictures">When liked <input type="number" min="10" step="10" value="100" id="amount" /> posts</label>
+        <br />
+        <button id="start">Like the posts in your feed!</button>
+        <button id="cancel" disabled>Stop it!</button>
+      </div>
+    </div>
+
+    <div class="table-row body">
+      <div class="body-content-wrapper">
+        <div class="body-content">
+          <textarea id="log_text_area"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
   <script src="js/ga.js"></script>
-  <script src="js/liker.js"></script>
+  <script src="lib/jquery-3.1.1.min.js"></script>
+  <script src="js/likerPage.js"></script>
+  <script src="js/getFeed.js"></script>
+  <script src="js/like.js"></script>
   <script src="js/instaDefOptions.js"></script>
   <script src="js/instaMessages.js"></script>
   <script src="js/instaCountdown.js"></script>
-  </body>
+  <script src="js/instaTimeout.js"></script>
+</body>
+
 </html>
