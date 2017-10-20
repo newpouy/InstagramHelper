@@ -99,6 +99,11 @@ $(function () {
     } else if (instaFeed.hasMore()) { //do we still have something to fetch
       updateStatusDiv(`The more posts will be fetched now...${new Date()}`);
       setTimeout(() => getFeed(instaFeed), delay);
+    } else {
+      updateStatusDiv(`IG has returned that no more posts, restart ...${new Date()}`);
+      //todo: nullify
+      instaFeed = new InstaFeed({ updateStatusDiv: restart_page: false, end_cursor: '' });
+      setTimeout(() => getFeed(instaFeed), delay);
     }
   }
 
