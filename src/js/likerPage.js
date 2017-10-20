@@ -102,7 +102,7 @@ $(function () {
     } else {
       updateStatusDiv(`IG has returned that no more posts, restart ...${new Date()}`);
       //todo: nullify
-      instaFeed = new InstaFeed({ updateStatusDiv: restart_page: false, end_cursor: '' });
+      instaFeed = new InstaFeed({updateStatusDiv: updateStatusDiv, has_next_page: false, end_cursor: '' });
       setTimeout(() => getFeed(instaFeed), delay);
     }
   }
