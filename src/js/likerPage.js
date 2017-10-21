@@ -1,5 +1,5 @@
-/* globals confirm, chrome, $, _gaq, Promise */
-/* globals instaDefOptions, instaUserInfo, exportUtils, FetchUsers, instaLike, InstaFeed   */
+/* globals confirm, chrome, $, _gaq */
+/* globals instaLike, InstaFeed   */
 
 $(function () {
 
@@ -86,7 +86,7 @@ $(function () {
       updateStatusDiv(`Post ${url} from ${userName} has ${likes} likes`);
       var isLiked = obj.node.viewer_has_liked;
       if (!isLiked) { //not yet liked
-        instaLike.like({ mediaId: id, csrfToken: csrfToken, updateStatusDiv: updateStatusDiv }).then(function (result) {
+        instaLike.like({ mediaId: id, csrfToken: csrfToken, updateStatusDiv: updateStatusDiv }).then(function () {
           console.log('liked post', ++liked, new Date());
           updateStatusDiv(`...liked post ${liked} on ${new Date()}`);
           setTimeout(() => likeMedia(instaFeed, media, ++index), delay);

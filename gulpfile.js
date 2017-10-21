@@ -1,8 +1,14 @@
 'use strict';
 
-var gulp = require('gulp');
+var gulp = require('gulp'),
+  watch = require('gulp-watch');
 var $ = require('gulp-load-plugins')({ lazy: true });
 var args = require('yargs').argv;
+
+gulp.task('watch', function () {
+  return watch('./src/js/*.js', { ignoreInitial: false })
+      .pipe(gulp.dest('./build/js/'));
+});
 
 gulp.task('zip', () => {
 
