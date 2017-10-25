@@ -9,7 +9,11 @@ $(function () {
   var delay;
 
   var liked;
-  var foundLiked;
+  var alreadyLiked;
+  var restarted;
+  var fetched;
+
+  var startDate;
   var stop; //will be set to true on cancel and checked in isCompleted
 
 
@@ -23,7 +27,10 @@ $(function () {
     var instaFeed = new InstaFeed({ updateStatusDiv: updateStatusDiv, has_next_page: false, end_cursor: '' });
 
     liked = 0;
-    foundLiked = 0;
+    alreadyLiked = 0;
+    restarted = 0;
+    fetched = 0;
+    startDate = new Date();
     stop = false;
 
     document.getElementById('cancel').disabled = false;
@@ -46,6 +53,7 @@ $(function () {
     instaFeed.getFeed().then(media => {
 
       updateStatusDiv(`${media.length} posts are fetched ${new Date()}`);
+      fetched += media.length;
       likeMedia(instaFeed, media, 0);
 
     }).catch(e => {
@@ -59,8 +67,8 @@ $(function () {
       updateStatusDiv('The process will be stopped now because you clicked the Stop button');
       return false;
     }
-    if ((document.getElementById('AlreadyLiked').checked) && (foundLiked > 0)) {
-      updateStatusDiv('The process will be stopped because already liked posts are found - ' + foundLiked);
+    if ((document.getElementById('AlreadyLiked').checked) && (alreadyLiked > 0)) {
+      updateStatusDiv('The process will be stopped because already liked posts are found - ' + alreadyLiked);
       return false;
     }
     if (document.getElementById('AmountPosts').checked) {
@@ -93,8 +101,8 @@ $(function () {
         });
       } else {
         updateStatusDiv('...and it is already liked by you!');
-        foundLiked += 1;
-        likeMedia(instaFeed, media, ++index);
+        alreadyLiked += 1;
+        setTimeout(() => likeMedia(instaFeed, media, ++index), 0);
       }
     } else if (instaFeed.hasMore()) { //do we still have something to fetch
       updateStatusDiv(`The more posts will be fetched now...${new Date()}`);
@@ -103,6 +111,7 @@ $(function () {
       updateStatusDiv(`IG has returned that no more posts, restart ...${new Date()}`);
       //todo: nullify
       instaFeed = new InstaFeed({updateStatusDiv: updateStatusDiv, has_next_page: false, end_cursor: '' });
+      restarted++;
       setTimeout(() => getFeed(instaFeed), delay);
     }
   }
@@ -121,8 +130,13 @@ $(function () {
     textarea.scrollTop = textarea.scrollHeight;
   };
 
+  var updateStat = function() {
+    document.getElementById('stat').textContent = `Started ${startDate}/Liked ${liked}/Met already liked ${alreadyLiked}/Fetched posts ${fetched}/fetching feed restarted ${restarted}`;
+  };
+
   var updateStatusDiv = function (message, color) {
 
+    updateStat();
     addToTextArea(message);
 
     var el = document.getElementById('status');
