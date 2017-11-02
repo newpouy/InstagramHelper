@@ -58,7 +58,7 @@ var InstaFeed = function (settings) {
       console.log('HTTP429 error getting your feed.', new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('HTTP429', +instaDefOptions.retryInterval / 60000);
       retryError(message, resolve, reject);
-    } else if ((jqXHR.status === 500) || (jqXHR.status === 502) || (jqXHR.status === 503)) {
+    } else if ((jqXHR.status === 500) || (jqXHR.status === 502) || (jqXHR.status === 503) || (jqXHR.status === 504)) {
       console.log('HTTP50X error getting your feed - ' + jqXHR.status, new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('HTTP50X', jqXHR.status, +instaDefOptions.retryInterval / 60000);
       retryError(message, resolve, reject);

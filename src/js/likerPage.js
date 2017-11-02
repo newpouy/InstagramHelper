@@ -33,8 +33,7 @@ $(function () {
     startDate = new Date();
     stop = false;
 
-    document.getElementById('cancel').disabled = false;
-    document.getElementById('start').disabled = true;
+    liker.isInProgress = true;
 
     updateStatusDiv(`The interval between liking requests is ${delay}ms`);
     if (document.getElementById('AlreadyLiked').checked) {
@@ -118,7 +117,6 @@ $(function () {
 
   chrome.runtime.onMessage.addListener(function (request) {
     if (request.action === 'open_liker') {
-      console.log(request);
       csrfToken = request.csrfToken;
       delay = request.likeDelay;
     }
@@ -126,7 +124,7 @@ $(function () {
 
   var addToTextArea = function (message) {
     var textarea = document.getElementById('log_text_area');
-    textarea.value += message + '\n';
+    liker.log += message + '\n';
     textarea.scrollTop = textarea.scrollHeight;
   };
 

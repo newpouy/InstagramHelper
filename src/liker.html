@@ -8,41 +8,46 @@
 
 <body style="height:98%">
 
-
-  <div class="table container">
+  <div class="table container" id="app">
     <div class="table-row header">
       <div id="status" style="width:100%;padding: 5px; font-weight: bold;"></div>
-      <div id="stat" style="width:100%;padding: 5px; font-weight: bold;">
-
-      </div>
+      <div id="stat" style="width:100%;padding: 5px; font-weight: bold;"></div>
       <div id="liker_options" style="border: 0.5px solid; padding: 3px; margin: 3px; display: inline-block;">
         <strong>
-			<label>It will like the posts in your feed.</label><br/>
-			<label>It is useful when you are following 1k+ users,</label><br/>
-			<label>and you want to make them all happy :)</label><br/>
-			</strong>
+          <label>It will like the posts in your feed.</label>
+          <br/>
+          <label>It is useful when you are following 1k+ users,</label>
+          <br/>
+          <label>and you want to make them all happy :)</label>
+          <br/>
+        </strong>
         <br/>
-        <strong><label>Please specify when to stop the liking:</label></strong>
+        <strong>
+          <label>Please specify when to stop the liking:</label>
+        </strong>
         <br/>
-        <input type="radio" name="relType" id="AlreadyLiked" />
+        <input type="radio" v-model="stopCriterion" value="alreadyLiked" name="relType" id="AlreadyLiked" />
         <label for="AlreadyLiked">When met an already liked post</label>
         <br />
-        <input type="radio" name="relType" id="AmountPosts" checked="checked" />
-        <label for="AmountPictures">When liked <input type="number" min="10" step="10" value="100" id="amount" /> posts</label>
+        <input type="radio" v-model="stopCriterion" value="amountPosts" name="relType" id="AmountPosts" checked="checked" />
+        <label for="AmountPictures">When liked
+          <input type="number" min="10" step="10" v-model="amountToLike" id="amount" /> posts</label>
         <br />
-        <button id="start">Like the posts in your feed!</button>
-        <button id="cancel" disabled>Stop it!</button>
+        <button id="start" :disabled="isInProgress">Like the posts in your feed!</button>
+        <button id="cancel" :disabled="!isInProgress">Stop it!</button>
       </div>
     </div>
 
     <div class="table-row body">
       <div class="body-content-wrapper">
         <div class="body-content">
-          <textarea id="log_text_area"></textarea>
+          <textarea v-model="log" id="log_text_area"></textarea>
         </div>
       </div>
     </div>
+
   </div>
+
   <script src="js/ga.js"></script>
   <script src="lib/jquery-3.1.1.min.js"></script>
   <script src="js/likerPage.js"></script>
@@ -52,6 +57,11 @@
   <script src="js/instaMessages.js"></script>
   <script src="js/instaCountdown.js"></script>
   <script src="js/instaTimeout.js"></script>
+
+  <script src="lib/vue2.5.2.js"></script>
+  <script src="js/components/vue_liker.js"></script>
+
+
 </body>
 
 </html>

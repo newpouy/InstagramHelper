@@ -90,7 +90,7 @@ var FetchUsers = function (settings) {
       console.log('HTTP429 error.', new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('HTTP429', +instaDefOptions.retryInterval / 60000);
       this.retryError(message);
-    } else if ((jqXHR.status === 500) || (jqXHR.status === 502) || (jqXHR.status === 503)) {
+    } else if ((jqXHR.status === 500) || (jqXHR.status === 502) || (jqXHR.status === 503) || (jqXHR.status === 504)) {
       //alert(instaMessages.getMessage('HTTP50X', jqXHR.status, +instaDefOptions.retryInterval / 60000));
       console.log('HTTP50X error - ' + jqXHR.status, new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('HTTP50X', jqXHR.status, +instaDefOptions.retryInterval / 60000);

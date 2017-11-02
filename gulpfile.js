@@ -49,7 +49,8 @@ gulp.task('clean', (cb) => {
   var rimraf = require('rimraf');
 
   log('Clean task is started...');
-  rimraf('./build', cb);
+  rimraf('./build', () => rimraf('./archive.zip', cb));
+
 });
 
 gulp.task('vet', () => {
