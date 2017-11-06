@@ -1,17 +1,15 @@
 'use strict';
 
-var gulp = require('gulp'),
-  watch = require('gulp-watch');
+var gulp = require('gulp');
 var $ = require('gulp-load-plugins')({ lazy: true });
 var args = require('yargs').argv;
 
 gulp.task('watch', function () {
-  return watch('./src/js/*.js', { ignoreInitial: false })
-      .pipe(gulp.dest('./build/js/'));
+  return $.watch('./src/js/*.js', { ignoreInitial: false })
+    .pipe(gulp.dest('./build/js/'));
 });
 
 gulp.task('zip', () => {
-
   return gulp
     .src('./build/**/')
     .pipe($.zip('archive.zip'))
@@ -26,11 +24,12 @@ gulp.task('build', ['clean'], () => {
   var composer = require('gulp-uglify/composer');
   var minify = composer(uglifyjs, console);
 
-  var checkJsCondition = function (file) {
-    if (!(args.production)) {
-      return false;
-    }
+  var isNotMinifiedFile = function (file) {
     return /^(?:(?!\.min).)*\.js$/.test(file.history[0]);
+  }
+
+  var isProductionMode = function () {
+    return args.production;
   }
 
   return gulp
@@ -38,9 +37,9 @@ gulp.task('build', ['clean'], () => {
     .pipe($.if(args.verbose, $.print()))
     .pipe($.if('*.html', $.minifyHtml({ empty: true })))
     .pipe($.if('*.css', $.csso()))
-    .pipe($.if(checkJsCondition, minify().on('error', function (err) {
+    .pipe($.if(isProductionMode, $.if(isNotMinifiedFile, minify().on('error', function (err) {
       $.util.log($.util.colors.red('[Error]'), err.toString());
-    })))
+    }))))
     .pipe(gulp.dest('./build/'));
 });
 
