@@ -1,5 +1,5 @@
 /* globals confirm, chrome, $, _gaq */
-/* globals instaLike, InstaFeed   */
+/* globals instaLike, InstaFeed, liker   */
 
 $(function () {
 
