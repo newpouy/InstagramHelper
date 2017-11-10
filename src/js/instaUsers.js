@@ -1,5 +1,5 @@
 /* globals confirm, chrome, $, _gaq, Promise */
-/* globals instaDefOptions, instaUserInfo, exportUtils, FetchUsers */
+/* globals instaDefOptions, instaUserInfo, instaFollowUser, exportUtils, FetchUsers */
 /* jshint -W106 */
 
 $(function () {

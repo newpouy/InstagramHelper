@@ -115,14 +115,14 @@ instaUserInfo.getUserProfile = function (settings) {
     }
   }
 
-  function retryError(message, resolve, reject) {
+  function retryError(message, errorNumber, resolve, reject) {
     updateStatusDiv(message, 'red'); //todo: check if I have updateStatusDiv
     instaTimeout.setTimeout(3000)
       .then(function () {
-        return instaCountdown.doCountdown('status', 'Getting users profiles', (new Date()).getTime() + +instaDefOptions.retryInterval);
+        return instaCountdown.doCountdown('status', errorNumber, 'Getting users profiles', (new Date()).getTime() + +instaDefOptions.retryInterval);
       })
       .then(() => {
-        console.log('Continue execution after HTTP error', new Date()); //eslint-disable-line no-console
+        console.log('Continue execution after HTTP error', errorNumber, new Date()); //eslint-disable-line no-console
         getUserProfile(username, resolve, reject);
       });
 
@@ -135,19 +135,19 @@ instaUserInfo.getUserProfile = function (settings) {
     if (jqXHR.status === 0) {
       console.log('Not connected.', new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('NOTCONNECTED', +instaDefOptions.retryInterval / 60000);
-      retryError(message, resolve, reject);
+      retryError(message, jqXHR.status, resolve, reject);
     } else if (jqXHR.status === 403) {
       console.log('HTTP403 error getting the user profile.', new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('HTTP403', +instaDefOptions.retryInterval / 60000);
-      retryError(message, resolve, reject);
+      retryError(message, jqXHR.status, resolve, reject);
     } else if (jqXHR.status === 429) {
       console.log('HTTP429 error getting the user profile.', new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('HTTP429', +instaDefOptions.retryInterval / 60000);
-      retryError(message, resolve, reject);
+      retryError(message, jqXHR.status, resolve, reject);
     } else if ((jqXHR.status === 500) || (jqXHR.status === 502) || (jqXHR.status === 503) || (jqXHR.status === 504)) {
       console.log('HTTP50X error getting the user profile - ' + jqXHR.status, new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('HTTP50X', jqXHR.status, +instaDefOptions.retryInterval / 60000);
-      retryError(message, resolve, reject);
+      retryError(message, jqXHR.status, resolve, reject);
     } else if (jqXHR.status === 404) {
       console.log('HTTP404 error getting the user profile.', username, new Date()); //eslint-disable-line no-console
       if (userId) {

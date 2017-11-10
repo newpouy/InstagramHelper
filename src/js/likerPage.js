@@ -72,7 +72,7 @@ $(function () {
       liker.updateStatusDiv(`IG has returned that no more posts, restart ...${new Date()}`);
       //todo: nullify
       instaFeed = new InstaFeed({updateStatusDiv: liker.updateStatusDiv, has_next_page: false, end_cursor: '' });
-      restarted++;
+      liker.restarted++;
       setTimeout(() => getFeed(instaFeed), liker.delay);
     }
   }

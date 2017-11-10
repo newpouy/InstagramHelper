@@ -10,7 +10,7 @@ instaCountdown.doCountdown = function (element, prefix, stopTime, color) {
     doCountdown(element, prefix, stopTime, resolve, color);
   });
 
-  function doCountdown(element, prefix, stopTime, resolve, color) {
+  function doCountdown(element, errorNumber, prefix, stopTime, resolve, color) {
 
     var el = document.getElementById(element);
     if (el) {
@@ -33,7 +33,7 @@ instaCountdown.doCountdown = function (element, prefix, stopTime, color) {
           seconds = '0' + seconds;
         }
         var text = minutes + ':' + seconds;
-        el.innerHTML = `${prefix} paused because of HTTP error. Continue in ${text}.`;
+        el.innerHTML = `${prefix} paused because of HTTP${errorNumber} error. Continue in ${text}.`;
       }
     }, 1000);
 

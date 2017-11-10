@@ -64,14 +64,14 @@ var FetchUsers = function (settings) {
     resolve(obj);
   };
 
-  var retryError = function (message) {
+  var retryError = function (message, errorNumber) {
     updateStatusDiv(message, 'red');
     instaTimeout.setTimeout(3000)
       .then(function () {
-        return instaCountdown.doCountdown('status', 'Users fetching', (new Date()).getTime() + +instaDefOptions.retryInterval);
+        return instaCountdown.doCountdown('status', errorNumber, 'Users fetching', (new Date()).getTime() + +instaDefOptions.retryInterval);
       })
       .then(() => {
-        console.log('Continue execution after HTTP error', new Date()); //eslint-disable-line no-console
+        console.log('Continue execution after HTTP error', errorNumber, new Date()); //eslint-disable-line no-console
         this.fetchInstaUsers();
       });
   };
@@ -85,16 +85,16 @@ var FetchUsers = function (settings) {
       //alert(instaMessages.getMessage('NOTCONNECTED', +instaDefOptions.retryInterval / 60000));
       console.log('Not connected.', new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('NOTCONNECTED', +instaDefOptions.retryInterval / 60000);
-      this.retryError(message);
+      this.retryError(message, jqXHR.status);
     } else if (jqXHR.status === 429) {
       console.log('HTTP429 error.', new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('HTTP429', +instaDefOptions.retryInterval / 60000);
-      this.retryError(message);
+      this.retryError(message, jqXHR.status);
     } else if ((jqXHR.status === 500) || (jqXHR.status === 502) || (jqXHR.status === 503) || (jqXHR.status === 504)) {
       //alert(instaMessages.getMessage('HTTP50X', jqXHR.status, +instaDefOptions.retryInterval / 60000));
       console.log('HTTP50X error - ' + jqXHR.status, new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('HTTP50X', jqXHR.status, +instaDefOptions.retryInterval / 60000);
-      this.retryError(message);
+      this.retryError(message, jqXHR.status);
     } else if (jqXHR.status === 404) {
       alert(instaMessages.getMessage('HTTP404'));
     } else if (exception === 'parsererror') {

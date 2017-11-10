@@ -19,14 +19,14 @@ instaLike.like = function (settings) {
     resolve(data.status);
   }
 
-  function retryError(message, resolve, reject) {
+  function retryError(message, errorNumber, resolve, reject) {
     updateStatusDiv(message, 'red');
     instaTimeout.setTimeout(3000)
       .then(function () {
-        return instaCountdown.doCountdown('status', 'Liking', (new Date()).getTime() + +instaDefOptions.retryInterval);
+        return instaCountdown.doCountdown('status', errorNumber, 'Liking', (new Date()).getTime() + +instaDefOptions.retryInterval);
       })
       .then(() => {
-        console.log('Continue execution after HTTP error', new Date()); //eslint-disable-line no-console
+        console.log('Continue execution after HTTP error', errorNumber, new Date()); //eslint-disable-line no-console
         like(mediaId, csrfToken, resolve, reject);
       });
   }
@@ -38,23 +38,23 @@ instaLike.like = function (settings) {
     if (jqXHR.status === 0) {
       console.log('Not connected.', new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('NOTCONNECTED', +instaDefOptions.retryInterval / 60000);
-      retryError(message, resolve, reject);
+      retryError(message, jqXHR.status, resolve, reject);
     } else if (jqXHR.status === 400) {
       console.log('HTTP400 error trying to like the media.', new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('HTTP400');
-      retryError(message, resolve, reject);
+      retryError(message, jqXHR.status, resolve, reject);
     } else if (jqXHR.status === 403) {
       console.log('HTTP403 error trying to like the media.', new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('HTTP403', +instaDefOptions.retryInterval / 60000);
-      retryError(message, resolve, reject);
+      retryError(message, jqXHR.status, resolve, reject);
     } else if (jqXHR.status === 429) {
       console.log('HTTP403 error trying to like the media.', new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('HTTP429', +instaDefOptions.retryInterval / 60000);
-      retryError(message, resolve, reject);
+      retryError(message, jqXHR.status, resolve, reject);
     } else if ((jqXHR.status === 500) || (jqXHR.status === 502) || (jqXHR.status === 503) || (jqXHR.status === 504)) {
       console.log('HTTP50X error trying to like the media - ' + jqXHR.status, new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('HTTP50X', jqXHR.status, +instaDefOptions.retryInterval / 60000);
-      retryError(message, resolve, reject);
+      retryError(message, jqXHR.status, resolve, reject);
     } else {
       alert(instaMessages.getMessage('ERRLIKEMEDIA', mediaId, jqXHR.status));
       reject();
