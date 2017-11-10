@@ -33,7 +33,7 @@ var InstaFeed = function (settings) {
       })
       .then(() => {
         console.log('Continue execution after HTTP error', new Date()); //eslint-disable-line no-console
-        getFeed(resolve, reject);
+        getFeedInternal(resolve, reject); //20171110: changed to internal
       });
 
   }
