@@ -37,9 +37,9 @@
         <br />
         <input type="radio" v-model="stopCriterion" value="amountPosts" name="relType" id="AmountPosts" checked="checked" />
         <label for="AmountPictures">When liked
-          <input type="number" min="10" step="10" v-model="amountToLike" id="amount" /> posts</label>
+          <input type="number" min="10" step="10" v-model.number="amountToLike" id="amount" /> posts</label>
         <br />
-        Delay between requests: <input type="number" min="10" step="10" v-model="delay" id="delay" />
+        Delay between requests: <input type="number" min="10" step="10" v-model.number="delay" id="delay" />
         <br />
         <button id="start" :disabled="isInProgress">Like the posts in your feed!</button>
         <button id="cancel" :disabled="!isInProgress" v-on:click="stop=true">Stop it!</button>
