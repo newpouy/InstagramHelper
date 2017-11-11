@@ -7,7 +7,7 @@ $(function () {
 
   $('#start').on('click', function () {
 
-    var instaFeed = new InstaFeed({ updateStatusDiv: liker.updateStatusDiv, has_next_page: false, end_cursor: '' });
+    var instaFeed = new InstaFeed({ updateStatusDiv: liker.updateStatusDiv, has_next_page: false, end_cursor: '', vueStatus : liker });
 
     liker.liked = 0;
     liker.alreadyLiked = 0;
@@ -64,7 +64,7 @@ $(function () {
       liker.updateStatusDiv(`Post ${url} from ${userName} has ${likes} likes`);
       var isLiked = obj.node.viewer_has_liked;
       if (!isLiked) { //not yet liked
-        instaLike.like({ mediaId: id, csrfToken: liker.csrfToken, updateStatusDiv: liker.updateStatusDiv }).then(function () {
+        instaLike.like({ mediaId: id, csrfToken: liker.csrfToken, updateStatusDiv: liker.updateStatusDiv, vueStatus: liker }).then(function () {
           liker.updateStatusDiv(`...liked post ${++liker.liked} on ${new Date()}`);
           setTimeout(() => likeMedia(instaFeed, media, ++index), liker.delay);
         });
@@ -79,7 +79,7 @@ $(function () {
     } else {
       liker.updateStatusDiv(`IG has returned that no more posts, restart ...${new Date()}`);
       //todo: nullify
-      instaFeed = new InstaFeed({updateStatusDiv: liker.updateStatusDiv, has_next_page: false, end_cursor: '' });
+      instaFeed = new InstaFeed({updateStatusDiv: liker.updateStatusDiv, has_next_page: false, end_cursor: '', vueStatus : liker });
       liker.restarted++;
       setTimeout(() => getFeed(instaFeed), liker.delay);
     }

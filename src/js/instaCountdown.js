@@ -2,15 +2,16 @@
 
 var instaCountdown = function () { };
 
-instaCountdown.doCountdown = function (element, prefix, stopTime, color) {
+//2 last parameters are options
+instaCountdown.doCountdown = function (element, errorNumber, prefix, stopTime, vueStatus, color) {
 
   'use strict';
 
   return new Promise(function (resolve) {
-    doCountdown(element, prefix, stopTime, resolve, color);
+    doCountdown(element, errorNumber, prefix, stopTime, resolve, vueStatus, color);
   });
 
-  function doCountdown(element, errorNumber, prefix, stopTime, resolve, color) {
+  function doCountdown(element, errorNumber, prefix, stopTime, resolve, vueStatus, color) {
 
     var el = document.getElementById(element);
     if (el) {
@@ -19,9 +20,15 @@ instaCountdown.doCountdown = function (element, prefix, stopTime, color) {
 
     var interval = setInterval(function () {
       var time = Math.round((stopTime - (new Date()).getTime()) / 1000);
+      var message;
       if (time <= 0) {
         clearInterval(interval);
-        el.innerHTML = `${prefix} / Countdown is completed`;
+        message = `${prefix} / Countdown is completed`;
+        if (vueStatus) { //spike
+          vueStatus.status = message;
+        } else {
+          el.textContent = message;
+        }
         resolve();
       } else {
         var minutes = Math.floor(time / 60);
@@ -33,7 +40,12 @@ instaCountdown.doCountdown = function (element, prefix, stopTime, color) {
           seconds = '0' + seconds;
         }
         var text = minutes + ':' + seconds;
-        el.innerHTML = `${prefix} paused because of HTTP${errorNumber} error. Continue in ${text}.`;
+        message = `${prefix} paused because of HTTP${errorNumber} error. Continue in ${text}.`;
+        if (vueStatus) { //spike
+          vueStatus.status = message;
+        } else {
+          el.textContent = message;
+        }
       }
     }, 1000);
 

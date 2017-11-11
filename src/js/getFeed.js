@@ -6,7 +6,7 @@ var InstaFeed = function (settings) {
   'use strict';
 
   var {
-    updateStatusDiv, has_next_page, end_cursor
+    updateStatusDiv, has_next_page, end_cursor, vueStatus
   } = settings;
 
   function getFeed() {
@@ -29,7 +29,7 @@ var InstaFeed = function (settings) {
     updateStatusDiv(message, 'red'); //todo: check if I have updateStatusDiv
     instaTimeout.setTimeout(3000)
       .then(function () {
-        return instaCountdown.doCountdown('status', errorNumber, 'Getting your feed', (new Date()).getTime() + +instaDefOptions.retryInterval);
+        return instaCountdown.doCountdown('status', errorNumber, 'Getting your feed', (new Date()).getTime() + +instaDefOptions.retryInterval, vueStatus);
       })
       .then(() => {
         console.log('Continue execution after HTTP error', errorNumber, new Date()); //eslint-disable-line no-console

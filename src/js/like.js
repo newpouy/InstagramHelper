@@ -7,7 +7,7 @@ instaLike.like = function (settings) {
   'use strict';
 
   var {
-    mediaId, csrfToken, updateStatusDiv
+    mediaId, csrfToken, updateStatusDiv, vueStatus
   } = settings;
 
   return new Promise(function (resolve, reject) {
@@ -23,7 +23,7 @@ instaLike.like = function (settings) {
     updateStatusDiv(message, 'red');
     instaTimeout.setTimeout(3000)
       .then(function () {
-        return instaCountdown.doCountdown('status', errorNumber, 'Liking', (new Date()).getTime() + +instaDefOptions.retryInterval);
+        return instaCountdown.doCountdown('status', errorNumber, 'Liking', (new Date()).getTime() + +instaDefOptions.retryInterval, vueStatus);
       })
       .then(() => {
         console.log('Continue execution after HTTP error', errorNumber, new Date()); //eslint-disable-line no-console
