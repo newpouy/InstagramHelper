@@ -24,22 +24,24 @@ gulp.task('build', ['clean'], () => {
   var composer = require('gulp-uglify/composer');
   var minify = composer(uglifyjs, console);
 
-  var isNotMinifiedFile = function (file) {
+  var isNotMinifiedFile = (file) => {
     return /^(?:(?!\.min).)*\.js$/.test(file.history[0]);
   }
 
-  var isProductionMode = function () {
-    return args.production;
-  }
+  var isProductionMode = () => args.production ? true : false;
+
+  var isValidJsFile = (file) => isProductionMode() ? 'vue.js' !== file.history[0].replace(/^.*[\\\/]/, '') : true;
 
   return gulp
     .src('./src/**/*.*', { base: './src/' })
     .pipe($.if(args.verbose, $.print()))
     .pipe($.if('*.html', $.minifyHtml({ empty: true })))
     .pipe($.if('*.css', $.csso()))
+    .pipe($.filterBy(isValidJsFile))
     .pipe($.if(isProductionMode, $.if(isNotMinifiedFile, minify().on('error', function (err) {
       $.util.log($.util.colors.red('[Error]'), err.toString());
     }))))
+    .pipe($.if('*liker.html', $.replace('vue.js', 'vue.min.js')))
     .pipe(gulp.dest('./build/'));
 });
 
