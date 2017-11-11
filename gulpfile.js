@@ -24,9 +24,7 @@ gulp.task('build', ['clean'], () => {
   var composer = require('gulp-uglify/composer');
   var minify = composer(uglifyjs, console);
 
-  var isNotMinifiedFile = (file) => {
-    return /^(?:(?!\.min).)*\.js$/.test(file.history[0]);
-  }
+  var isNotMinifiedFile = (file) => /^(?:(?!\.min).)*\.js$/.test(file.history[0]);
 
   var isProductionMode = () => args.production ? true : false;
 

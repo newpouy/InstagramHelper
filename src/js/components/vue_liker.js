@@ -24,13 +24,13 @@ var liker = new Vue({
     computed: {
       isCompleted : function() {
         if (this.stop) {
-          this.updateStatusDiv('The process will be stopped now because you clicked the Stop button');
+          this.updateStatusDiv(`${new Date()}/The process will be stopped now because you clicked the Stop button`);
           return true;
         } else if ((this.stopCriterion === 'alreadyLiked') && (this.alreadyLiked > 0)) {
-          this.updateStatusDiv('The process will be stopped because already liked posts are found - ' + this.alreadyLiked);
+          this.updateStatusDiv(`${new Date()}/The process will be stopped because already liked posts are found - ${this.alreadyLiked}`);
           return true;
         } else if ((this.stopCriterion === 'amountPosts') && (this.amountToLike <= this.liked)) {
-          this.updateStatusDiv(`The process will be stopped because ${this.liked} posts were liked`);
+          this.updateStatusDiv(`${new Date()}/The process will be stopped because ${this.liked} posts were liked`);
           return true;
         }
         return false;

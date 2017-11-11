@@ -44,6 +44,14 @@ $(function () {
 
   function likeMedia(instaFeed, media, index) {
     if (liker.isCompleted) {
+
+      liker.updateStatusDiv(`Started at ${liker.startDate}`);
+      liker.updateStatusDiv(`Liked ${liker.liked} posts`);
+      liker.updateStatusDiv(`Found already liked ${liker.alreadyLiked} posts`);
+      liker.updateStatusDiv(`Fetched ${liker.fetched} posts`);
+      liker.updateStatusDiv(`Fetching feed restarted ${liker.restarted} times`);
+
+      liker.isInProgress = false;
       return;
     }
     var i = media.length;
