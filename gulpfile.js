@@ -55,7 +55,7 @@ gulp.task('clean', (cb) => {
 gulp.task('vet', () => {
 
   return gulp
-    .src('./src/js/*.js')
+    .src('./src/js/**/*.js')
     .pipe($.if(args.verbose, $.print()))
     .pipe($.jscs())
     .pipe($.jshint())
