@@ -1,4 +1,6 @@
-var liker = new Vue({
+/* globals Vue */
+
+var liker = new Vue({ // eslint-disable-line no-unused-vars
   el: '#app',
   data: {
     isInProgress: false, //indicate if liking is in progress
@@ -6,7 +8,7 @@ var liker = new Vue({
     csrfToken: '',
 
     amountToLike: 100, //how many should be liked
-    stopCriterion: "amountPosts", //stop criterion assigned to radio button
+    stopCriterion: 'amountPosts', //stop criterion assigned to radio button
     delay: 0, //interval between sending the http requests
     liked: 0, //how many liked during execution
     alreadyLiked: 0, //how many found already liked
@@ -44,7 +46,7 @@ var liker = new Vue({
       setTimeout(function () {
         var textarea = document.getElementById('log_text_area');
         textarea.scrollTop = textarea.scrollHeight;
-      }, 0)
+      }, 0);
     }
   }
 });

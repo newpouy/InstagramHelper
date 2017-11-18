@@ -1,5 +1,5 @@
 /* globals confirm, chrome, $, _gaq, Promise */
-/* globals instaDefOptions, instaUserInfo, instaFollowUser, exportUtils, FetchUsers */
+/* globals instaDefOptions, instaUserInfo, followUser, exportUtils, FetchUsers */
 /* jshint -W106 */
 
 $(function () {
@@ -34,6 +34,11 @@ $(function () {
       });
     }
   });
+
+  var updateStatusDiv = function (message, color) {
+    htmlElements.statusDiv.textContent = message;
+    htmlElements.statusDiv.style.color = color || 'black';
+  };
 
   function startFetching(request) {
 
@@ -76,7 +81,8 @@ $(function () {
                     \nDon't set it to too small value, because Instagrm.com potentially could ban your account for doing that.
                     \n\nContinue?`)) {
           promiseMassFollow(fetchSettings, myData).then(function () {
-            updateStatusDiv(`Follow was completed: ${fetchSettings.followProcessedUsers} processed/${fetchSettings.followedUsers} followed/${fetchSettings.requestedUsers} requested`);
+            updateStatusDiv(
+              `Completed: ${fetchSettings.followProcessedUsers} processed/${fetchSettings.followedUsers} followed/${fetchSettings.requestedUsers} requested`);
           });
         }
       });
@@ -89,31 +95,31 @@ $(function () {
     });
   }
 
-  var updateStatusDiv = function (message, color) {
-    htmlElements.statusDiv.textContent = message;
-    htmlElements.statusDiv.style.color = color || 'black';
-  };
-
   function getFullInfo(obj, arr, resolve, reject) {
     //console.log(arr[obj.processedUsers]);
-    instaUserInfo.getUserProfile({ username: arr[obj.processedUsers].username, userId: arr[obj.processedUsers].id, updateStatusDiv: updateStatusDiv }).then(function (user) {
-      //todo: delete user when JSON is not returned by get user profile?
-      myData[obj.processedUsers] = $.extend({}, myData[obj.processedUsers], user);
-      obj.receivedResponses++;
-      htmlElements.detailedinfo.asProgress('go', obj.processedUsers++);
-      updateStatusDiv(`Getting detailed info for users: ${obj.processedUsers} of ${arr.length}`);
-      if (obj.processedUsers === arr.length) {
-        resolve();
-        return;
-      }
-      if (cancelProcessing) {
-        reject();
-        return;
-      }
-      setTimeout(function () {
-        getFullInfo(obj, arr, resolve, reject);
-      }, 0);
-    });
+    instaUserInfo.getUserProfile(
+      {
+        username: arr[obj.processedUsers].username,
+        userId: arr[obj.processedUsers].id,
+        updateStatusDiv: updateStatusDiv
+      }).then(function (user) {
+        //todo: delete user when JSON is not returned by get user profile?
+        myData[obj.processedUsers] = $.extend({}, myData[obj.processedUsers], user);
+        obj.receivedResponses++;
+        htmlElements.detailedinfo.asProgress('go', obj.processedUsers++);
+        updateStatusDiv(`Getting detailed info for users: ${obj.processedUsers} of ${arr.length}`);
+        if (obj.processedUsers === arr.length) {
+          resolve();
+          return;
+        }
+        if (cancelProcessing) {
+          reject();
+          return;
+        }
+        setTimeout(function () {
+          getFullInfo(obj, arr, resolve, reject);
+        }, 0);
+      });
   }
 
   function massFollow(obj, arr, resolve, reject) {
@@ -127,35 +133,43 @@ $(function () {
     //console.log(obj);
     //console.log(arr[obj.followProcessedUsers]);
 
-    if ((arr[obj.followProcessedUsers].followed_by_viewer === null) || (arr[obj.followProcessedUsers].followed_by_viewer)) { //requested or already followed
+    if ((arr[obj.followProcessedUsers].followed_by_viewer === null) ||
+      (arr[obj.followProcessedUsers].followed_by_viewer)) { //requested or already followed
       //console.log(`${arr[obj.followProcessedUsers].username} is already followed or requested.`);
       obj.followProcessedUsers++;
       massFollow(obj, arr, resolve, reject);
     } else if (arr[obj.followProcessedUsers].id === obj.viewerUserId) { //shame - it is me
-      console.log('it is me', arr[obj.followProcessedUsers].id);
-      //console.log(arr[obj.followProcessedUsers]);
+      //console.log('it is me', arr[obj.followProcessedUsers].id);
       obj.followProcessedUsers++;
       massFollow(obj, arr, resolve, reject);
     } else { //is not followed yet
       var username = arr[obj.followProcessedUsers].username;
       var userId = arr[obj.followProcessedUsers].id;
-      console.log(`${username} is not followed yet.`);
-      updateStatusDiv(`${username} is not followed yet: processed ${obj.followProcessedUsers + 1} of ${arr.length}/followed - ${obj.followedUsers}/requested - ${obj.requestedUsers}`);
-      instaFollowUser.follow({ username: username, userId: userId, csrfToken: obj.csrfToken, updateStatusDiv: updateStatusDiv }).then(function (result) {
-        obj.followProcessedUsers++;
-        obj.receivedResponses++;
-        if ('following' === result) {
-          obj.followedUsers++;
-        } else if ('requested' === result) {
-          obj.requestedUsers++;
-        } else {
-          console.log('Not recognized result - ' + result);
-        }
-        updateStatusDiv(`The request to follow ${username} was successful with response - ${result}/processed ${obj.followProcessedUsers + 1} of ${arr.length}/followed - ${obj.followedUsers}/requested - ${obj.requestedUsers}`);
-        setTimeout(function () {
-          massFollow(obj, arr, resolve, reject);
-        }, obj.followDelay);
-      });
+      console.log(`${username} is not followed yet.`); // eslint-disable-line no-console
+      updateStatusDiv(
+        `${username} is not followed yet: processed ${obj.followProcessedUsers + 1} of ${arr.length}/followed - ${obj.followedUsers}/requested - ${obj.requestedUsers}`);
+      followUser.follow(
+        {
+          username: username,
+          userId: userId,
+          csrfToken: obj.csrfToken,
+          updateStatusDiv: updateStatusDiv
+        }).then(function (result) {
+          obj.followProcessedUsers++;
+          obj.receivedResponses++;
+          if ('following' === result) {
+            obj.followedUsers++;
+          } else if ('requested' === result) {
+            obj.requestedUsers++;
+          } else {
+            console.log('Not recognized result - ' + result); // eslint-disable-line no-console
+          }
+          updateStatusDiv(
+            `The request to follow ${username} was successful - ${result}/processed ${obj.followProcessedUsers + 1} of ${arr.length}/followed - ${obj.followedUsers}/requested - ${obj.requestedUsers}`);
+          setTimeout(function () {
+            massFollow(obj, arr, resolve, reject);
+          }, obj.followDelay);
+        });
     }
 
   }
@@ -182,7 +196,8 @@ $(function () {
       var minutes = parseInt(x % 60, 10);
       x /= 60;
       var hours = parseInt(x % 24, 10);
-      timer.textContent = `${hours}h:${'00'.substring(0, 2 - ('' + minutes).length) + minutes}m:${'00'.substring(0, 2 - ('' + seconds).length) + seconds}s`;
+      timer.textContent =
+        `${hours}h:${'00'.substring(0, 2 - ('' + minutes).length) + minutes}m:${'00'.substring(0, 2 - ('' + seconds).length) + seconds}s`;
     }, 1000);
   }
 
@@ -196,7 +211,8 @@ $(function () {
         includeLabels: true,
         includeGroupHeader: false,
         includeFooter: false,
-        fileName: `${obj.requestRelType}_users_${obj.userName}${obj.limit > 0 ? '_limit_' + obj.limit : ''}_${exportUtils.formatDate(new Date())}.xlsx`,
+        fileName:
+        `${obj.requestRelType}_users_${obj.userName}${obj.limit > 0 ? '_limit_' + obj.limit : ''}_${exportUtils.formatDate(new Date())}.xlsx`,
         replaceStr: exportUtils.replaceStr
       });
     });
@@ -213,9 +229,11 @@ $(function () {
     var followsChanged = (obj.limit > 0) && (obj.limit < obj.follows_count);
 
     if (obj.callBoth || ('followed_by' === obj.relType)) {
-      document.getElementById('followed_by_title').textContent = `${obj.userName} is followed by ${obj.followed_by_count} users`;
+      document.getElementById('followed_by_title').textContent =
+        `${obj.userName} is followed by ${obj.followed_by_count} users`;
       if (followedChanged) {
-        document.getElementById('followed_by_title').textContent += `; you set the return limit, therefore the collection will be stopped when ${followed_by_count}+ returned`;
+        document.getElementById('followed_by_title').textContent +=
+          `; you set the return limit, therefore the collection will be stopped when ${followed_by_count}+ returned`;
       }
       document.getElementById('followed_by_title').style.display = 'block';
       htmlElements.followed_by.show().asProgress({
@@ -230,9 +248,11 @@ $(function () {
       });
     }
     if (obj.callBoth || ('follows' === obj.relType)) {
-      document.getElementById('follows_title').textContent = `${obj.userName} follows ${obj.follows_count} users`;
+      document.getElementById('follows_title').textContent =
+        `${obj.userName} follows ${obj.follows_count} users`;
       if (followsChanged) {
-        document.getElementById('follows_title').textContent += `; you set the return limit, therefore the collection will be stopped when ${follows_count}+ returned`;
+        document.getElementById('follows_title').textContent +=
+          `; you set the return limit, therefore the collection will be stopped when ${follows_count}+ returned`;
       }
       document.getElementById('follows_title').style.display = 'block';
       htmlElements.follows.show().asProgress({
@@ -403,7 +423,7 @@ $(function () {
     },
     formatter: function (cellvalue, model, row) {
       var className = row.has_requested_viewer ? 'ui-state-disabled' : '';
-      return `<input type='checkbox' ${row.follows_viewer || row.has_requested_viewer ? "checked='checked'" : ""} class='${className}' value='${row.follows_viewer}' offval='no' disabled='disabled'>`;
+      return `<input type='checkbox' ${row.follows_viewer || row.has_requested_viewer ? 'checked="checked"' : ''} class='${className}' value='${row.follows_viewer}' offval='no' disabled='disabled'>`;
     },
     cellattr: function () {
       return 'style="background-color: #fbf9ee;" title="Follows you"';
@@ -421,7 +441,7 @@ $(function () {
     },
     formatter: function (cellvalue, model, row) {
       var className = row.requested_by_viewer ? 'ui-state-disabled' : '';
-      return `<input type='checkbox' ${row.followed_by_viewer || row.requested_by_viewer ? "checked='checked'" : ""} class='${className}' value='${row.followed_by_viewer}' offval='no' disabled='disabled'>`;
+      return `<input type='checkbox' ${row.followed_by_viewer || row.requested_by_viewer ? 'checked="checked"' : ''} class='${className}' value='${row.followed_by_viewer}' offval='no' disabled='disabled'>`;
     },
     cellattr: function () {
       return 'style="background-color: #fbf9ee;" title="Followed by you"';
@@ -549,7 +569,7 @@ $(function () {
     },
     formatter: function (cellvalue, model, row) {
       var className = row.requested_by_viewer ? 'ui-state-disabled' : '';
-      return `<input type='checkbox' ${row.followed_by_viewer || row.requested_by_viewer ? "checked='checked'" : ""} class='${className}' value='${row.followed_by_viewer}' offval='no' disabled='disabled'>`;
+      return `<input type='checkbox' ${row.followed_by_viewer || row.requested_by_viewer ? 'checked="checked"' : ''} class='${className}' value='${row.followed_by_viewer}' offval='no' disabled='disabled'>`;
     },
     cellattr: function () {
       return 'style="background-color: #fbf9ee;" title="Followed by you"';

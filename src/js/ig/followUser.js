@@ -1,8 +1,8 @@
-/* globals alert, $, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
+/* globals Promise, alert, $, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
 
-var instaFollowUser = function () { };
+var followUser = function () { };
 
-instaFollowUser.follow = function (settings) {
+followUser.follow = function (settings) {
 
   'use strict';
 
@@ -25,7 +25,7 @@ instaFollowUser.follow = function (settings) {
     updateStatusDiv(message, 'red');
     instaTimeout.setTimeout(3000)
       .then(function () {
-        return instaCountdown.doCountdown('status', errorNumber, 'Following', (new Date()).getTime() + +instaDefOptions.retryInterval);
+        return instaCountdown.doCountdown('status', errorNumber, 'Following', +(new Date()).getTime() + instaDefOptions.retryInterval);
       })
       .then(() => {
         console.log('Continue execution after HTTP error', errorNumber, new Date()); //eslint-disable-line no-console

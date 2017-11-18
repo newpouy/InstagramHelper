@@ -1,13 +1,14 @@
 /* globals confirm, chrome, $, _gaq */
-/* globals instaLike, InstaFeed, liker   */
+/* globals instaLike, GetFeed, liker   */
+/* jshint -W106 */
 
-$(function () {
+window.onload = function () {
 
   'use strict';
 
-  $('#start').on('click', function () {
+  document.getElementById('start').onclick = function () {
 
-    var instaFeed = new InstaFeed({ updateStatusDiv: liker.updateStatusDiv, has_next_page: false, end_cursor: '', vueStatus : liker });
+    var instaFeed = new GetFeed({ updateStatusDiv: liker.updateStatusDiv, has_next_page: false, end_cursor: '', vueStatus: liker });
 
     liker.liked = 0;
     liker.alreadyLiked = 0;
@@ -28,7 +29,7 @@ $(function () {
     liker.updateStatusDiv('You can change the stop criteria during running the process');
 
     getFeed(instaFeed);
-  });
+  };
 
   function getFeed(instaFeed) {
     instaFeed.getFeed().then(media => {
@@ -79,7 +80,7 @@ $(function () {
     } else {
       liker.updateStatusDiv(`IG has returned that no more posts, restart ...${new Date()}`);
       //todo: nullify
-      instaFeed = new InstaFeed({updateStatusDiv: liker.updateStatusDiv, has_next_page: false, end_cursor: '', vueStatus : liker });
+      instaFeed = new GetFeed({ updateStatusDiv: liker.updateStatusDiv, has_next_page: false, end_cursor: '', vueStatus: liker });
       liker.restarted++;
       setTimeout(() => getFeed(instaFeed), liker.delay);
     }
@@ -92,8 +93,5 @@ $(function () {
     }
   });
 
-});
-
-window.onload = function () {
   _gaq.push(['_trackPageview']);
 };

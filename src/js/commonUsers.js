@@ -27,9 +27,13 @@ $(function () {
       var timerInterval = startTimer(document.querySelector('#timer'), new Date());
       request.timerInterval = timerInterval;
       var promise1 =
-        instaDefOptions.you === request.user_1.userName ? instaUserInfo.getUserProfile({ username: request.viewerUserName }) : request.user_1.userName;
+        instaDefOptions.you === request.user_1.userName ?
+          instaUserInfo.getUserProfile({ username: request.viewerUserName }) :
+          request.user_1.userName;
       var promise2 =
-        instaDefOptions.you === request.user_2.userName ? instaUserInfo.getUserProfile({ username: request.viewerUserName }) : request.user_2.userName;
+        instaDefOptions.you === request.user_2.userName ?
+          instaUserInfo.getUserProfile({ username: request.viewerUserName }) :
+          request.user_2.userName;
       Promise.all([promise1, promise2]).then(values => {
         if (typeof values[0] === 'object') {
           request.user_1.userName = request.viewerUserName;
@@ -350,7 +354,7 @@ $(function () {
     updateStatusDiv('statusDiv', `Completed, spent time - ${timer.textContent}, common users - ${myData.length}
 			(${request.user_1.userName} follows - ${request.user_1.follows_count}${diffFollows_1} and followed by - ${request.user_1.followed_by_count}${diffFollowed_1} &&
 			${request.user_2.userName} follows - ${request.user_2.follows_count}${diffFollows_2} and followed by - ${request.user_2.followed_by_count}${diffFollowed_2}),
-			sent HTTP requests - ${~~obj1.receivedResponses + ~~obj2.receivedResponses + ~~myData.length}`);
+			sent HTTP requests - ${+obj1.receivedResponses + obj2.receivedResponses + myData.length}`);
     setTimeout(function () {
       document.getElementById('tempUiElements').remove();
       htmlElements.status_1.remove();
@@ -409,7 +413,7 @@ $(function () {
       },
       formatter: function (cellvalue, model, row) {
         var className = row.has_requested_viewer ? 'ui-state-disabled' : '';
-        return `<input type='checkbox' ${row.follows_viewer || row.has_requested_viewer ? "checked='checked'" : ""} class='${className}' value='${row.follows_viewer}' offval='no' disabled='disabled'>`;
+        return `<input type='checkbox' ${row.follows_viewer || row.has_requested_viewer ? 'checked="checked"' : ''} class='${className}' value='${row.follows_viewer}' offval='no' disabled='disabled'>`;
       },
       cellattr: function () {
         return 'style="background-color: #fbf9ee;" title="Follows you"';
@@ -427,7 +431,7 @@ $(function () {
       },
       formatter: function (cellvalue, model, row) {
         var className = row.requested_by_viewer ? 'ui-state-disabled' : '';
-        return `<input type='checkbox' ${row.follows_viewer || row.has_requested_viewer ? "checked='checked'" : ""} class='${className}' value='${row.follows_viewer}' offval='no' disabled='disabled'>`;
+        return `<input type='checkbox' ${row.follows_viewer || row.has_requested_viewer ? 'checked="checked"' : ''} class='${className}' value='${row.follows_viewer}' offval='no' disabled='disabled'>`;
       },
       cellattr: function () {
         return 'style="background-color: #fbf9ee;" title="Followed by you"';

@@ -99,9 +99,8 @@ instaUserInfo.getUserProfile = function (settings) {
       });
       resolve(obj);
     } else {
-      console.log(`returned data in getUserProfile is not JSON - ${userId}/${link}`);
-      console.log(arguments);
-      //alert ('returned data in getUserProfile is not JSON - ' + userId + '/' + link);
+      console.log(`returned data in getUserProfile is not JSON - ${userId}/${link}`); // eslint-disable-line no-console
+      console.log(arguments); // eslint-disable-line no-console
       resolve({ //temp solution: such user should be removed from result list?
         full_name: 'NA',
         biography: 'The detailed user info was not returned by instagram',
@@ -119,7 +118,7 @@ instaUserInfo.getUserProfile = function (settings) {
     updateStatusDiv(message, 'red'); //todo: check if I have updateStatusDiv
     instaTimeout.setTimeout(3000)
       .then(function () {
-        return instaCountdown.doCountdown('status', errorNumber, 'Getting users profiles', (new Date()).getTime() + +instaDefOptions.retryInterval);
+        return instaCountdown.doCountdown('status', errorNumber, 'Getting users profiles', +(new Date()).getTime() + instaDefOptions.retryInterval);
       })
       .then(() => {
         console.log('Continue execution after HTTP error', errorNumber, new Date()); //eslint-disable-line no-console
@@ -151,7 +150,7 @@ instaUserInfo.getUserProfile = function (settings) {
     } else if (jqXHR.status === 404) {
       console.log('HTTP404 error getting the user profile.', username, new Date()); //eslint-disable-line no-console
       if (userId) {
-        console.log('user id is defined - ' + userId);
+        //console.log('user id is defined - ' + userId);
         promiseGetUsernameById(userId).then(function (username) {
           //console.log(userId, username);
           getUserProfile(username, resolve, reject);

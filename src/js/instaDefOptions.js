@@ -11,9 +11,9 @@ var instaDefOptions = (function () {
     defFetchMedia: 12, //how many posts to requests in getting the feed //not sure if a big amount helps to speed up the process
     gridPageSize: 500,
     noDelayForInit: true,
-    requestsToSkipDelay: 200,
+    requestsToSkipDelay: 100,
     retryInterval: 180000,
-    regFindUser: /link rel="canonical" href="https:\/\/www.instagram.com\/([^"\/]*)\/?"/i,
+    regFindUser: /link rel="canonical" href="https:\/\/www.instagram.com\/([^"/]*)\/?"/i,
     regCheckBox: /^\s*<\s*input.+type\s*=\s*"checkbox".+value\s*=\s*(?:"|')\s*(true|false)/i,
     regProfile: /^\s*<\s*a\s.*href\s*=\s*(?:"|')([^"']+)/i,
     regTestInfo: /^\s*id:/,
