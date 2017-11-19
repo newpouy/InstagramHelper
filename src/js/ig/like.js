@@ -36,8 +36,7 @@ instaLike.like = function (settings) {
     var errorCode = error.response.status;
     console.log(`Error making ajax request to like post ${mediaId}, status - ${errorCode}`); //eslint-disable-line no-console
     console.log(arguments); //eslint-disable-line no-console
-    switch(errorCode)
-    {
+    switch (errorCode) {
       case 0:
         console.log('Not connected.', new Date()); //eslint-disable-line no-console
         message = instaMessages.getMessage('NOTCONNECTED', +instaDefOptions.retryInterval / 60000);
@@ -81,6 +80,9 @@ instaLike.like = function (settings) {
         'eferer': 'https://www.instagram.com/' //+ obj.userName + '/'
       }
     };
-    axios.post(link, '', config).then((response) => successLike(response, resolve)).catch((error) => errorLike(error, resolve, reject));
+    axios.post(link, '', config).then(
+      response => successLike(response, resolve),
+      error => errorLike(error, resolve, reject)
+    );
   }
 };

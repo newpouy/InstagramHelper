@@ -1,4 +1,4 @@
-/* globals confirm, chrome, $, _gaq */
+/* globals confirm, chrome, _gaq */
 /* globals instaLike, GetFeed, liker   */
 /* jshint -W106 */
 

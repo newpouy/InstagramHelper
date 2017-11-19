@@ -40,6 +40,248 @@ $(function () {
     htmlElements.statusDiv.style.color = color || 'black';
   };
 
+  var fullColModel = [{
+    label: 'User',
+    name: 'profile_pic_url_hd',
+    width: '320',
+    align: 'center',
+    sortable: false,
+    formatter: function (cellvalue, model, row) {
+      return `<a href='https://www.instagram.com/${row.username}' target='_blank'><img src='${cellvalue}' alt='' /></a>`;
+    },
+    search: false
+  }, {
+    label: 'Info',
+    name: 'id',
+    sortable: false,
+    formatter: function (cellvalue, model, row) {
+      var ret = `id:${row.id}<br/>username:<strong>${row.username}</strong><br/>`;
+      ret += row.full_name ? `full name:<strong>${row.full_name}</strong><br/>` : '';
+      ret += row.connected_fb_page ? `FB:<a href='${row.connected_fb_page}' target='_blank'>${row.connected_fb_page}</a><br/>` : '';
+      ret += row.external_url ? `url:<a href='${row.external_url}' target='_blank'>${row.external_url}</a>` : '';
+      return ret;
+    },
+    cellattr: function () {
+      return 'style="white-space: normal;"';
+    },
+    search: false
+  }, {
+    label: 'Bio',
+    name: 'biography',
+    sortable: false,
+    formatter: function (cellvalue) {
+      return cellvalue ? cellvalue : '';
+    },
+    cellattr: function () {
+      return 'style="white-space: normal;"';
+    },
+    search: false
+  }, {
+    label: 'Follows <br/>you',
+    name: 'follows_viewer',
+    width: '80',
+    align: 'center',
+    stype: 'select',
+    searchoptions: {
+      sopt: ['eq'],
+      value: ':Any;true:Yes;false:No;null:Requested you'
+    },
+    formatter: function (cellvalue, model, row) {
+      var className = row.has_requested_viewer ? 'ui-state-disabled' : '';
+      return `<input type='checkbox'
+        ${row.follows_viewer || row.has_requested_viewer ? 'checked="checked"' : ''}
+        class='${className}' value='${row.follows_viewer}' offval='no' disabled='disabled'>`;
+    },
+    cellattr: function () {
+      return 'style="background-color: #fbf9ee;" title="Follows you"';
+    },
+    search: true
+  }, {
+    label: 'Followed <br>by you',
+    name: 'followed_by_viewer',
+    width: '80',
+    align: 'center',
+    stype: 'select',
+    searchoptions: {
+      sopt: ['eq'],
+      value: ':Any;true:Yes;false:No;null:Requested by you'
+    },
+    formatter: function (cellvalue, model, row) {
+      var className = row.requested_by_viewer ? 'ui-state-disabled' : '';
+      return `<input type='checkbox'
+        ${row.followed_by_viewer || row.requested_by_viewer ? 'checked="checked"' : ''}
+        class='${className}' value='${row.followed_by_viewer}' offval='no' disabled='disabled'>`;
+    },
+    cellattr: function () {
+      return 'style="background-color: #fbf9ee;" title="Followed by you"';
+    },
+    search: true
+  }, {
+    delete: 'follows',
+    label: 'Follows <br/>user',
+    name: 'user_followed_by', //relationship: followed_by - the list of the user's followers
+    width: '80',
+    formatter: 'checkbox',
+    align: 'center',
+    stype: 'select',
+    searchoptions: {
+      sopt: ['eq'],
+      value: ':Any;true:Yes;false:No'
+    },
+    cellattr: function () {
+      return `title="Follows ${userName}"`;
+    },
+    search: true
+  }, {
+    delete: 'followed_by',
+    label: 'Followed <br/>by user',
+    name: 'user_follows', //relationship: follows - from the list of the followed person by user
+    width: '80',
+    formatter: 'checkbox',
+    align: 'center',
+    stype: 'select',
+    searchoptions: {
+      sopt: ['eq'],
+      value: ':Any;true:Yes;false:No'
+    },
+    cellattr: function () {
+      return `title="Followed by ${userName}"`;
+    },
+    search: true
+  }, {
+    label: 'Private',
+    name: 'is_private',
+    width: '80',
+    formatter: 'checkbox',
+    align: 'center',
+    stype: 'select',
+    searchoptions: {
+      sopt: ['eq'],
+      value: ':Any;true:Yes;false:No'
+    },
+    cellattr: function () {
+      return 'title="Is private"';
+    },
+    search: true
+  }, {
+    label: 'Followers',
+    name: 'followed_by_count',
+    width: '70',
+    align: 'center',
+    sorttype: 'number',
+    search: true,
+    searchoptions: {
+      sopt: ['ge', 'le', 'eq']
+    },
+    cellattr: function () {
+      return 'title="Followers"';
+    }
+  }, {
+    label: 'Following',
+    name: 'follows_count',
+    width: '70',
+    align: 'center',
+    sorttype: 'number',
+    search: true,
+    searchoptions: {
+      sopt: ['ge', 'le', 'eq']
+    },
+    cellattr: function () {
+      return 'title="Following"';
+    }
+  }, {
+    label: 'Posts',
+    name: 'media_count',
+    width: '70',
+    align: 'center',
+    sorttype: 'number',
+    search: true,
+    searchoptions: {
+      sopt: ['ge', 'le', 'eq']
+    },
+    cellattr: function () {
+      return 'title="Posts"';
+    }
+  }];
+
+  var simpleColModel = [{
+    label: 'User',
+    name: 'profile_pic_url',
+    align: 'center',
+    sortable: false,
+    formatter: function (cellvalue, model, row) {
+      return `<a href='https://www.instagram.com/${row.username}' target='_blank'><img src='${cellvalue}' alt='' /></a>`;
+    },
+    search: false
+  }, {
+    label: 'Info',
+    name: 'id',
+    sortable: false,
+    formatter: function (cellvalue, model, row) {
+      var ret = `id:${row.id}<br/>username:<strong>${row.username}</strong><br/>`;
+      ret += row.full_name ? `full name:<strong>${row.full_name}</strong><br/>` : '';
+      return ret;
+    },
+    cellattr: function () {
+      return 'style="white-space: normal;"';
+    },
+    search: false
+  }, {
+    label: 'Followed <br>by you',
+    name: 'followed_by_viewer',
+    width: '80',
+    align: 'center',
+    stype: 'select',
+    searchoptions: {
+      sopt: ['eq'],
+      value: ':Any;true:Yes;false:No;null:Requested by you'
+    },
+    formatter: function (cellvalue, model, row) {
+      var className = row.requested_by_viewer ? 'ui-state-disabled' : '';
+      return `<input type='checkbox'
+        ${row.followed_by_viewer || row.requested_by_viewer ? 'checked="checked"' : ''}
+        class='${className}' value='${row.followed_by_viewer}' offval='no' disabled='disabled'>`;
+    },
+    cellattr: function () {
+      return 'style="background-color: #fbf9ee;" title="Followed by you"';
+    },
+    search: true
+  }, {
+    delete: 'follows',
+    label: 'Follows <br/>user',
+    name: 'user_followed_by', //relationship: followed_by - the list of the user's followers
+    width: '80',
+    formatter: 'checkbox',
+    align: 'center',
+    stype: 'select',
+    searchoptions: {
+      sopt: ['eq'],
+      value: ':Any;true:Yes;false:No'
+    },
+    cellattr: function () {
+      return `title="Follows ${userName}"`;
+    },
+    search: true
+  }, {
+    delete: 'followed_by',
+    label: 'Followed <br/>by user',
+    name: 'user_follows', //relationship: follows - from the list of the followed person by user
+    width: '80',
+    formatter: 'checkbox',
+    align: 'center',
+    stype: 'select',
+    searchoptions: {
+      sopt: ['eq'],
+      value: ':Any;true:Yes;false:No'
+    },
+    cellattr: function () {
+      return `title="Followed by ${userName}"`;
+    },
+    search: true
+  }];
+
+
+
   function startFetching(request) {
 
     var fetchSettings = {
@@ -82,7 +324,9 @@ $(function () {
                     \n\nContinue?`)) {
           promiseMassFollow(fetchSettings, myData).then(function () {
             updateStatusDiv(
-              `Completed: ${fetchSettings.followProcessedUsers} processed/${fetchSettings.followedUsers} followed/${fetchSettings.requestedUsers} requested`);
+              `Completed: ${fetchSettings.followProcessedUsers}
+                processed/${fetchSettings.followedUsers}
+                followed/${fetchSettings.requestedUsers} requested`);
           });
         }
       });
@@ -147,7 +391,9 @@ $(function () {
       var userId = arr[obj.followProcessedUsers].id;
       console.log(`${username} is not followed yet.`); // eslint-disable-line no-console
       updateStatusDiv(
-        `${username} is not followed yet: processed ${obj.followProcessedUsers + 1} of ${arr.length}/followed - ${obj.followedUsers}/requested - ${obj.requestedUsers}`);
+        `${username} is not followed yet:
+          processed ${obj.followProcessedUsers + 1} of ${arr.length}/
+          followed - ${obj.followedUsers}/requested - ${obj.requestedUsers}`);
       followUser.follow(
         {
           username: username,
@@ -165,7 +411,9 @@ $(function () {
             console.log('Not recognized result - ' + result); // eslint-disable-line no-console
           }
           updateStatusDiv(
-            `The request to follow ${username} was successful - ${result}/processed ${obj.followProcessedUsers + 1} of ${arr.length}/followed - ${obj.followedUsers}/requested - ${obj.requestedUsers}`);
+            `The request to follow ${username} was successful -
+              ${result}/processed ${obj.followProcessedUsers + 1} of ${arr.length}/
+              followed - ${obj.followedUsers}/requested - ${obj.requestedUsers}`);
           setTimeout(function () {
             massFollow(obj, arr, resolve, reject);
           }, obj.followDelay);
@@ -375,239 +623,6 @@ $(function () {
 
   }
 
-  var fullColModel = [{
-    label: 'User',
-    name: 'profile_pic_url_hd',
-    width: '320',
-    align: 'center',
-    sortable: false,
-    formatter: function (cellvalue, model, row) {
-      return `<a href='https://www.instagram.com/${row.username}' target='_blank'><img src='${cellvalue}' alt='' /></a>`;
-    },
-    search: false
-  }, {
-    label: 'Info',
-    name: 'id',
-    sortable: false,
-    formatter: function (cellvalue, model, row) {
-      var ret = `id:${row.id}<br/>username:<strong>${row.username}</strong><br/>`;
-      ret += row.full_name ? `full name:<strong>${row.full_name}</strong><br/>` : '';
-      ret += row.connected_fb_page ? `FB:<a href='${row.connected_fb_page}' target='_blank'>${row.connected_fb_page}</a><br/>` : '';
-      ret += row.external_url ? `url:<a href='${row.external_url}' target='_blank'>${row.external_url}</a>` : '';
-      return ret;
-    },
-    cellattr: function () {
-      return 'style="white-space: normal;"';
-    },
-    search: false
-  }, {
-    label: 'Bio',
-    name: 'biography',
-    sortable: false,
-    formatter: function (cellvalue) {
-      return cellvalue ? cellvalue : '';
-    },
-    cellattr: function () {
-      return 'style="white-space: normal;"';
-    },
-    search: false
-  }, {
-    label: 'Follows <br/>you',
-    name: 'follows_viewer',
-    width: '80',
-    align: 'center',
-    stype: 'select',
-    searchoptions: {
-      sopt: ['eq'],
-      value: ':Any;true:Yes;false:No;null:Requested you'
-    },
-    formatter: function (cellvalue, model, row) {
-      var className = row.has_requested_viewer ? 'ui-state-disabled' : '';
-      return `<input type='checkbox' ${row.follows_viewer || row.has_requested_viewer ? 'checked="checked"' : ''} class='${className}' value='${row.follows_viewer}' offval='no' disabled='disabled'>`;
-    },
-    cellattr: function () {
-      return 'style="background-color: #fbf9ee;" title="Follows you"';
-    },
-    search: true
-  }, {
-    label: 'Followed <br>by you',
-    name: 'followed_by_viewer',
-    width: '80',
-    align: 'center',
-    stype: 'select',
-    searchoptions: {
-      sopt: ['eq'],
-      value: ':Any;true:Yes;false:No;null:Requested by you'
-    },
-    formatter: function (cellvalue, model, row) {
-      var className = row.requested_by_viewer ? 'ui-state-disabled' : '';
-      return `<input type='checkbox' ${row.followed_by_viewer || row.requested_by_viewer ? 'checked="checked"' : ''} class='${className}' value='${row.followed_by_viewer}' offval='no' disabled='disabled'>`;
-    },
-    cellattr: function () {
-      return 'style="background-color: #fbf9ee;" title="Followed by you"';
-    },
-    search: true
-  }, {
-    delete: 'follows',
-    label: 'Follows <br/>user',
-    name: 'user_followed_by', //relationship: followed_by - the list of the user's followers
-    width: '80',
-    formatter: 'checkbox',
-    align: 'center',
-    stype: 'select',
-    searchoptions: {
-      sopt: ['eq'],
-      value: ':Any;true:Yes;false:No'
-    },
-    cellattr: function () {
-      return `title="Follows ${userName}"`;
-    },
-    search: true
-  }, {
-    delete: 'followed_by',
-    label: 'Followed <br/>by user',
-    name: 'user_follows', //relationship: follows - from the list of the followed person by user
-    width: '80',
-    formatter: 'checkbox',
-    align: 'center',
-    stype: 'select',
-    searchoptions: {
-      sopt: ['eq'],
-      value: ':Any;true:Yes;false:No'
-    },
-    cellattr: function () {
-      return `title="Followed by ${userName}"`;
-    },
-    search: true
-  }, {
-    label: 'Private',
-    name: 'is_private',
-    width: '80',
-    formatter: 'checkbox',
-    align: 'center',
-    stype: 'select',
-    searchoptions: {
-      sopt: ['eq'],
-      value: ':Any;true:Yes;false:No'
-    },
-    cellattr: function () {
-      return 'title="Is private"';
-    },
-    search: true
-  }, {
-    label: 'Followers',
-    name: 'followed_by_count',
-    width: '70',
-    align: 'center',
-    sorttype: 'number',
-    search: true,
-    searchoptions: {
-      sopt: ['ge', 'le', 'eq']
-    },
-    cellattr: function () {
-      return 'title="Followers"';
-    }
-  }, {
-    label: 'Following',
-    name: 'follows_count',
-    width: '70',
-    align: 'center',
-    sorttype: 'number',
-    search: true,
-    searchoptions: {
-      sopt: ['ge', 'le', 'eq']
-    },
-    cellattr: function () {
-      return 'title="Following"';
-    }
-  }, {
-    label: 'Posts',
-    name: 'media_count',
-    width: '70',
-    align: 'center',
-    sorttype: 'number',
-    search: true,
-    searchoptions: {
-      sopt: ['ge', 'le', 'eq']
-    },
-    cellattr: function () {
-      return 'title="Posts"';
-    }
-  }];
-
-  var simpleColModel = [{
-    label: 'User',
-    name: 'profile_pic_url',
-    align: 'center',
-    sortable: false,
-    formatter: function (cellvalue, model, row) {
-      return `<a href='https://www.instagram.com/${row.username}' target='_blank'><img src='${cellvalue}' alt='' /></a>`;
-    },
-    search: false
-  }, {
-    label: 'Info',
-    name: 'id',
-    sortable: false,
-    formatter: function (cellvalue, model, row) {
-      var ret = `id:${row.id}<br/>username:<strong>${row.username}</strong><br/>`;
-      ret += row.full_name ? `full name:<strong>${row.full_name}</strong><br/>` : '';
-      return ret;
-    },
-    cellattr: function () {
-      return 'style="white-space: normal;"';
-    },
-    search: false
-  }, {
-    label: 'Followed <br>by you',
-    name: 'followed_by_viewer',
-    width: '80',
-    align: 'center',
-    stype: 'select',
-    searchoptions: {
-      sopt: ['eq'],
-      value: ':Any;true:Yes;false:No;null:Requested by you'
-    },
-    formatter: function (cellvalue, model, row) {
-      var className = row.requested_by_viewer ? 'ui-state-disabled' : '';
-      return `<input type='checkbox' ${row.followed_by_viewer || row.requested_by_viewer ? 'checked="checked"' : ''} class='${className}' value='${row.followed_by_viewer}' offval='no' disabled='disabled'>`;
-    },
-    cellattr: function () {
-      return 'style="background-color: #fbf9ee;" title="Followed by you"';
-    },
-    search: true
-  }, {
-    delete: 'follows',
-    label: 'Follows <br/>user',
-    name: 'user_followed_by', //relationship: followed_by - the list of the user's followers
-    width: '80',
-    formatter: 'checkbox',
-    align: 'center',
-    stype: 'select',
-    searchoptions: {
-      sopt: ['eq'],
-      value: ':Any;true:Yes;false:No'
-    },
-    cellattr: function () {
-      return `title="Follows ${userName}"`;
-    },
-    search: true
-  }, {
-    delete: 'followed_by',
-    label: 'Followed <br/>by user',
-    name: 'user_follows', //relationship: follows - from the list of the followed person by user
-    width: '80',
-    formatter: 'checkbox',
-    align: 'center',
-    stype: 'select',
-    searchoptions: {
-      sopt: ['eq'],
-      value: ':Any;true:Yes;false:No'
-    },
-    cellattr: function () {
-      return `title="Followed by ${userName}"`;
-    },
-    search: true
-  }];
 
 });
 

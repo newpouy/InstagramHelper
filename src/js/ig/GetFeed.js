@@ -40,7 +40,6 @@ var GetFeed = function (settings) { //eslint-disable-line no-unused-vars
         console.log('Continue execution after HTTP error', errorNumber, new Date()); //eslint-disable-line no-console
         getFeedInternal(resolve, reject); //20171110: changed to internal
       });
-
   }
 
   function errorGetFeed(error, resolve, reject) {
@@ -71,6 +70,7 @@ var GetFeed = function (settings) { //eslint-disable-line no-unused-vars
     } else if (errorCode === 404) {
       console.log('HTTP404 error getting your feed.', new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('HTTP404');
+      retryError(message, errorCode, resolve, reject);
     } else {
       alert(instaMessages.getMessage('ERRGETTINGFEED', errorCode));
       reject();
@@ -79,17 +79,6 @@ var GetFeed = function (settings) { //eslint-disable-line no-unused-vars
 
   function getFeedInternal(resolve, reject) {
     var link = 'https://www.instagram.com/graphql/query/';
-    /*    data: {
-            query_id: instaDefOptions.queryId.feed,
-            variables: JSON.stringify({
-              'fetch_media_item_count': instaDefOptions.defFetchMedia, //also in options?
-              'fetch_media_item_cursor': end_cursor,
-              'fetch_comment_count': 0,
-              'fetch_like': 0,
-              'has_stories': false
-            })
-          },
-        }); */
 
     var config = {
       headers: {
@@ -97,18 +86,22 @@ var GetFeed = function (settings) { //eslint-disable-line no-unused-vars
         'eferer': 'https://www.instagram.com/' //+ obj.userName + '/'
       }
     };
-    axios.get(link, {params: {
-      query_id: instaDefOptions.queryId.feed,
-      variables: JSON.stringify({
-        'fetch_media_item_count': instaDefOptions.defFetchMedia, //also in options?
-        'fetch_media_item_cursor': end_cursor,
-        'fetch_comment_count': 0,
-        'fetch_like': 0,
-        'has_stories': false
-      })
-    }}, config).
-      then((response) => successGetFeed(response, resolve)).
-      catch((error) => errorGetFeed(error, resolve, reject));
+    axios.get(link, {
+      params: {
+        query_id: instaDefOptions.queryId.feed,
+        variables: JSON.stringify({
+          'fetch_media_item_count': instaDefOptions.defFetchMedia, //also in options?
+          'fetch_media_item_cursor': end_cursor,
+          'fetch_comment_count': 0,
+          'fetch_like': 0,
+          'has_stories': false
+        })
+      }
+    }, config).
+      then(
+      response => successGetFeed(response, resolve),
+      error => errorGetFeed(error, resolve, reject)
+      );
   }
 
   return {
@@ -117,7 +110,3 @@ var GetFeed = function (settings) { //eslint-disable-line no-unused-vars
   };
 
 };
-
-
-
-

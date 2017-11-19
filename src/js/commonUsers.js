@@ -65,7 +65,9 @@ $(function () {
       delay: request.delay,
       csrfToken: request.csrfToken,
       userId: request.user_1.userId,
-      relType: 'All' === request.relType ? request.user_1.follows_count > request.user_1.followed_by_count ? 'follows' : 'followed_by' : request.relType,
+      relType: 'All' === request.relType ?
+        request.user_1.follows_count > request.user_1.followed_by_count ?
+          'follows' : 'followed_by' : request.relType,
       callBoth: 'All' === request.relType,
       checkDuplicates: false,
       follows_count: request.user_1.follows_count,
@@ -87,7 +89,9 @@ $(function () {
       delay: request.delay,
       csrfToken: request.csrfToken,
       userId: request.user_2.userId,
-      relType: 'All' === request.relType ? request.user_2.follows_count > request.user_2.followed_by_count ? 'follows' : 'followed_by' : request.relType,
+      relType: 'All' === request.relType ?
+        request.user_2.follows_count > request.user_2.followed_by_count ?
+          'follows' : 'followed_by' : request.relType,
       callBoth: 'All' === request.relType,
       checkDuplicates: false,
       follows_count: request.user_2.follows_count,
@@ -207,7 +211,8 @@ $(function () {
       var minutes = parseInt(x % 60, 10);
       x /= 60;
       var hours = parseInt(x % 24, 10);
-      timer.textContent = `${hours}h:${'00'.substring(0, 2 - ('' + minutes).length) + minutes}m:${'00'.substring(0, 2 - ('' + seconds).length) + seconds}s`;
+      timer.textContent =
+        `${hours}h:${'00'.substring(0, 2 - ('' + minutes).length) + minutes}m:${'00'.substring(0, 2 - ('' + seconds).length) + seconds}s`;
     }, 1000);
   }
 
@@ -352,8 +357,10 @@ $(function () {
     }
 
     updateStatusDiv('statusDiv', `Completed, spent time - ${timer.textContent}, common users - ${myData.length}
-			(${request.user_1.userName} follows - ${request.user_1.follows_count}${diffFollows_1} and followed by - ${request.user_1.followed_by_count}${diffFollowed_1} &&
-			${request.user_2.userName} follows - ${request.user_2.follows_count}${diffFollows_2} and followed by - ${request.user_2.followed_by_count}${diffFollowed_2}),
+      (${request.user_1.userName} follows - ${request.user_1.follows_count}${diffFollows_1}
+        and followed by - ${request.user_1.followed_by_count}${diffFollowed_1} &&
+      ${request.user_2.userName} follows - ${request.user_2.follows_count}${diffFollows_2}
+        and followed by - ${request.user_2.followed_by_count}${diffFollowed_2}),
 			sent HTTP requests - ${+obj1.receivedResponses + obj2.receivedResponses + myData.length}`);
     setTimeout(function () {
       document.getElementById('tempUiElements').remove();
@@ -413,7 +420,9 @@ $(function () {
       },
       formatter: function (cellvalue, model, row) {
         var className = row.has_requested_viewer ? 'ui-state-disabled' : '';
-        return `<input type='checkbox' ${row.follows_viewer || row.has_requested_viewer ? 'checked="checked"' : ''} class='${className}' value='${row.follows_viewer}' offval='no' disabled='disabled'>`;
+        return `<input type='checkbox'
+          ${row.follows_viewer || row.has_requested_viewer ? 'checked="checked"' : ''}
+          class='${className}' value='${row.follows_viewer}' offval='no' disabled='disabled'>`;
       },
       cellattr: function () {
         return 'style="background-color: #fbf9ee;" title="Follows you"';
@@ -431,7 +440,9 @@ $(function () {
       },
       formatter: function (cellvalue, model, row) {
         var className = row.requested_by_viewer ? 'ui-state-disabled' : '';
-        return `<input type='checkbox' ${row.follows_viewer || row.has_requested_viewer ? 'checked="checked"' : ''} class='${className}' value='${row.follows_viewer}' offval='no' disabled='disabled'>`;
+        return `<input type='checkbox'
+          ${row.follows_viewer || row.has_requested_viewer ? 'checked="checked"' : ''}
+          class='${className}' value='${row.follows_viewer}' offval='no' disabled='disabled'>`;
       },
       cellattr: function () {
         return 'style="background-color: #fbf9ee;" title="Followed by you"';
