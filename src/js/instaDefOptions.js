@@ -23,6 +23,16 @@ var instaDefOptions = (function () {
       followed_by: '17851374694183129',
       follows: '17874545323001329',
       feed: '17842794232208280'
+    },
+    httpErrorMap: {
+      0: 'NOTCONNECTED',
+      400: 'HTTP400',
+      403: 'HTTP403',
+      429: 'HTTP429',
+      500: 'HTTP50X',
+      502: 'HTTP50X',
+      503: 'HTTP50X',
+      504: 'HTTP50X'
     }
   };
 }());

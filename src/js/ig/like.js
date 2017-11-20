@@ -36,39 +36,15 @@ instaLike.like = function (settings) {
     var errorCode = error.response.status;
     console.log(`Error making ajax request to like post ${mediaId}, status - ${errorCode}`); //eslint-disable-line no-console
     console.log(arguments); //eslint-disable-line no-console
-    switch (errorCode) {
-      case 0:
-        console.log('Not connected.', new Date()); //eslint-disable-line no-console
-        message = instaMessages.getMessage('NOTCONNECTED', +instaDefOptions.retryInterval / 60000);
-        retryError(message, errorCode, resolve, reject);
-        break;
-      case 400:
-        console.log('HTTP400 error trying to like the media.', new Date()); //eslint-disable-line no-console
-        message = instaMessages.getMessage('HTTP400');
-        retryError(message, errorCode, resolve, reject);
-        break;
-      case 403:
-        console.log('HTTP403 error trying to like the media.', new Date()); //eslint-disable-line no-console
-        message = instaMessages.getMessage('HTTP403', +instaDefOptions.retryInterval / 60000);
-        retryError(message, errorCode, resolve, reject);
-        break;
-      case 429:
-        console.log('HTTP403 error trying to like the media.', new Date()); //eslint-disable-line no-console
-        message = instaMessages.getMessage('HTTP429', +instaDefOptions.retryInterval / 60000);
-        retryError(message, errorCode, resolve, reject);
-        break;
-      case 500:
-      case 502:
-      case 503:
-      case 504:
-        console.log('HTTP50X error trying to like the media - ' + errorCode, new Date()); //eslint-disable-line no-console
-        message = instaMessages.getMessage('HTTP50X', errorCode, +instaDefOptions.retryInterval / 60000);
-        retryError(message, errorCode, resolve, reject);
-        break;
-      default:
-        alert(instaMessages.getMessage('ERRLIKEMEDIA', mediaId, errorCode));
-        reject();
+
+    if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
+      console.log(`HTTP${errorCode} error trying to like the media.`, new Date()); //eslint-disable-line no-console
+      message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], +instaDefOptions.retryInterval / 60000);
+      retryError(message, errorCode, resolve, reject);
+      return;
     }
+    alert(instaMessages.getMessage('ERRLIKEMEDIA', mediaId, errorCode));
+    reject();
   }
 
   function like(mediaId, csrfToken, resolve, reject) {

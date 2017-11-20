@@ -5,6 +5,23 @@
 
   'use strict';
 
+  function checkCommonUsersRequest(request) {
+    if ((request.viewerUserName === request.user_1.userName) || (request.viewerUserName === request.user_2.userName)) {
+      if ((request.user_1.userName === instaDefOptions.you) || (request.user_2.userName === instaDefOptions.you)) {
+        alert(instaMessages.getMessage('THESAMEUSERS'));
+        return;
+      }
+    }
+    if (request.user_1.user_is_private && !request.user_1.user_followed_by_viewer && request.viewerUserName !== request.user_1.userName) {
+      alert(instaMessages.getMessage('NOTALLOWEDUSER', request.user_1.userName));
+      return;
+    }
+    if (request.user_2.user_is_private && !request.user_2.user_followed_by_viewer && request.viewerUserName !== request.user_2.userName) {
+      alert(instaMessages.getMessage('NOTALLOWEDUSER', request.user_2.userName));
+      return;
+    }
+  }
+
   chrome.runtime.onMessage.addListener(function (request) {
 
     var getSharedData = function () {
@@ -49,24 +66,14 @@
         request.viewerUserId = sharedData.config.viewer.id;
 
         if ('get_common_users' === request.action) {
-          if ((request.viewerUserName === request.user_1.userName) || (request.viewerUserName === request.user_2.userName)) {
-            if ((request.user_1.userName === instaDefOptions.you) || (request.user_2.userName === instaDefOptions.you)) {
-              alert(instaMessages.getMessage('THESAMEUSERS'));
-              return;
-            }
-          }
-          if (request.user_1.user_is_private && !request.user_1.user_followed_by_viewer && request.viewerUserName !== request.user_1.userName) {
-            alert(instaMessages.getMessage('NOTALLOWEDUSER', request.user_1.userName));
+          checkCommonUsersRequest(request);
+        } else if ('get_insta_users' === request.action) {
+          if (request.user_is_private && !request.user_followed_by_viewer && request.viewerUserName !== request.userName) {
+            alert(instaMessages.getMessage('NOTALLOWEDUSER', request.userName));
             return;
           }
-          if (request.user_2.user_is_private && !request.user_2.user_followed_by_viewer && request.viewerUserName !== request.user_2.userName) {
-            alert(instaMessages.getMessage('NOTALLOWEDUSER', request.user_2.userName));
-            return;
-          }
-        } else if (request.user_is_private && !request.user_followed_by_viewer && request.viewerUserName !== request.userName) {
-          alert(instaMessages.getMessage('NOTALLOWEDUSER', request.userName));
-          return;
         }
+
         chrome.runtime.sendMessage(request);
 
       });

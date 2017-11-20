@@ -469,13 +469,9 @@ $(function () {
 
   }
 
-  function prepareHtmlElements(obj) {
-
+  function prepareFollowedElements(obj) {
     var followed_by_count = ((obj.limit > 0) && (obj.limit < obj.followed_by_count)) ? obj.limit : obj.followed_by_count;
     var followedChanged = (obj.limit > 0) && (obj.limit < obj.followed_by_count);
-    var follows_count = ((obj.limit > 0) && (obj.limit < obj.follows_count)) ? obj.limit : obj.follows_count;
-    var followsChanged = (obj.limit > 0) && (obj.limit < obj.follows_count);
-
     if (obj.callBoth || ('followed_by' === obj.relType)) {
       document.getElementById('followed_by_title').textContent =
         `${obj.userName} is followed by ${obj.followed_by_count} users`;
@@ -495,6 +491,11 @@ $(function () {
         }
       });
     }
+  }
+
+  function prepareFollowsElements(obj) {
+    var follows_count = ((obj.limit > 0) && (obj.limit < obj.follows_count)) ? obj.limit : obj.follows_count;
+    var followsChanged = (obj.limit > 0) && (obj.limit < obj.follows_count);
     if (obj.callBoth || ('follows' === obj.relType)) {
       document.getElementById('follows_title').textContent =
         `${obj.userName} follows ${obj.follows_count} users`;
@@ -514,6 +515,12 @@ $(function () {
         }
       });
     }
+  }
+
+  function prepareHtmlElements(obj) {
+
+    prepareFollowedElements(obj);
+    prepareFollowsElements(obj);
   }
 
   function generationCompleted(obj, resolved) {

@@ -47,34 +47,16 @@ var GetFeed = function (settings) { //eslint-disable-line no-unused-vars
     var errorCode = error.response.status;
     console.log(`Error making ajax request to get your feed, status - ${errorCode}`); //eslint-disable-line no-console
     console.log(arguments); //eslint-disable-line no-console
-    if (errorCode === 0) {
-      console.log('Not connected.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('NOTCONNECTED', +instaDefOptions.retryInterval / 60000);
+
+    if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
+      console.log(`HTTP${errorCode} error trying to like the media.`, new Date()); //eslint-disable-line no-console
+      message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], +instaDefOptions.retryInterval / 60000);
       retryError(message, errorCode, resolve, reject);
-    } else if (errorCode === 400) {
-      console.log('HTTP400 error getting your feed.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('HTTP400');
-      retryError(message, errorCode, resolve, reject);
-    } else if (errorCode === 403) {
-      console.log('HTTP403 error getting your feed.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('HTTP403', +instaDefOptions.retryInterval / 60000);
-      retryError(message, errorCode, resolve, reject);
-    } else if (errorCode === 429) {
-      console.log('HTTP429 error getting your feed.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('HTTP429', +instaDefOptions.retryInterval / 60000);
-      retryError(message, errorCode, resolve, reject);
-    } else if ((errorCode === 500) || (errorCode === 502) || (errorCode === 503) || (errorCode === 504)) {
-      console.log('HTTP50X error getting your feed - ' + errorCode, new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('HTTP50X', errorCode, +instaDefOptions.retryInterval / 60000);
-      retryError(message, errorCode, resolve, reject);
-    } else if (errorCode === 404) {
-      console.log('HTTP404 error getting your feed.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('HTTP404');
-      retryError(message, errorCode, resolve, reject);
-    } else {
-      alert(instaMessages.getMessage('ERRGETTINGFEED', errorCode));
-      reject();
+      return;
     }
+
+    alert(instaMessages.getMessage('ERRGETTINGFEED', errorCode));
+    reject();
   }
 
   function getFeedInternal(resolve, reject) {
