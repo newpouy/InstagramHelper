@@ -39,7 +39,7 @@ instaLike.like = function (settings) {
 
     if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
       console.log(`HTTP${errorCode} error trying to like the media.`, new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], +instaDefOptions.retryInterval / 60000);
+      message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], errorCode, +instaDefOptions.retryInterval / 60000);
       retryError(message, errorCode, resolve, reject);
       return;
     }
