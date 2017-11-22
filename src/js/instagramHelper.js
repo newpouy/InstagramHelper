@@ -9,17 +9,18 @@
     if ((request.viewerUserName === request.user_1.userName) || (request.viewerUserName === request.user_2.userName)) {
       if ((request.user_1.userName === instaDefOptions.you) || (request.user_2.userName === instaDefOptions.you)) {
         alert(instaMessages.getMessage('THESAMEUSERS'));
-        return;
+        return false;
       }
     }
     if (request.user_1.user_is_private && !request.user_1.user_followed_by_viewer && request.viewerUserName !== request.user_1.userName) {
       alert(instaMessages.getMessage('NOTALLOWEDUSER', request.user_1.userName));
-      return;
+      return false;
     }
     if (request.user_2.user_is_private && !request.user_2.user_followed_by_viewer && request.viewerUserName !== request.user_2.userName) {
       alert(instaMessages.getMessage('NOTALLOWEDUSER', request.user_2.userName));
-      return;
+      return false;
     }
+    return true;
   }
 
   chrome.runtime.onMessage.addListener(function (request) {
@@ -66,7 +67,9 @@
         request.viewerUserId = sharedData.config.viewer.id;
 
         if ('get_common_users' === request.action) {
-          checkCommonUsersRequest(request);
+          if (!checkCommonUsersRequest(request)) {
+            return;
+          };
         } else if ('get_insta_users' === request.action) {
           if (request.user_is_private && !request.user_followed_by_viewer && request.viewerUserName !== request.userName) {
             alert(instaMessages.getMessage('NOTALLOWEDUSER', request.userName));

@@ -21,7 +21,10 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
 
     log: '', //the text displayed in text are
     status: '', //the message displayed in status div
-    statusColor: ''
+    statusColor: '',
+
+    whatToLike: 'likeFeed', //radiobutton - like your feed or posts of another user
+    userToLike: ''
   },
   computed: {
     isCompleted: function () {

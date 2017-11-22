@@ -29,15 +29,26 @@
         </strong>
         <br/>
         <strong>
-          <label>Please specify when to stop the liking:</label>
+          <label>Please specify what to like:</label>
         </strong>
         <br/>
-        <input type="radio" v-model="stopCriterion" value="alreadyLiked" name="relType" id="AlreadyLiked" />
-        <label for="AlreadyLiked">When met an already liked post</label>
+          <input type="radio" v-model="whatToLike" value="likeFeed" name="whatToLike" />
+          <label for="likeFeed">The posts in your feed</label>
         <br />
-        <input type="radio" v-model="stopCriterion" value="amountPosts" name="relType" id="AmountPosts" checked="checked" />
-        <label for="AmountPictures">When liked
-          <input type="number" min="10" step="10" v-model.number="amountToLike" id="amount" /> posts</label>
+          <input type="radio" v-model="whatToLike" value="likeUser" name="whatToLike" />
+          <label for="likeUser">The posts of
+            <input type="text" v-model="userToLike" /> user</label>
+        <br />
+        <strong>
+          <label>Please specify when to stop the liking:</label>
+        </strong>
+        <br />
+          <input type="radio" v-model="stopCriterion" value="alreadyLiked" name="stopCriterion" id="AlreadyLiked" />
+          <label for="AlreadyLiked">When met an already liked post</label>
+        <br />
+          <input type="radio" v-model="stopCriterion" value="amountPosts" name="stopCriterion" id="AmountPosts" />
+          <label for="AmountPictures">When liked
+            <input type="number" min="10" step="10" v-model.number="amountToLike" id="amount" /> posts</label>
         <br />
         Delay between requests: <input type="number" min="10" step="10" v-model.number="delay" id="delay" />
         <br />
@@ -60,6 +71,7 @@
   <script src="lib/axios.min.js"></script>
   <script src="js/likerPage.js"></script>
   <script src="js/ig/GetFeed.js"></script>
+  <script src="js/ig/GetProfile.js"></script>
   <script src="js/ig/like.js"></script>
   <script src="js/instaDefOptions.js"></script>
   <script src="js/instaMessages.js"></script>

@@ -158,7 +158,7 @@ instaUserInfo.getUserProfile = function (settings) {
           alert('The error trying to find a new username for - ' + userId);
         });
       } else {
-        alert('404 error trying to retrieve user profile, and no userid is specified');
+        alert('404 error trying to retrieve user profile, userid is not specified, check if username is correct');
         reject();
       }
     } else {
