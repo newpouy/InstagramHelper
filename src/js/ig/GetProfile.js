@@ -20,7 +20,6 @@ var GetProfile = function (settings) { //eslint-disable-line no-unused-vars
     }
 
     function successGetProfile(data, resolve) {
-      debugger;
       has_next_page = data.data.data.user.edge_web_feed_timeline.page_info.has_next_page;
       end_cursor = data.data.data.user.edge_web_feed_timeline.page_info.end_cursor;
       resolve(data.data.data.user.edge_web_feed_timeline.edges);
@@ -61,7 +60,7 @@ var GetProfile = function (settings) { //eslint-disable-line no-unused-vars
       reject();
     }
 
-    function getFeedInternal(resolve, reject) {
+    function getProfileInternal(resolve, reject) {
       var link = 'https://www.instagram.com/graphql/query/';
 
       var config = {

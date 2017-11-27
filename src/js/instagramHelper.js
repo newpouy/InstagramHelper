@@ -69,7 +69,7 @@
         if ('get_common_users' === request.action) {
           if (!checkCommonUsersRequest(request)) {
             return;
-          };
+          }
         } else if ('get_insta_users' === request.action) {
           if (request.user_is_private && !request.user_followed_by_viewer && request.viewerUserName !== request.userName) {
             alert(instaMessages.getMessage('NOTALLOWEDUSER', request.userName));

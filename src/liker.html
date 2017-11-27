@@ -28,6 +28,8 @@
           <br/>
         </strong>
         <br/>
+
+        <div :disabled="isInProgress" v-bind:class="{ disabled: isInProgress }">
         <strong>
           <label>Please specify what to like:</label>
         </strong>
@@ -37,8 +39,10 @@
         <br />
           <input type="radio" v-model="whatToLike" value="likeUser" name="whatToLike" />
           <label for="likeUser">The posts of
-            <input type="text" v-model="userToLike" /> user</label>
+            <input type="text" v-model="userToLike" :disabled="whatToLike !== 'likeUser'" /> user</label>
         <br />
+        </div>
+
         <strong>
           <label>Please specify when to stop the liking:</label>
         </strong>
@@ -48,11 +52,13 @@
         <br />
           <input type="radio" v-model="stopCriterion" value="amountPosts" name="stopCriterion" id="AmountPosts" />
           <label for="AmountPictures">When liked
-            <input type="number" min="10" step="10" v-model.number="amountToLike" id="amount" /> posts</label>
+            <input type="number" min="10" step="10"
+              :disabled="stopCriterion !=='amountPosts'"
+              v-model.number="amountToLike" id="amount" /> posts</label>
         <br />
         Delay between requests: <input type="number" min="10" step="10" v-model.number="delay" id="delay" />
         <br />
-        <button id="start" :disabled="isInProgress">Like the posts in your feed!</button>
+        <button id="start" :disabled="startButtonDisabled">Like the posts in your feed!</button>
         <button id="cancel" :disabled="!isInProgress" v-on:click="stop=true">Stop it!</button>
       </div>
     </div>

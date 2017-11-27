@@ -39,6 +39,10 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
         return true;
       }
       return false;
+    },
+    startButtonDisabled: function () {
+      return this.isInProgress ||  //process is not running
+        (('likeUser' === this.whatToLike) && ('' === this.userToLike)); //profile is specified when profile should be liked
     }
   },
   methods: {
