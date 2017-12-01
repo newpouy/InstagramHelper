@@ -90,6 +90,7 @@ window.onload = function () {
     if (request.action === 'open_liker') {
       liker.csrfToken = request.csrfToken;
       liker.delay = request.likeDelay;
+      liker.userToLike = request.userName;
     }
   });
 

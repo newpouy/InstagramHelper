@@ -39,7 +39,7 @@
         <br />
           <input type="radio" v-model="whatToLike" value="likeUser" name="whatToLike" />
           <label for="likeUser">The posts of
-            <input type="text" v-model="userToLike" :disabled="whatToLike !== 'likeUser'" /> user</label>
+            <input type="text" v-model="userToLike" v-on:blur="validateUserProfile($event)" :disabled="whatToLike !== 'likeUser'" /> user</label>
         <br />
         </div>
 

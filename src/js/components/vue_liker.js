@@ -54,6 +54,9 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
         var textarea = document.getElementById('log_text_area');
         textarea.scrollTop = textarea.scrollHeight;
       }, 0);
+    },
+    validateUserProfile: function(e) {
+      //e.target.select();
     }
   }
 });
