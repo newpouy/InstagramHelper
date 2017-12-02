@@ -24,7 +24,7 @@ var instaDefOptions = (function () {
       followed_by: '17851374694183129',
       follows: '17874545323001329',
       feed: '17842794232208280',
-      profile: '17888483320059182' //check if the same for selffeed
+      profile: '17888483320059182'
     },
     httpErrorMap: {
       0: 'NOTCONNECTED',

@@ -5,8 +5,10 @@ var GetFeed = function (settings) { //eslint-disable-line no-unused-vars
 
   'use strict';
 
+  var has_next_page;
+
   var {
-    updateStatusDiv, has_next_page, end_cursor, vueStatus
+    updateStatusDiv, end_cursor, vueStatus
   } = settings;
 
   function getFeed() {
