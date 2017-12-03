@@ -45,10 +45,10 @@ var GetProfile = function (settings) { //eslint-disable-line no-unused-vars
   }
 
   function errorGetProfile(error, resolve, reject) {
+    console.log(error); //eslint-disable-line no-console
     var message;
-    var errorCode = error.response.status;
+    var errorCode = error.response ? error.response.status : 0;
     console.log(`Error making ajax request to get your feed, status - ${errorCode}`); //eslint-disable-line no-console
-    console.log(arguments); //eslint-disable-line no-console
 
     if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
       console.log(`HTTP${errorCode} error trying to like the media.`, new Date()); //eslint-disable-line no-console

@@ -17,13 +17,13 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
 
     startDate: null, //timestamp when process was started
 
-    stop: false, //if user requested the proceess to be stopped
+    stop: false, //if user requested the proceess to be stopped by clicking the button
 
     log: '', //the text displayed in text are
     status: '', //the message displayed in status div
     statusColor: '',
 
-    whatToLike: 'likeFeed', //radiobutton - like your feed or posts of another user
+    whatToLike: 'likeFeed', //radiobutton - like your feed or posts of another user (likeFeed or likeUser)
     userToLike: ''
   },
   computed: {

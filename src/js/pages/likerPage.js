@@ -8,17 +8,19 @@ window.onload = function () {
 
   document.getElementById('start').onclick = function () {
 
-    //todo: if profile to be liked, validate profile and get it id
-
-    var instaPosts =
-      //new GetFeed  ({ updateStatusDiv: liker.updateStatusDiv, end_cursor: null, vueStatus: liker });
-      //new GetProfile({ userId: 4146553056, updateStatusDiv: liker.updateStatusDiv, end_cursor: null, pageSize: 12, vueStatus: liker });
-      new GetPosts  ({ updateStatusDiv: liker.updateStatusDiv, end_cursor: null, vueStatus: liker });
-
     var message = {
       'alreadyLiked' : 'It will be stopped when already liked post is met',
       'amountPosts' : `It will be stopped when ${liker.amountToLike} posts will be liked.`
     };
+
+    //todo: if profile to be liked, validate profile and get it id
+      //support <<YOU>>
+      //send it in the request
+
+    var instaPosts =
+      //new GetFeed  ({ updateStatusDiv: liker.updateStatusDiv, end_cursor: null, vueStatus: liker });
+      //new GetProfile({ userId: 4146553056, updateStatusDiv: liker.updateStatusDiv, end_cursor: null, pageSize: 12, vueStatus: liker });
+      new GetPosts  ({ mode: liker.whatToLike, updateStatusDiv: liker.updateStatusDiv, end_cursor: null, vueStatus: liker, userName : liker.userToLike });
 
     liker.liked = 0;
     liker.alreadyLiked = 0;
@@ -34,12 +36,11 @@ window.onload = function () {
     liker.updateStatusDiv(message[liker.stopCriterion]);
     liker.updateStatusDiv('You can change the stop criteria during running the process');
 
-    getPosts(instaPosts);
+    getPosts(instaPosts, true);
   };
 
-  function getPosts(instaPosts) {
-    instaPosts.getPosts().then(media => {
-    //instaPosts.getProfile().then(media => {
+  function getPosts(instaPosts, restart) {
+    instaPosts.getPosts(restart).then(media => {
 
       liker.updateStatusDiv(`${media.length} posts are fetched ${new Date()}`);
       liker.fetched += media.length;
@@ -70,28 +71,29 @@ window.onload = function () {
       var userName = obj.node.owner.username;
       var likes = obj.node.edge_media_preview_like.count;
       liker.updateStatusDiv(`Post ${url} from ${userName} has ${likes} likes`);
-      var isLiked = instaPosts.isLiked(obj);
-      if (!isLiked) { //not yet liked
-        instaLike.like({ mediaId: id, csrfToken: liker.csrfToken, updateStatusDiv: liker.updateStatusDiv, vueStatus: liker }).then(function () {
-          liker.updateStatusDiv(`...liked post ${++liker.liked} on ${new Date()}`);
-          setTimeout(() => likeMedia(instaPosts, media, ++index), liker.delay);
-        });
-      } else {
-        liker.updateStatusDiv('...and it is already liked by you!');
-        liker.alreadyLiked += 1;
-        setTimeout(() => likeMedia(instaPosts, media, ++index), 0);
-      }
+      instaPosts.isNotLiked(obj).then( result => {
+        if (result) { //not yet liked
+          instaLike.like({ mediaId: id, csrfToken: liker.csrfToken, updateStatusDiv: liker.updateStatusDiv, vueStatus: liker }).then(function () {
+            liker.updateStatusDiv(`...liked post ${++liker.liked} on ${new Date()}`);
+            setTimeout(() => likeMedia(instaPosts, media, ++index), liker.delay);
+          });
+        } else {
+          liker.updateStatusDiv('...and it is already liked by you!');
+          liker.alreadyLiked += 1;
+          setTimeout(() => likeMedia(instaPosts, media, ++index), 0);
+        }
+      });
     } else if (instaPosts.hasMore()) { //do we still have something to fetch
       liker.updateStatusDiv(`The more posts will be fetched now...${new Date()}`);
       setTimeout(() => getPosts(instaPosts), liker.delay);
     } else {
       liker.updateStatusDiv(`IG has returned no more posts, restart ...${new Date()}`);
       //todo: it should be applied only to feed !!!!!!!
-      //todo: refactore
-      instaPosts = null;
-      instaPosts = new GetFeed({ updateStatusDiv: liker.updateStatusDiv, end_cursor: '', vueStatus: liker });
+      //todo: make the getPosts method to nullify end_cursor
+      //instaPosts = null;
+      //instaPosts = new GetFeed({ updateStatusDiv: liker.updateStatusDiv, end_cursor: '', vueStatus: liker });
       liker.restarted++;
-      setTimeout(() => getPosts(instaPosts), liker.delay);
+      setTimeout(() => getPosts(instaPosts, true), liker.delay);
     }
   }
 

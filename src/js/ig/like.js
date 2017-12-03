@@ -15,7 +15,7 @@ instaLike.like = function (settings) {
   });
 
   function successLike(data, resolve) {
-    updateStatusDiv(`The request to like ${mediaId} was successful with response - ${data.status}`);
+    updateStatusDiv(`The request to like ${mediaId} was successful with response - ${data.data.status}`);
     resolve(data.status);
   }
 
@@ -32,10 +32,10 @@ instaLike.like = function (settings) {
   }
 
   function errorLike(error, resolve, reject) {
+    console.log(error); //eslint-disable-line no-console
     var message;
-    var errorCode = error.response.status;
+    var errorCode = error.response ? error.response.status : 0;
     console.log(`Error making ajax request to like post ${mediaId}, status - ${errorCode}`); //eslint-disable-line no-console
-    console.log(arguments); //eslint-disable-line no-console
 
     if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
       console.log(`HTTP${errorCode} error trying to like the media.`, new Date()); //eslint-disable-line no-console

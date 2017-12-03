@@ -8,33 +8,32 @@ var GetPosts = function (settings) { //eslint-disable-line no-unused-vars
   var mode; //profile or feed
 
   var {
-      updateStatusDiv, end_cursor, vueStatus
+      mode, updateStatusDiv, end_cursor, vueStatus
     } = settings;
 
 
-  var instaPosts = new GetFeed  ({ updateStatusDiv: updateStatusDiv, end_cursor: end_cursor, vueStatus: vueStatus });
+  var instaPosts = new GetFeed({ updateStatusDiv: updateStatusDiv, end_cursor: end_cursor, vueStatus: vueStatus });
 
 
 
-  function getPosts() {
-    return instaPosts.getFeed();
+  function getPosts(restart) {
+    return instaPosts.getFeed(restart);
   }
 
-  //do promise from that
-  function isLiked(media) {
-    return media.node.viewer_has_liked;
+  function isNotLiked(media) {
+    return new Promise(resolve => {
+      var result = !media.node.viewer_has_liked;
+      resolve(result);
+    });
   }
 
   function hasMore() {
     return instaPosts.hasMore();
   }
 
-
-
   return {
-  //  init: init,
     getPosts: getPosts,
-    isLiked: isLiked,
+    isNotLiked: isNotLiked,
     hasMore: hasMore
   };
 
