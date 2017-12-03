@@ -1,5 +1,5 @@
 /* globals confirm, chrome, _gaq */
-/* globals instaLike, GetFeed, liker   */
+/* globals instaLike, GetFeed, GetProfile, liker   */
 /* jshint -W106 */
 
 window.onload = function () {
@@ -8,7 +8,11 @@ window.onload = function () {
 
   document.getElementById('start').onclick = function () {
 
-    var instaFeed = new GetFeed({ updateStatusDiv: liker.updateStatusDiv, has_next_page: false, end_cursor: '', vueStatus: liker });
+    //todo: if profile to be liked, validate profile and get it id
+
+    var instaFeed =
+      //new GetFeed  ({ updateStatusDiv: liker.updateStatusDiv, end_cursor: null, vueStatus: liker });
+      new GetProfile({ userId: 4146553056, updateStatusDiv: liker.updateStatusDiv, end_cursor: null, pageSize: 12, vueStatus: liker });
 
     liker.liked = 0;
     liker.alreadyLiked = 0;
@@ -32,7 +36,9 @@ window.onload = function () {
   };
 
   function getFeed(instaFeed) {
-    instaFeed.getFeed().then(media => {
+    //   instaFeed.getFeed().then(media => {
+
+    instaFeed.getProfile().then(media => {
 
       liker.updateStatusDiv(`${media.length} posts are fetched ${new Date()}`);
       liker.fetched += media.length;
@@ -78,9 +84,10 @@ window.onload = function () {
       liker.updateStatusDiv(`The more posts will be fetched now...${new Date()}`);
       setTimeout(() => getFeed(instaFeed), liker.delay);
     } else {
-      liker.updateStatusDiv(`IG has returned that no more posts, restart ...${new Date()}`);
-      //todo: nullify
-      instaFeed = new GetFeed({ updateStatusDiv: liker.updateStatusDiv, has_next_page: false, end_cursor: '', vueStatus: liker });
+      liker.updateStatusDiv(`IG has returned no more posts, restart ...${new Date()}`);
+      //todo: it should be applied only to feed !!!!!!!
+      instaFedd = null;
+      instaFeed = new GetFeed({ updateStatusDiv: liker.updateStatusDiv, end_cursor: '', vueStatus: liker });
       liker.restarted++;
       setTimeout(() => getFeed(instaFeed), liker.delay);
     }
@@ -91,6 +98,7 @@ window.onload = function () {
       liker.csrfToken = request.csrfToken;
       liker.delay = request.likeDelay;
       liker.userToLike = request.userName;
+      //todo : get the page size?
     }
   });
 
