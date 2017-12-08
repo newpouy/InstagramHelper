@@ -1,4 +1,4 @@
-/* globals alert, Promise, axios, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
+/* globals alert, axios, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
 /* jshint -W106 */
 
 var GetFeed = function (settings) { //eslint-disable-line no-unused-vars
@@ -31,7 +31,7 @@ var GetFeed = function (settings) { //eslint-disable-line no-unused-vars
   }
 
   function retryError(message, errorNumber, resolve, reject) {
-    updateStatusDiv(message, 'red'); //todo: check if I have updateStatusDiv
+    updateStatusDiv(message, 'red');
     instaTimeout.setTimeout(3000)
       .then(function () {
         return instaCountdown.doCountdown(

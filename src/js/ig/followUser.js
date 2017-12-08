@@ -1,4 +1,4 @@
-/* globals Promise, alert, $, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
+/* globals alert, $, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
 
 var followUser = function () { };
 

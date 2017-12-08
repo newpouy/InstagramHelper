@@ -1,5 +1,3 @@
-/* globals Promise */
-
 var instaCountdown = function () { };
 
 //2 last parameters are options

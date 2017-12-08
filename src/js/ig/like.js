@@ -1,4 +1,4 @@
-/* globals alert, axios, Promise, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
+/* globals alert, axios, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
 
 var instaLike = function () { };
 

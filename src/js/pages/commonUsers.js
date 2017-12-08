@@ -1,4 +1,4 @@
-/* globals chrome, $, Promise, _gaq */
+/* globals chrome, $, _gaq */
 /* globals instaDefOptions, instaUserInfo, exportUtils, FetchUsers */
 /* jshint -W106 */
 

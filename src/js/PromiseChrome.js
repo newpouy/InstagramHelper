@@ -1,4 +1,4 @@
-/* globals chrome, Promise */
+/* globals chrome */
 
 /* exported PromiseChrome */
 

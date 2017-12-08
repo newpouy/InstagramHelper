@@ -1,4 +1,4 @@
-/* globals alert, Promise, $, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
+/* globals alert, $, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
 /* jshint -W106 */
 
 var instaUserInfo = function () { };
@@ -115,7 +115,7 @@ instaUserInfo.getUserProfile = function (settings) {
   }
 
   function retryError(message, errorNumber, resolve, reject) {
-    updateStatusDiv(message, 'red'); //todo: check if I have updateStatusDiv
+    updateStatusDiv(message, 'red');
     instaTimeout.setTimeout(3000)
       .then(function () {
         return instaCountdown.doCountdown('status', errorNumber, 'Getting users profiles', +(new Date()).getTime() + instaDefOptions.retryInterval);

@@ -1,4 +1,4 @@
-/* globals confirm, chrome, _gaq */
+/* globals confirm, chrome, _gaq, alert */
 /* globals instaLike, GetPosts, liker, instaDefOptions   */
 /* jshint -W106 */
 
@@ -26,8 +26,6 @@ window.onload = function () {
 
     instaPosts.resolveUserName().then(() => {
 
-      console.log('resoloveUserName cont');
-
       liker.liked = 0;
       liker.alreadyLiked = 0;
       liker.restarted = 0;
@@ -46,16 +44,13 @@ window.onload = function () {
       getPosts(instaPosts, true);
 
     }, () => {
-      console.log(arguments);
-      alert('specified user is not resolved');
+      alert('Specified user was not found');
       instaPosts = null;
     });
   };
 
   function getPosts(instaPosts, restart) {
     instaPosts.getPosts(restart).then(media => {
-
-      console.log(media);
 
       liker.fetched += media.length;
       likeMedia(instaPosts, media, 0);
@@ -106,7 +101,7 @@ window.onload = function () {
       setTimeout(() => getPosts(instaPosts, true), liker.delay);
     } else { // nothing more found in profile >> to restart
       liker.allPostsFetched = true;
-      setTimeout(() => getPosts(instaPosts, true), 0);
+      setTimeout(() => likeMedia(instaPosts, media, ++index), 0);
     }
   }
 
@@ -115,7 +110,6 @@ window.onload = function () {
       /*
         todo: request.pageSize
       */
-      console.log(request);
       liker.csrfToken = request.csrfToken;
       liker.delay = request.likeDelay;
 

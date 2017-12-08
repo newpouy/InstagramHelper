@@ -1,4 +1,4 @@
-/* globals alert, Promise, axios, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
+/* globals alert, axios, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
 /* jshint -W106 */
 
 var GetProfile = function (settings) { //eslint-disable-line no-unused-vars
@@ -17,8 +17,6 @@ var GetProfile = function (settings) { //eslint-disable-line no-unused-vars
   }
 
   function getProfile() {
-    console.log('getProfileInside - ');
-    console.log(arguments);
     return new Promise(function (resolve, reject) {
       getProfileInternal(resolve, reject);
     });
@@ -35,13 +33,13 @@ var GetProfile = function (settings) { //eslint-disable-line no-unused-vars
   }
 
   function retryError(message, errorNumber, resolve, reject) {
-    updateStatusDiv(message, 'red'); //todo: check if I have updateStatusDiv
+    updateStatusDiv(message, 'red');
     instaTimeout.setTimeout(3000)
       .then(function () {
         return instaCountdown.doCountdown(
           'status',
           errorNumber,
-          'Getting the posts', //todo : how do I call that
+          'Getting the posts',
           +(new Date()).getTime() + instaDefOptions.retryInterval,
           vueStatus);
       })

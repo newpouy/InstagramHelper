@@ -1,4 +1,4 @@
-/* globals alert, Promise, axios, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
+/* globals alert, axios, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
 /* jshint -W106 */
 
 var GetPostInfo = function (settings) { //eslint-disable-line no-unused-vars
@@ -11,16 +11,12 @@ var GetPostInfo = function (settings) { //eslint-disable-line no-unused-vars
 
 
   function getPostInfo(post) {
-    console.log('getPostInfoInside');
-    console.log(arguments);
     return new Promise(function (resolve, reject) {
       getPostInfoInternal(post, resolve, reject);
     });
   }
 
   function successGetPostInfo(data, resolve) {
-    console.log('successGetPost info is invoked')
-    console.log(arguments)
     resolve(data.data.graphql.shortcode_media);
   }
 
@@ -31,7 +27,7 @@ var GetPostInfo = function (settings) { //eslint-disable-line no-unused-vars
         return instaCountdown.doCountdown(
           'status',
           errorNumber,
-          'Getting the post info', //todo : how do I call that
+          'Getting the post info',
           +(new Date()).getTime() + instaDefOptions.retryInterval,
           vueStatus);
       })
@@ -60,7 +56,6 @@ var GetPostInfo = function (settings) { //eslint-disable-line no-unused-vars
 
   function getPostInfoInternal(post, resolve, reject) {
     var link = `https://www.instagram.com/p/${post}?__a=1`;
-    console.log(link);
 
     var config = {
       headers: {
