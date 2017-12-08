@@ -55,7 +55,7 @@ var GetFeed = function (settings) { //eslint-disable-line no-unused-vars
     //console.log(arguments); //eslint-disable-line no-console
 
     if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
-      console.log(`HTTP${errorCode} error trying to like the media.`, new Date()); //eslint-disable-line no-console
+      console.log(`HTTP${errorCode} error trying to get your feed.`, new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], errorCode, +instaDefOptions.retryInterval / 60000);
       retryError(message, errorCode, resolve, reject);
       return;

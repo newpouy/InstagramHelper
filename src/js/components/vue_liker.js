@@ -2,29 +2,47 @@
 
 var liker = new Vue({ // eslint-disable-line no-unused-vars
   el: '#app',
-  data: {
-    isInProgress: false, //indicate if liking is in progress
+  created() {
+    this.viewerUserId = '';
+    this.viewerUserName = '';
+    this.csrfToken = '';
 
-    csrfToken: '',
+    this.restarted = 0; //how many times the getting feed was restarted
+    this.fetched = 0; //how may posts were fetched
+
+    this.startDate = null; //timestamp when process was started
+    this.stop = false; //if user requested the proceess to be stopped by clicking the button
+
+    this.allPostsFetched = false // when all posts from user's profile are fetched
+
+    this.status = ''; //the message displayed in status div
+    this.statusColor = '';
+  },
+  data: { //todo : refactore data to keep only that should be binded
+    isInProgress: false, //indicate if liking is in progress
 
     amountToLike: 100, //how many should be liked
     stopCriterion: 'amountPosts', //stop criterion assigned to radio button
-    delay: 0, //interval between sending the http requests
+    delay: 0, //interval ldbetween sending the http requests
     liked: 0, //how many liked during execution
     alreadyLiked: 0, //how many found already liked
-    restarted: 0, //how many times the getting feed was restarted
-    fetched: 0, //how may posts were fetched
 
-    startDate: null, //timestamp when process was started
+    /*     restarted: 0, //how many times the getting feed was restarted
+        fetched: 0, //how may posts were fetched
 
-    stop: false, //if user requested the proceess to be stopped by clicking the button
+        startDate: null, //timestamp when process was started
 
+        stop: false, //if user requested the proceess to be stopped by clicking the button
+
+        status: '', //the message displayed in status div
+        statusColor: '',
+     */
     log: '', //the text displayed in text are
-    status: '', //the message displayed in status div
-    statusColor: '',
 
-    whatToLike: 'likeFeed', //radiobutton - like your feed or posts of another user (likeFeed or likeUser)
-    userToLike: ''
+    whatToLike: 'likeFeed', //radiobutton - like your feed or posts of another user (likeFeed or likeProfile)
+    userToLike: '',
+    //allPostsFetched: false // when all posts from user's profile are fetched
+
   },
   computed: {
     isCompleted: function () {
@@ -37,12 +55,15 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
       } else if ((this.stopCriterion === 'amountPosts') && (this.amountToLike <= this.liked)) {
         this.updateStatusDiv(`${new Date()}/The process will be stopped because ${this.liked} posts were liked`);
         return true;
+      } else if ((this.whatToLike === 'likeProfile') && (this.allPostsFetched)) {
+        this.updateStatusDiv(`${new Date()}/The process will be stopped because no more posts in the user's profile`);
+        return true;
       }
       return false;
     },
     startButtonDisabled: function () {
       return this.isInProgress ||  //process is not running
-        (('likeUser' === this.whatToLike) && ('' === this.userToLike)); //profile is specified when profile should be liked
+        (('likeProfile' === this.whatToLike) && ('' === this.userToLike)); //profile is specified when profile should be liked
     }
   },
   methods: {
@@ -55,7 +76,7 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
         textarea.scrollTop = textarea.scrollHeight;
       }, 0);
     },
-    validateUserProfile: function(e) {
+    validateUserProfile: function (e) {
       //e.target.select();
     }
   }
