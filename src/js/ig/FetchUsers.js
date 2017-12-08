@@ -14,24 +14,20 @@ var FetchUsers = function (settings) {
     resolve
 	} = settings;
 
-  //console.log(obj);
-
-  var successFetch = function (res) {
-    obj.receivedResponses += 1;
-    var data = res.data.user[Object.keys(res.data.user)[0]];
-    updateStatusDiv(`received users - ${data.edges.length} (${obj.relType}/${obj.receivedResponses})`);
-    for (let i = 0; i < data.edges.length; i++) {
-      var found = false;
-      if (obj.checkDuplicates) { //only when the second run happens (or we started with already opened result page)
-        for (let j = 0; j < myData.length; j++) {
-          if (data.edges[i].node.id === myData[j].id) {
-            found = true;
-            myData[j]['user_' + obj.relType] = true;
-            break;
-          }
-        }
+  function checkForDuplicates(obj, data, i) {
+    for (let j = 0; j < myData.length; j++) {
+      if (data.edges[i].node.id === myData[j].id) {
+        myData[j]['user_' + obj.relType] = true;
+        return true;
       }
-      if (!(found)) {
+    }
+  }
+
+  function updateDataArray(obj, data){
+    for (let i = 0; i < data.edges.length; i++) {
+      //only when the second run happens (or we started with already opened result page)
+      var found = obj.checkDuplicates && checkForDuplicates(obj, data, i);
+      if (!found) {
         data.edges[i].node.user_follows = false; //explicitly set the value for correct search
         data.edges[i].node.user_followed_by = false; //explicitly set the value for correct search
         data.edges[i].node['user_' + obj.relType] = true;
@@ -42,6 +38,13 @@ var FetchUsers = function (settings) {
         myData.push(data.edges[i].node);
       }
     }
+  }
+
+  var successFetch = function (res) {
+    obj.receivedResponses += 1;
+    var data = res.data.user[Object.keys(res.data.user)[0]];
+    updateStatusDiv(`received users - ${data.edges.length} (${obj.relType}/${obj.receivedResponses})`);
+    updateDataArray(obj, data);
     updateProgressBar(obj, data.edges.length);
 
     //Have we already achieved the limit?
@@ -52,6 +55,7 @@ var FetchUsers = function (settings) {
         return;
       }
     }
+
     htmlElements[obj.relType].asProgress('finish').asProgress('stop'); //stopProgressBar(obj);
     if (obj.callBoth) {
       obj.end_cursor = null;
@@ -68,7 +72,7 @@ var FetchUsers = function (settings) {
     updateStatusDiv(message, 'red');
     instaTimeout.setTimeout(3000)
       .then(function () {
-        return instaCountdown.doCountdown('status', errorNumber, 'Users fetching', (new Date()).getTime() + +instaDefOptions.retryInterval);
+        return instaCountdown.doCountdown('status', errorNumber, 'Users fetching', +(new Date()).getTime() + instaDefOptions.retryInterval);
       })
       .then(() => {
         console.log('Continue execution after HTTP error', errorNumber, new Date()); //eslint-disable-line no-console
@@ -147,5 +151,4 @@ var FetchUsers = function (settings) {
     fetchInstaUsers: fetchInstaUsers,
     retryError: retryError
   };
-
 };

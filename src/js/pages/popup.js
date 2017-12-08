@@ -1,4 +1,4 @@
-/* globals alert, chrome, _gaq, $, Promise */
+/* globals alert, chrome, _gaq, $ */
 /* globals PromiseChrome, instaDefOptions, instaMessages, instaUserInfo */
 /* jshint -W106 */
 
@@ -15,7 +15,8 @@ $(function () {
     }).then(function (tabs) {
       chrome.tabs.sendMessage(tabs[0].id, {
         action: 'open_liker',
-        page: 'liker.html'
+        page: 'liker.html',
+        userName: $('#username').val()
       });
     });
   });
@@ -47,7 +48,7 @@ $(function () {
           user_followed_by_viewer: obj.followed_by_viewer,
           follows_count: obj.follows_count,
           followed_by_count: obj.followed_by_count,
-          limit: 0 + +document.getElementById('first').value,
+          limit: +document.getElementById('first').value,
           relType: $('input[name=relType]:checked').attr('id')
         });
       });
@@ -119,7 +120,7 @@ window.onload = function () {
     currentWindow: true
   }, function (tabs) {
 
-    var arr = tabs[0].url.match(/(?:taken-by=|instagram.com\/)(.[^\/]+)/); //eslint-disable-line no-useless-escape
+    var arr = tabs[0].url.match(instaDefOptions.regExtractUserName);
 
     if (arr) {
       instaUserInfo.getUserProfile({ username: arr[1] }).then(function (obj) {

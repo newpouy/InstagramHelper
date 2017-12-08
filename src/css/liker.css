@@ -34,3 +34,7 @@ textarea {
     left: 0;
     right: 0;
 }
+
+.disabled {
+  pointer-events:none;
+}

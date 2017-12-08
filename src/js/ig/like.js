@@ -1,4 +1,4 @@
-/* globals alert, $, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
+/* globals alert, axios, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
 
 var instaLike = function () { };
 
@@ -15,7 +15,7 @@ instaLike.like = function (settings) {
   });
 
   function successLike(data, resolve) {
-    updateStatusDiv(`The request to like ${mediaId} was successful with response - ${data.status}`);
+    updateStatusDiv(`The request to like ${mediaId} was successful with response - ${data.data.status}`);
     resolve(data.status);
   }
 
@@ -23,7 +23,7 @@ instaLike.like = function (settings) {
     updateStatusDiv(message, 'red');
     instaTimeout.setTimeout(3000)
       .then(function () {
-        return instaCountdown.doCountdown('status', errorNumber, 'Liking', (new Date()).getTime() + +instaDefOptions.retryInterval, vueStatus);
+        return instaCountdown.doCountdown('status', errorNumber, 'Liking', +(new Date()).getTime() + instaDefOptions.retryInterval, vueStatus);
       })
       .then(() => {
         console.log('Continue execution after HTTP error', errorNumber, new Date()); //eslint-disable-line no-console
@@ -31,53 +31,34 @@ instaLike.like = function (settings) {
       });
   }
 
-  function errorLike(jqXHR, resolve, reject) {
-    console.log(`Error making ajax request to like post ${mediaId}, status - ${jqXHR.status}`); //eslint-disable-line no-console
-    console.log(arguments); //eslint-disable-line no-console
+  function errorLike(error, resolve, reject) {
+    console.log(error); //eslint-disable-line no-console
     var message;
-    if (jqXHR.status === 0) {
-      console.log('Not connected.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('NOTCONNECTED', +instaDefOptions.retryInterval / 60000);
-      retryError(message, jqXHR.status, resolve, reject);
-    } else if (jqXHR.status === 400) {
-      console.log('HTTP400 error trying to like the media.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('HTTP400');
-      retryError(message, jqXHR.status, resolve, reject);
-    } else if (jqXHR.status === 403) {
-      console.log('HTTP403 error trying to like the media.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('HTTP403', +instaDefOptions.retryInterval / 60000);
-      retryError(message, jqXHR.status, resolve, reject);
-    } else if (jqXHR.status === 429) {
-      console.log('HTTP403 error trying to like the media.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('HTTP429', +instaDefOptions.retryInterval / 60000);
-      retryError(message, jqXHR.status, resolve, reject);
-    } else if ((jqXHR.status === 500) || (jqXHR.status === 502) || (jqXHR.status === 503) || (jqXHR.status === 504)) {
-      console.log('HTTP50X error trying to like the media - ' + jqXHR.status, new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('HTTP50X', jqXHR.status, +instaDefOptions.retryInterval / 60000);
-      retryError(message, jqXHR.status, resolve, reject);
-    } else {
-      alert(instaMessages.getMessage('ERRLIKEMEDIA', mediaId, jqXHR.status));
-      reject();
+    var errorCode = error.response ? error.response.status : 0;
+    console.log(`Error making ajax request to like post ${mediaId}, status - ${errorCode}`); //eslint-disable-line no-console
+
+    if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
+      console.log(`HTTP${errorCode} error trying to like the media.`, new Date()); //eslint-disable-line no-console
+      message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], errorCode, +instaDefOptions.retryInterval / 60000);
+      retryError(message, errorCode, resolve, reject);
+      return;
     }
+    alert(instaMessages.getMessage('ERRLIKEMEDIA', mediaId, errorCode));
+    reject();
   }
 
   function like(mediaId, csrfToken, resolve, reject) {
     var link = `https://www.instagram.com/web/likes/${mediaId}/like/`;
-    $.ajax({
-      url: link,
-      method: 'POST',
-      success: function (data) {
-        successLike(data, resolve);
-      },
-      error: function (jqXHR) {
-        errorLike(jqXHR, resolve, reject);
-      },
+    var config = {
       headers: {
         'X-CSRFToken': csrfToken,
         'x-instagram-ajax': 1,
         'eferer': 'https://www.instagram.com/' //+ obj.userName + '/'
-      },
-      async: true
-    });
+      }
+    };
+    axios.post(link, '', config).then(
+      response => successLike(response, resolve),
+      error => errorLike(error, resolve, reject)
+    );
   }
 };

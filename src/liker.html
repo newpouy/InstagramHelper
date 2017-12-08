@@ -20,28 +20,48 @@
       </div>
       <div id="liker_options" style="border: 0.5px solid; padding: 3px; margin: 3px; display: inline-block;">
         <strong>
-          <label>It will like the posts in your feed.</label>
+          <label>You can like the posts in your feed.</label>
           <br/>
           <label>It is useful when you are following 1k+ users,</label>
           <br/>
           <label>and you want to make them all happy :)</label>
           <br/>
+          <br/>
+          <label>And you can also like the posts of the specific user.</label>
+          <br/>
         </strong>
         <br/>
+
+        <div :disabled="isInProgress" v-bind:class="{ disabled: isInProgress }">
+        <strong>
+          <label>Please specify what to like:</label>
+        </strong>
+        <br/>
+          <input type="radio" v-model="whatToLike" value="likeFeed" name="whatToLike" />
+          <label for="likeFeed">The posts in your feed</label>
+        <br />
+          <input type="radio" v-model="whatToLike" value="likeProfile" name="whatToLike" />
+          <label for="likeProfile">The posts of
+            <input type="text" v-model="userToLike" v-on:blur="validateUserProfile($event)" :disabled="whatToLike !== 'likeProfile'" /> user</label>
+        <br />
+        </div>
+
         <strong>
           <label>Please specify when to stop the liking:</label>
         </strong>
-        <br/>
-        <input type="radio" v-model="stopCriterion" value="alreadyLiked" name="relType" id="AlreadyLiked" />
-        <label for="AlreadyLiked">When met an already liked post</label>
         <br />
-        <input type="radio" v-model="stopCriterion" value="amountPosts" name="relType" id="AmountPosts" checked="checked" />
-        <label for="AmountPictures">When liked
-          <input type="number" min="10" step="10" v-model.number="amountToLike" id="amount" /> posts</label>
+          <input type="radio" v-model="stopCriterion" value="alreadyLiked" name="stopCriterion" id="AlreadyLiked" />
+          <label for="AlreadyLiked">When met an already liked post</label>
+        <br />
+          <input type="radio" v-model="stopCriterion" value="amountPosts" name="stopCriterion" id="AmountPosts" />
+          <label for="AmountPictures">When liked
+            <input type="number" min="10" step="10"
+              :disabled="stopCriterion !=='amountPosts'"
+              v-model.number="amountToLike" id="amount" /> posts</label>
         <br />
         Delay between requests: <input type="number" min="10" step="10" v-model.number="delay" id="delay" />
         <br />
-        <button id="start" :disabled="isInProgress">Like the posts in your feed!</button>
+        <button id="start" :disabled="startButtonDisabled">Like the posts!</button>
         <button id="cancel" :disabled="!isInProgress" v-on:click="stop=true">Stop it!</button>
       </div>
     </div>
@@ -56,10 +76,14 @@
 
   </div>
 
-  <script src="js/ga.js"></script>
-  <script src="lib/jquery-3.1.1.min.js"></script>
-  <script src="js/likerPage.js"></script>
-  <script src="js/ig/getFeed.js"></script>
+  <script src="lib/jquery-3.1.1.min.js"></script> <!-- just for getUserProfile -->
+  <script src="lib/axios.min.js"></script>
+  <script src="js/pages/likerPage.js"></script>
+  <script src="js/ig/GetPosts.js"></script>
+  <script src="js/ig/GetFeed.js"></script>
+  <script src="js/ig/GetProfile.js"></script>
+  <script src="js/ig/GetPostInfo.js"></script>
+  <script src="js/ig/getUserProfile.js"></script>
   <script src="js/ig/like.js"></script>
   <script src="js/instaDefOptions.js"></script>
   <script src="js/instaMessages.js"></script>
@@ -69,6 +93,7 @@
   <script src="lib/vue.js"></script>
   <script src="js/components/vue_liker.js"></script>
 
+  <script src="js/pages/ga.js"></script>
 
 </body>
 
