@@ -14,7 +14,7 @@ var instaDefOptions = (function () {
     requestsToSkipDelay: 100,
     retryInterval: 180000,
     regFindUser: /link rel="canonical" href="https:\/\/www.instagram.com\/([^"/]*)\/?"/i,
-    regExtractUserName: /instagram.com.*\/(?:\?taken-by=)?([^/]+)\/?$/,
+    regExtractUserName: /instagram.com.*\/(?:\?taken-by=)?([^/?]+)\/?/, //fixes #10, respects the URL with parameters
     regCheckBox: /^\s*<\s*input.+type\s*=\s*"checkbox".+value\s*=\s*(?:"|')\s*(true|false)/i,
     regProfile: /^\s*<\s*a\s.*href\s*=\s*(?:"|')([^"']+)/i,
     regTestInfo: /^\s*id:/,
