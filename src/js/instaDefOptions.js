@@ -24,7 +24,8 @@ var instaDefOptions = (function () {
       followed_by: '17851374694183129',
       follows: '17874545323001329',
       feed: '17842794232208280',
-      profile: '17888483320059182'
+      profile: '17888483320059182',
+      likes: '17864450716183058'
     },
     httpErrorMap: {
       0: 'NOTCONNECTED',

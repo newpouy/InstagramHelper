@@ -43,7 +43,7 @@
       return ret_value;
     };
 
-    if (('get_insta_users' === request.action) || ('get_common_users' === request.action) || ('open_liker' === request.action)) {
+    if (('get_insta_users' === request.action) || ('get_common_users' === request.action) || ('openLikerPage' === request.action)) {
       (new PromiseChrome()).promiseGetStorage({
         pageSize: instaDefOptions.defPageSize,
         delay: instaDefOptions.defDelay,

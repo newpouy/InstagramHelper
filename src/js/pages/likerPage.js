@@ -106,7 +106,7 @@ window.onload = function () {
   }
 
   chrome.runtime.onMessage.addListener(function (request) {
-    if (request.action === 'open_liker') {
+    if (request.action === 'openLikerPage') {
       /*
         todo: request.pageSize
       */

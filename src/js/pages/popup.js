@@ -14,12 +14,27 @@ $(function () {
       currentWindow: true
     }).then(function (tabs) {
       chrome.tabs.sendMessage(tabs[0].id, {
-        action: 'open_liker',
+        action: 'openLikerPage',
         page: 'liker.html',
         userName: $('#username').val()
       });
     });
   });
+
+  $('#likes').click(function () {
+
+    promiseChrome.promiseQuery({
+      active: true,
+      currentWindow: true
+    }).then(function (tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, {
+        action: 'openLikesPage',
+        page: 'likes.html',
+        userName: $('#username').val()
+      });
+    });
+  });
+
 
   $('#instaUsers').click(function () {
 
