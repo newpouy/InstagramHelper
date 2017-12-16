@@ -20,7 +20,9 @@
         <br/>
 
         <div :disabled="isInProgress" v-bind:class="{ disabled: isInProgress }">
-          <label>Profile to analyze: </label>
+          <strong>
+            <label>Profile to analyze: </label>
+          </strong>
           <input type="text" v-model="userToGetLikes" />
         </div>
 
@@ -29,6 +31,7 @@
         </strong>
 
         <input type="number" min="100" step="100" v-model.number="delay" id="delay" />
+        <br/>
         <button id="start" :disabled="startButtonDisabled">Get likes!</button>
         <button id="cancel" :disabled="!isInProgress" v-on:click="stop=true">Stop it!</button>
       </div>

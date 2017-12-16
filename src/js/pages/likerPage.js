@@ -77,13 +77,14 @@ window.onload = function () {
       var obj = media[index];
       var id = obj.node.id;
       var url = obj.node.display_url;
+      var taken = new Date(obj.node.taken_at_timestamp * 1000).toLocaleString();
       var userName = 'likeProfile' === liker.whatToLike ? liker.userToLike : obj.node.owner.username;
       var likesCount = obj.node.edge_media_preview_like.count;
-      liker.updateStatusDiv(`Post ${url} from ${userName} has ${likesCount} likes`);
+      liker.updateStatusDiv(`Post ${url} taken on ${taken} by ${userName} has ${likesCount} likes`);
       instaPosts.isNotLiked(obj).then(result => {
         if (result) { //not yet liked
           instaLike.like({ mediaId: id, csrfToken: liker.csrfToken, updateStatusDiv: liker.updateStatusDiv, vueStatus: liker }).then(function () {
-            liker.updateStatusDiv(`...liked post ${++liker.liked} on ${new Date()}`);
+            liker.updateStatusDiv(`...liked post ${++liker.liked} on ${new Date().toLocaleString()}`);
             setTimeout(() => likeMedia(instaPosts, media, ++index), liker.delay);
           });
         } else {

@@ -33,7 +33,7 @@ window.onload = function () {
 
       likes.isInProgress = true;
 
-      likes.updateStatusDiv(`The interval between liking requests is ${likes.delay}ms`);
+      likes.updateStatusDiv(`The interval between the requests is ${likes.delay}ms`);
 
       getPosts(instaPosts, true);
 
@@ -62,16 +62,18 @@ window.onload = function () {
 
       likes.isInProgress = false;
 
+      likes.log = JSON.stringify([...data]);
+
       return;
     }
     var i = media.length;
     if (i > index) { //we still have something to get
       var obj = media[index];
-      var id = obj.node.id;
       var url = obj.node.display_url;
+      var taken = new Date(obj.node.taken_at_timestamp * 1000).toLocaleString();
       var likesCount = obj.node.edge_media_preview_like.count;
       var shortcode = obj.node.shortcode;
-      likes.updateStatusDiv(`Post ${url} has ${likesCount} likes`);
+      likes.updateStatusDiv(`Post ${url} taken on ${taken} has ${likesCount} likes`);
 
       var instaLike = new GetLikes({
         shortCode: shortcode,
@@ -81,8 +83,7 @@ window.onload = function () {
         vueStatus: likes
       });
 
-      getPostLikes(instaLike, instaPosts, media, index);
-
+      getPostLikes(instaLike, instaPosts, media, index, obj.node.taken_at_timestamp);
 
     } else if (instaPosts.hasMore()) { //do we still have something to fetch
       likes.updateStatusDiv(`The more posts will be fetched now...${new Date()}`);
@@ -93,27 +94,28 @@ window.onload = function () {
     }
   }
 
-  function getPostLikes(instaLike, instaPosts, media, index) {
+  function getPostLikes(instaLike, instaPosts, media, index, taken) {
 
     instaLike.getLikes().then(result => {
-      var len = result.length;
+      likes.updateStatusDiv(`... fetched information about ${result.length} likes`);
       for (var i = 0; i < result.length; i++) {
         var userId = result[i].node.id;
         var userName = result[i].node.username;
         if (data.has(userId)) {
           var obj = data.get(userId);
           obj.count++;
-          data.set(userId, obj)
+          if (taken > obj.taken) {
+            obj.taken = taken;
+          }
+          data.set(userId, obj);
         } else {
-          data.set(userId, { username: userName, count: 1 })
+          data.set(userId, { username: userName, count: 1, taken: taken });
         }
       }
       if (instaLike.hasMore()) {
-        setTimeout(() => getPostLikes(instaLike, instaPosts, media, index), likes.delay);
-
+        setTimeout(() => getPostLikes(instaLike, instaPosts, media, index, taken), likes.delay);
       } else {
         instaLike = null;
-        //return to getLikes
         setTimeout(() => getLikes(instaPosts, media, ++index), likes.delay);
       }
     });

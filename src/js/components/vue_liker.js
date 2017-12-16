@@ -39,16 +39,16 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
   computed: {
     isCompleted: function () {
       if (this.stop) {
-        this.updateStatusDiv(`${new Date()}/The process will be stopped now because you clicked the Stop button`);
+        this.updateStatusDiv(`${new Date().toLocaleString()}/The process is stopped now because you clicked the Stop button`);
         return true;
       } else if ((this.stopCriterion === 'alreadyLiked') && (this.alreadyLiked > 0)) {
-        this.updateStatusDiv(`${new Date()}/The process will be stopped because already liked posts are found - ${this.alreadyLiked}`);
+        this.updateStatusDiv(`${new Date().toLocaleString()}/The process is stopped because already liked posts are found - ${this.alreadyLiked}`);
         return true;
       } else if ((this.stopCriterion === 'amountPosts') && (this.amountToLike <= this.liked)) {
-        this.updateStatusDiv(`${new Date()}/The process will be stopped because ${this.liked} posts were liked`);
+        this.updateStatusDiv(`${new Date().toLocaleString()}/The process is stopped because ${this.liked} posts were liked`);
         return true;
       } else if ((this.whatToLike === 'likeProfile') && (this.allPostsFetched)) {
-        this.updateStatusDiv(`${new Date()}/The process will be stopped because no more posts in the user's profile`);
+        this.updateStatusDiv(`${new Date().toLocaleString()}/The process is stopped because no more posts in the user's profile`);
         return true;
       }
       return false;

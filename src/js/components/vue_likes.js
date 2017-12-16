@@ -32,10 +32,10 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
   computed: {
     isCompleted: function () {
       if (this.stop) {
-        this.updateStatusDiv(`${new Date()}/The process will be stopped now because you clicked the Stop button`);
+        this.updateStatusDiv(`${new Date().toLocaleString()}/The process will be stopped now because you clicked the Stop button`);
         return true;
       } else if (this.allPostsFetched) {
-        this.updateStatusDiv(`${new Date()}/The process will be stopped because no more posts in the user's profile`);
+        this.updateStatusDiv(`${new Date().toLocaleString()}/The process will be stopped because no more posts in the user's profile`);
         return true;
       }
       return false;
