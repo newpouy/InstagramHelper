@@ -25,8 +25,8 @@ window.onload = function () {
 
       data = new Map();
 
-      likes.fetched = 0;
       likes.startDate = (new Date()).toLocaleTimeString();
+      likes.fetched = 0;
       likes.stop = false;
       likes.log = '';
       likes.allPostsFetched = false;
@@ -55,8 +55,6 @@ window.onload = function () {
   }
 
   function getLikes(instaPosts, media, index) {
-    console.log('index at get likes - ' + index);
-    console.log('media.length at get likes - ' + media.length);
     if (likes.isCompleted) {
 
       likes.updateStatusDiv(`Started at ${likes.startDate}`);
@@ -64,13 +62,10 @@ window.onload = function () {
 
       likes.isInProgress = false;
 
-      console.log('completed');
-      console.log(data);
       return;
     }
     var i = media.length;
     if (i > index) { //we still have something to get
-      console.log(media[index]);
       var obj = media[index];
       var id = obj.node.id;
       var url = obj.node.display_url;
@@ -87,7 +82,6 @@ window.onload = function () {
       });
 
       getPostLikes(instaLike, instaPosts, media, index);
-      // instaLike = null;
 
 
     } else if (instaPosts.hasMore()) { //do we still have something to fetch
@@ -102,8 +96,6 @@ window.onload = function () {
   function getPostLikes(instaLike, instaPosts, media, index) {
 
     instaLike.getLikes().then(result => {
-      console.log('get likes resolved');
-      console.log(result);
       var len = result.length;
       for (var i = 0; i < result.length; i++) {
         var userId = result[i].node.id;
@@ -116,13 +108,10 @@ window.onload = function () {
           data.set(userId, { username: userName, count: 1 })
         }
       }
-      console.log('there are more likes' + instaLike.hasMore());
       if (instaLike.hasMore()) {
-        console.log('has more...')
         setTimeout(() => getPostLikes(instaLike, instaPosts, media, index), likes.delay);
 
       } else {
-        console.log('nothing more, go to next post')
         instaLike = null;
         //return to getLikes
         setTimeout(() => getLikes(instaPosts, media, ++index), likes.delay);
@@ -134,9 +123,7 @@ window.onload = function () {
 
   chrome.runtime.onMessage.addListener(function (request) {
     if (request.action === 'openLikesPage') {
-      console.log(request);
 
-      //likes.csrfToken = request.csrfToken;
       likes.delay = request.likeDelay;
 
       likes.viewerUserName = request.viewerUserName;

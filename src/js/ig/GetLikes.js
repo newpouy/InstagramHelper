@@ -22,11 +22,9 @@ var GetLikes = function (settings) { //eslint-disable-line no-unused-vars
   }
 
   function successGetLikes(data, resolve) {
-    console.log(data);
-    var likes = data.data.data.shortcode_media.edge_liked_by.edges;
     has_next_page = data.data.data.shortcode_media.edge_liked_by.page_info.has_next_page;
     end_cursor = data.data.data.shortcode_media.edge_liked_by.page_info.end_cursor;
-    resolve(likes);
+    resolve(data.data.data.shortcode_media.edge_liked_by.edges);
   }
 
   function retryError(message, errorNumber, resolve, reject) {

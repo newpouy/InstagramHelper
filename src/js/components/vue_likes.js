@@ -39,7 +39,12 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         return true;
       }
       return false;
+    },
+    startButtonDisabled: function () {
+      return this.isInProgress ||  //process is not running
+        '' === this.userToGetLikes; //profile is specified
     }
+
   },
   methods: {
     updateStatusDiv: function (message, color) {

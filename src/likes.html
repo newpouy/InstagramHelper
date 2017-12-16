@@ -11,29 +11,25 @@
   <div class="table container" id="app">
     <div class="table-row header">
       <div v-if="isInProgress" v-bind:style="{ color : statusColor}" style="width:100%;padding: 5px; font-weight: bold;">
-        <label>Status 1</label>
+        {{ status }}
       </div>
       <div v-if="isInProgress" style="width:100%;padding: 5px; font-weight: bold;">
-        <label>Status 2</label>
-      </div>
+          Started at {{startDate}}/Fetched posts {{fetched}}
+        </div>
       <div style="border: 0.5px solid; padding: 3px; margin: 3px; display: inline-block;">
         <br/>
 
         <div :disabled="isInProgress" v-bind:class="{ disabled: isInProgress }">
-          <strong>
-            <label>DIV DISABLED DURING RUNNING:</label>
-          </strong>
-          <label>Profile: </label>
+          <label>Profile to analyze: </label>
           <input type="text" v-model="userToGetLikes" />
-
         </div>
 
         <strong>
-          <label>Please specify when to stop:</label>
+          <label>Delay between requests:</label>
         </strong>
-        Delay between requests:
-        <input type="number" min="10" step="10" v-model.number="delay" id="delay" />
-        <button id="start">Get likes!</button>
+
+        <input type="number" min="100" step="100" v-model.number="delay" id="delay" />
+        <button id="start" :disabled="startButtonDisabled">Get likes!</button>
         <button id="cancel" :disabled="!isInProgress" v-on:click="stop=true">Stop it!</button>
       </div>
     </div>
@@ -48,8 +44,7 @@
 
   </div>
 
-  <script src="lib/jquery-3.1.1.min.js"></script>
-  <!-- just for getUserProfile -->
+  <script src="lib/jquery-3.1.1.min.js"></script> <!-- just for getUserProfile; should be refactored -->
   <script src="lib/axios.min.js"></script>
   <script src="js/pages/likesPage.js"></script>
   <script src="js/ig/GetLikes.js"></script>
