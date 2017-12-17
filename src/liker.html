@@ -55,7 +55,7 @@
         <br />
         <input type="radio" v-model="stopCriterion" value="amountPosts" name="stopCriterion" id="AmountPosts" />
         <label for="AmountPictures">When liked
-          <input type="number" min="10" step="10" :disabled="stopCriterion !=='amountPosts'" v-model.number="amountToLike" id="amount"
+          <input type="number" min="100" step="100" :disabled="stopCriterion !=='amountPosts'" v-model.number="amountToLike" id="amount"
           /> posts</label>
         <br /> Delay between requests:
         <input type="number" min="100" step="100" v-model.number="delay" id="delay" />
