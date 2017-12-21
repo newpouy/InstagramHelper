@@ -64,6 +64,10 @@ window.onload = function () {
 
       likes.log = JSON.stringify([...data]);
 
+     Array.from(data.values()).forEach(e => __items.push(e)); //use for
+
+      console.log(__items);
+
       return;
     }
     var i = media.length;
@@ -101,6 +105,8 @@ window.onload = function () {
       for (var i = 0; i < result.length; i++) {
         var userId = result[i].node.id;
         var userName = result[i].node.username;
+        var fullName = result[i].node.full_name;
+        var url = result[i].node.profile_pic_url;
         if (data.has(userId)) {
           var obj = data.get(userId);
           obj.count++;
@@ -109,7 +115,7 @@ window.onload = function () {
           }
           data.set(userId, obj);
         } else {
-          data.set(userId, { username: userName, count: 1, taken: taken });
+          data.set(userId, { userName: userName, count: 1, taken: taken, fullName: fullName, url: url });
         }
       }
       if (instaLike.hasMore()) {

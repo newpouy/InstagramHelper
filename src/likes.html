@@ -3,51 +3,65 @@
 
 <head>
   <title>Likes</title>
-  <link rel="stylesheet" type="text/css" media="screen" href="css/liker.css" />
+  <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' />
+  <link rel="stylesheet" type="text/css" href="css/liker.css" />
+  <link rel="stylesheet" type="text/css" href="lib/vue/css/vuetify.min.css" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 </head>
 
 <body style="height:98%">
 
   <div class="table container" id="app">
-    <div class="table-row header">
-      <div v-if="isInProgress" v-bind:style="{ color : statusColor}" style="width:100%;padding: 5px; font-weight: bold;">
-        {{ status }}
-      </div>
-      <div v-if="isInProgress" style="width:100%;padding: 5px; font-weight: bold;">
+      <div class="table-row header">
+        <div v-if="isInProgress" v-bind:style="{ color : statusColor}" style="width:100%;padding: 5px; font-weight: bold;">
+          {{ status }}
+        </div>
+        <div v-if="isInProgress" style="width:100%;padding: 5px; font-weight: bold;">
           Started at {{startDate}}/Fetched posts {{fetched}}
         </div>
-      <div style="border: 0.5px solid; padding: 3px; margin: 3px; display: inline-block;">
-        <br/>
+        <div style="border: 0.5px solid; padding: 3px; margin: 3px; display: inline-block;">
+          <br/>
 
-        <div :disabled="isInProgress" v-bind:class="{ disabled: isInProgress }">
+          <div :disabled="isInProgress" v-bind:class="{ disabled: isInProgress }">
+            <strong>
+              <label>Profile to analyze: </label>
+            </strong>
+            <input type="text" v-model="userToGetLikes" />
+          </div>
+
           <strong>
-            <label>Profile to analyze: </label>
+            <label>Delay between requests:</label>
           </strong>
-          <input type="text" v-model="userToGetLikes" />
-        </div>
 
-        <strong>
-          <label>Delay between requests:</label>
-        </strong>
-
-        <input type="number" min="100" step="100" v-model.number="delay" id="delay" />
-        <br/>
-        <button id="start" :disabled="startButtonDisabled">Get likes!</button>
-        <button id="cancel" :disabled="!isInProgress" v-on:click="stop=true">Stop it!</button>
-      </div>
-    </div>
-
-    <div class="table-row body">
-      <div class="body-content-wrapper">
-        <div class="body-content">
-          <textarea v-model="log" id="log_text_area"></textarea>
+          <input type="number" min="100" step="100" v-model.number="delay" id="delay" />
+          <br/>
+          <button id="start" :disabled="startButtonDisabled">Get likes!</button>
+          <button id="cancel" :disabled="!isInProgress" v-on:click="stop=true">Stop it!</button>
         </div>
       </div>
-    </div>
 
+      <div class="table-row body">
+        <div class="body-content-wrapper">
+          <div class="body-content">
+            <textarea v-model="log" id="log_text_area"></textarea>
+          </div>
+        </div>
+      </div>
+
+
+      <v-app>
+
+
+      <div>
+        <my-data-table></my-data-table>
+      </div>
+
+    </v-app>
   </div>
 
-  <script src="lib/jquery-3.1.1.min.js"></script> <!-- just for getUserProfile; should be refactored -->
+  <script src="lib/jquery-3.1.1.min.js"></script>
+  <!-- just for getUserProfile; should be refactored -->
   <script src="lib/axios.min.js"></script>
   <script src="js/pages/likesPage.js"></script>
   <script src="js/ig/GetLikes.js"></script>
@@ -61,7 +75,8 @@
   <script src="js/instaCountdown.js"></script>
   <script src="js/instaTimeout.js"></script>
 
-  <script src="lib/vue.js"></script>
+  <script src="lib/vue/vue.js"></script>
+  <script src="lib/vue/vuetify.js"></script>
   <script src="js/components/vue_likes.js"></script>
 
   <script src="js/pages/ga.js"></script>
