@@ -20,13 +20,14 @@ window.onload = function () {
         userId: likes.viewerUserName === likes.userToGetLikes ? likes.viewerUserId : ''
       });
 
-
     instaPosts.resolveUserName().then(() => {
 
       data = new Map();
 
       likes.startDate = (new Date()).toLocaleTimeString();
-      likes.fetched = 0;
+      likes.fetchedPosts = 0;
+      likes.processedPosts = 0;
+      likes.totalPosts = 0;
       likes.stop = false;
       likes.log = '';
       likes.allPostsFetched = false;
@@ -46,7 +47,7 @@ window.onload = function () {
   function getPosts(instaPosts, restart) {
     instaPosts.getPosts(restart).then(media => {
 
-      likes.fetched += media.length;
+      likes.fetchedPosts += media.length;
       getLikes(instaPosts, media, 0);
 
     }).catch(e => {
@@ -58,20 +59,21 @@ window.onload = function () {
     if (likes.isCompleted) {
 
       likes.updateStatusDiv(`Started at ${likes.startDate}`);
-      likes.updateStatusDiv(`Fetched ${likes.fetched} posts`);
+      likes.updateStatusDiv(`Fetched ${likes.fetchedPosts} posts`);
 
       likes.isInProgress = false;
+      //likes.log = JSON.stringify([...data]);
 
-      likes.log = JSON.stringify([...data]);
-
-     Array.from(data.values()).forEach(e => __items.push(e)); //use for
-
-      console.log(__items);
+      __items.length = 0;
+      Array.from(data.values()).forEach(e => {
+        e.taken = new Date(e.taken * 1000).toLocaleString();
+        __items.push(e);
+      }); //use for-cycle?
 
       return;
     }
-    var i = media.length;
-    if (i > index) { //we still have something to get
+
+    if (media.length > index) { //we still have something to get
       var obj = media[index];
       var url = obj.node.display_url;
       var taken = new Date(obj.node.taken_at_timestamp * 1000).toLocaleString();
@@ -83,7 +85,7 @@ window.onload = function () {
         shortCode: shortcode,
         end_cursor: '',
         updateStatusDiv: likes.updateStatusDiv,
-        pageSize: 20, //todo
+        pageSize: 20, //todo: parametrize
         vueStatus: likes
       });
 
@@ -92,7 +94,7 @@ window.onload = function () {
     } else if (instaPosts.hasMore()) { //do we still have something to fetch
       likes.updateStatusDiv(`The more posts will be fetched now...${new Date()}`);
       setTimeout(() => getPosts(instaPosts, false), likes.delay);
-    } else { // nothing more found in profile >> to restart
+    } else { // nothing more found in profile
       likes.allPostsFetched = true;
       setTimeout(() => getLikes(instaPosts, media, ++index), 0);
     }
@@ -122,6 +124,7 @@ window.onload = function () {
         setTimeout(() => getPostLikes(instaLike, instaPosts, media, index, taken), likes.delay);
       } else {
         instaLike = null;
+        likes.processedPosts += 1;
         setTimeout(() => getLikes(instaPosts, media, ++index), likes.delay);
       }
     });

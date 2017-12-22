@@ -1,20 +1,11 @@
 /* globals Vue */
 
-var __items = [
-//  {
-//    userName: "dado58_2000",
-//    count: 8,
-//    taken: 1512057853,
-//    fullName: "Doriano",
-//    url: "https://scontent-arn2-1.cdninstagram.com/t51.2885-…150x150/11373999_1616335948621948_900914358_a.jpg"
-//  }
-];
+var __items = [];
 
 var myDataTable = {
-  template: `
-<v-card>
+  template: `<v-card>
   <v-card-title>
-    Likes
+    <h3 class="headline mb-0"> Likes </h3>
     <v-spacer></v-spacer>
     <v-text-field
       append-icon="search"
@@ -28,11 +19,12 @@ var myDataTable = {
       v-bind:headers="headers"
       v-bind:items="items"
       v-bind:search="search"
-      :pagination.sync="pagination"
+      v-bind:pagination.sync="pagination"
+      v-bind:totalItems="totalItems"
     >
     <template slot="items" slot-scope="props">
       <td class="text-xs-right">
-        <a v-bind:href="[props.item.url][0]" target="_blank"><img v-bind:src="[props.item.url][0]"></img></a>
+        <a v-bind:href="'https://www.instagram.com/'+[props.item.userName][0]" target="_blank"><img v-bind:src="[props.item.url][0]"></img></a>
       </td>
       <td class="text-xs-right">{{ props.item.userName }}</td>
       <td class="text-xs-right">{{ props.item.count }}</td>
@@ -40,30 +32,26 @@ var myDataTable = {
       <td class="text-xs-right">{{ props.item.fullName }}</td>
     </template>
     <template slot="pageText" slot-scope="{ pageStart, pageStop }">
-      From {{ pageStart }} to {{ pageStop }}
+      From {{ pageStart }} to {{ pageStop }} of {{ totalItems }}
     </template>
   </v-data-table>
-</v-card>
-`,
+</v-card>`,
   data: function () {
     return {
       search: '',
-      pagination: { sortBy: 'count', rowsPerPage: -1, descending: true },
+      pagination: { sortBy: 'count', rowsPerPage: 25, descending: true },
       headers: [
-        { text: 'Img', value: '', sortable: false },
-        {
-          text: 'Username',
-          align: 'left',
-          value: 'userName'
-        },
+        { text: 'Image', value: '', sortable: false },
+        { text: 'Username', value: 'userName' },
         { text: 'Count', value: 'count' },
         { text: 'Last date', value: 'taken' },
         { text: 'Full Name', value: 'fullName' }
       ],
-      items: __items
-    }
+      items: __items,
+      totalItems: __items.length
+    };
   }
-}
+};
 
 var likes = new Vue({ // eslint-disable-line no-unused-vars
   el: '#app',
@@ -79,7 +67,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
     delay: 0, //interval ldbetween sending the http requests
 
-    fetched: 0, //how may posts were fetched
+    fetchedPosts: 0, //how may posts were fetched
+    processedPosts: 0,
+    totalPosts: 0, //total posts in profile
 
     stop: false, //if user requested the proceess to be stopped by clicking the button
 
@@ -108,8 +98,16 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     startButtonDisabled: function () {
       return this.isInProgress ||  //process is not running
         '' === this.userToGetLikes; //profile is specified
-    }
+    },
+    binding () {
+      const binding = {};
 
+      if (this.$vuetify.breakpoint.mdAndUp) {
+        binding.column = true;
+      }
+
+      return binding;
+    }
   },
   methods: {
     updateStatusDiv: function (message, color) {

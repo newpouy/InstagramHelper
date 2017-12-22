@@ -1,61 +1,46 @@
 <!DOCTYPE html>
-<html style="height:98%">
+<html>
 
 <head>
   <title>Likes</title>
   <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' />
-  <link rel="stylesheet" type="text/css" href="css/liker.css" />
   <link rel="stylesheet" type="text/css" href="lib/vue/css/vuetify.min.css" />
-
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 </head>
 
-<body style="height:98%">
-
-  <div class="table container" id="app">
-      <div class="table-row header">
-        <div v-if="isInProgress" v-bind:style="{ color : statusColor}" style="width:100%;padding: 5px; font-weight: bold;">
-          {{ status }}
-        </div>
-        <div v-if="isInProgress" style="width:100%;padding: 5px; font-weight: bold;">
-          Started at {{startDate}}/Fetched posts {{fetched}}
-        </div>
-        <div style="border: 0.5px solid; padding: 3px; margin: 3px; display: inline-block;">
-          <br/>
-
-          <div :disabled="isInProgress" v-bind:class="{ disabled: isInProgress }">
-            <strong>
-              <label>Profile to analyze: </label>
-            </strong>
-            <input type="text" v-model="userToGetLikes" />
-          </div>
-
-          <strong>
-            <label>Delay between requests:</label>
-          </strong>
-
-          <input type="number" min="100" step="100" v-model.number="delay" id="delay" />
-          <br/>
-          <button id="start" :disabled="startButtonDisabled">Get likes!</button>
-          <button id="cancel" :disabled="!isInProgress" v-on:click="stop=true">Stop it!</button>
-        </div>
-      </div>
-
-      <div class="table-row body">
-        <div class="body-content-wrapper">
-          <div class="body-content">
-            <textarea v-model="log" id="log_text_area"></textarea>
-          </div>
-        </div>
-      </div>
+<body>
 
 
-      <v-app>
+  <div id="app">
+    <v-app>
 
-
-      <div>
-        <my-data-table></my-data-table>
-      </div>
+      <v-container grid-list-xl>
+        <v-layout v-bind="binding">
+          <v-flex v-if="isInProgress">
+            <div v-bind:style="{ color : statusColor}">
+              <strong>{{ status }}</strong>
+            </div>
+            <div>
+              <strong>Started at {{startDate}}/Fetched {{fetchedPosts}} posts/Processed {{processedPosts}} of {{totalPosts}} posts</strong>
+            </div>
+          </v-flex>
+          <v-flex>
+            <div :disabled="isInProgress" v-bind:class="{ disabled: isInProgress }">
+              <v-text-field label="Username to analyze" v-model="userToGetLikes"></v-text-field>
+            </div>
+            <v-text-field label="Delay between requests" type="number" min=100 step=100 v-model.number="delay"></v-text-field>
+            <v-btn id="start" :disabled="startButtonDisabled" color="primary">Calculate likes!</v-btn>
+            <v-btn :disabled="!isInProgress" color="primary" v-on:click="stop=true">Stop it!</v-btn>
+          </v-flex>
+          <v-flex>
+            <v-text-field id="log_text_area" label="Log" multi-line v-model="log"></v-text-field>
+          </v-flex>
+          <v-flex>
+            <my-data-table></my-data-table>
+          </v-flex>
+        </v-layout>
+      </v-container>
 
     </v-app>
   </div>
