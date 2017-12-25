@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Likes</title>
+  <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' />
+  <link rel="stylesheet" type="text/css" href="lib/vue/css/vuetify.min.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="css/liker.css" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+
+  <div id="app">
+    <v-app>
+
+      <v-container grid-list-xl>
+        <v-layout v-bind="binding">
+          <v-flex v-if="isInProgress">
+            <div v-bind:style="{ color : statusColor}">
+              <strong>{{ status }}</strong>
+            </div>
+            <div>
+              <strong>Started at {{startDate}}/Fetched {{fetchedPosts}} posts/Processed {{processedPosts}} of {{totalPosts}} posts/Likes {{processedLikes}} of {{totalLikes}}</strong>
+            </div>
+          </v-flex>
+          <v-flex>
+            <v-text-field :disabled="isInProgress" label="Username to analyze" v-model="userToGetLikes"></v-text-field>
+            <v-text-field label="Delay between requests, ms" type="number" min=100 step=100 v-model.number="delay"></v-text-field>
+            <v-btn id="start" :disabled="startButtonDisabled" color="primary">Calculate likes!</v-btn>
+            <v-btn :disabled="!isInProgress" color="primary" v-on:click="stop=true">Stop it!</v-btn>
+          </v-flex>
+          <v-flex>
+            <v-text-field id="log_text_area" label="Log" multi-line v-model="log"></v-text-field>
+          </v-flex>
+          <v-flex>
+            <my-data-table></my-data-table>
+          </v-flex>
+        </v-layout>
+      </v-container>
+
+    </v-app>
+  </div>
+
+  <script src="lib/jquery-3.1.1.min.js"></script>
+  <!-- just for getUserProfile; should be refactored -->
+  <script src="lib/axios.min.js"></script>
+  <script src="js/pages/likesPage.js"></script>
+  <script src="js/ig/GetLikes.js"></script>
+  <script src="js/ig/GetPosts.js"></script>
+  <!-- will be used this wrapper-->
+  <script src="js/ig/GetProfile.js"></script>
+  <script src="js/ig/GetPostInfo.js"></script>
+  <script src="js/ig/getUserProfile.js"></script>
+  <script src="js/instaDefOptions.js"></script>
+  <script src="js/instaMessages.js"></script>
+  <script src="js/instaCountdown.js"></script>
+  <script src="js/instaTimeout.js"></script>
+
+  <script src="lib/vue/vue.js"></script>
+  <script src="lib/vue/vuetify.min.js"></script>
+  <script src="js/components/vue_likes.js"></script>
+
+  <script src="js/pages/ga.js"></script>
+
+</body>
+
+</html>

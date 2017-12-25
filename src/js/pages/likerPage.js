@@ -77,13 +77,14 @@ window.onload = function () {
       var obj = media[index];
       var id = obj.node.id;
       var url = obj.node.display_url;
+      var taken = new Date(obj.node.taken_at_timestamp * 1000).toLocaleString();
       var userName = 'likeProfile' === liker.whatToLike ? liker.userToLike : obj.node.owner.username;
-      var likes = obj.node.edge_media_preview_like.count;
-      liker.updateStatusDiv(`Post ${url} from ${userName} has ${likes} likes`);
+      var likesCount = obj.node.edge_media_preview_like.count;
+      liker.updateStatusDiv(`Post ${url} taken on ${taken} by ${userName} has ${likesCount} likes`);
       instaPosts.isNotLiked(obj).then(result => {
         if (result) { //not yet liked
           instaLike.like({ mediaId: id, csrfToken: liker.csrfToken, updateStatusDiv: liker.updateStatusDiv, vueStatus: liker }).then(function () {
-            liker.updateStatusDiv(`...liked post ${++liker.liked} on ${new Date()}`);
+            liker.updateStatusDiv(`...liked post ${++liker.liked} on ${new Date().toLocaleString()}`);
             setTimeout(() => likeMedia(instaPosts, media, ++index), liker.delay);
           });
         } else {
@@ -94,26 +95,26 @@ window.onload = function () {
       });
     } else if (instaPosts.hasMore()) { //do we still have something to fetch
       liker.updateStatusDiv(`The more posts will be fetched now...${new Date()}`);
-      setTimeout(() => getPosts(instaPosts), liker.delay);
+      setTimeout(() => getPosts(instaPosts, false), liker.delay);
     } else if ('likeFeed' === liker.whatToLike) { // nothing more in feed > restart
       liker.updateStatusDiv(`IG has returned no more posts, restart ...${new Date()}`);
       liker.restarted++;
       setTimeout(() => getPosts(instaPosts, true), liker.delay);
-    } else { // nothing more found in profile >> to restart
+    } else { // nothing more found in profile >> no restart
       liker.allPostsFetched = true;
       setTimeout(() => likeMedia(instaPosts, media, ++index), 0);
     }
   }
 
   chrome.runtime.onMessage.addListener(function (request) {
-    if (request.action === 'open_liker') {
+    if (request.action === 'openLikerPage') {
       /*
         todo: request.pageSize
       */
       liker.csrfToken = request.csrfToken;
       liker.delay = request.likeDelay;
 
-      liker.viewerUserName = request.viewerUserName; //Do I need that
+      liker.viewerUserName = request.viewerUserName;
       liker.viewerUserId = request.viewerUserId;
 
       liker.userToLike = request.userName === instaDefOptions.you ? request.viewerUserName : request.userName;

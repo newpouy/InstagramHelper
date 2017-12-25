@@ -27,7 +27,8 @@
     } else if (
       ('get_insta_users' === request.action) ||
       ('get_common_users' === request.action) ||
-      ('open_liker' === request.action)
+      ('openLikerPage' === request.action) ||
+      ('openLikesPage' === request.action)
     ) {
       url = chrome.extension.getURL(request.page);
       promiseChrome.promiseCreateTab({
