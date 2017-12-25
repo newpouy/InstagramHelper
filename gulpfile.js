@@ -28,7 +28,7 @@ gulp.task('build', ['clean'], () => {
 
   var isProductionMode = () => args.production ? true : false;
 
-  var isValidJsFile = (file) => isProductionMode() ? 'vue.js' !== file.history[0].replace(/^.*[\\\/]/, '') : true;
+  var isValidJsFile = (file) => isProductionMode() ? 'vue.js' !== file.history[0].replace(/^.*[\\\/]/, '') : true; //don't copy vue.js if production mode
 
   return gulp
     .src('./src/**/*.*', { base: './src/' })
@@ -39,7 +39,7 @@ gulp.task('build', ['clean'], () => {
     .pipe($.if(isProductionMode, $.if(isNotMinifiedFile, minify().on('error', function (err) {
       $.util.log($.util.colors.red('[Error]'), err.toString());
     }))))
-    .pipe($.if('*liker.html', $.replace('vue.js', 'vue.min.js')))
+    .pipe($.if('*like*.html', $.replace('vue.js', 'vue.min.js')))
     .pipe(gulp.dest('./build/'));
 });
 

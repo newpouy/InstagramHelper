@@ -40,7 +40,7 @@ var myDataTable = {
         { text: 'Image', value: '', sortable: false },
         { text: 'Username', value: 'userName' },
         { text: 'Count', value: 'count' },
-        { text: 'Last date', value: 'taken' },
+        { text: 'Last date', value: 'taken', sortable: false },
         { text: 'Full Name', value: 'fullName' }
       ],
       items: __items
@@ -63,7 +63,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     delay: 0, //interval ldbetween sending the http requests
 
     fetchedPosts: 0, //how may posts were fetched
-    processedPosts: 0,
+    processedPosts: 0, //for how much posts the likes were already analyzed
     totalPosts: 0, //total posts in profile
 
     stop: false, //if user requested the proceess to be stopped by clicking the button
@@ -75,8 +75,10 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
     userToGetLikes: '',
 
-    allPostsFetched: false // when all posts from user's profile are fetched
+    allPostsFetched: false, // when all posts from user's profile are fetched
 
+    processedLikes: 0, //how much processed likes for current post
+    totalLikes: 0 //how much likes has the currently analyzed post
 
   },
   computed: {

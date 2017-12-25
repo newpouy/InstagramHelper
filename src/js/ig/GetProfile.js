@@ -6,6 +6,7 @@ var GetProfile = function (settings) { //eslint-disable-line no-unused-vars
   'use strict';
 
   var has_next_page;
+  var totalMedia;
 
   var {
       userId, updateStatusDiv, end_cursor, pageSize, vueStatus
@@ -26,9 +27,14 @@ var GetProfile = function (settings) { //eslint-disable-line no-unused-vars
     return has_next_page;
   }
 
+  function getTotal() {
+    return totalMedia;
+  }
+
   function successGetProfile(data, resolve) {
     has_next_page = data.data.data.user.edge_owner_to_timeline_media.page_info.has_next_page;
     end_cursor = data.data.data.user.edge_owner_to_timeline_media.page_info.end_cursor;
+    totalMedia = data.data.data.user.edge_owner_to_timeline_media.count;
     resolve(data.data.data.user.edge_owner_to_timeline_media.edges);
   }
 
@@ -94,7 +100,8 @@ var GetProfile = function (settings) { //eslint-disable-line no-unused-vars
   return {
     setUserId: setUserId,
     getProfile: getProfile,
-    hasMore: hasMore
+    hasMore: hasMore,
+    getTotal: getTotal
   };
 
 };

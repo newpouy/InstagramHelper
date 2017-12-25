@@ -5,12 +5,12 @@
   <title>Likes</title>
   <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' />
   <link rel="stylesheet" type="text/css" href="lib/vue/css/vuetify.min.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="css/liker.css" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 </head>
 
 <body>
-
 
   <div id="app">
     <v-app>
@@ -22,14 +22,12 @@
               <strong>{{ status }}</strong>
             </div>
             <div>
-              <strong>Started at {{startDate}}/Fetched {{fetchedPosts}} posts/Processed {{processedPosts}} of {{totalPosts}} posts</strong>
+              <strong>Started at {{startDate}}/Fetched {{fetchedPosts}} posts/Processed {{processedPosts}} of {{totalPosts}} posts/Likes {{processedLikes}} of {{totalLikes}}</strong>
             </div>
           </v-flex>
           <v-flex>
-            <div :disabled="isInProgress" v-bind:class="{ disabled: isInProgress }">
-              <v-text-field label="Username to analyze" v-model="userToGetLikes"></v-text-field>
-            </div>
-            <v-text-field label="Delay between requests" type="number" min=100 step=100 v-model.number="delay"></v-text-field>
+            <v-text-field :disabled="isInProgress" label="Username to analyze" v-model="userToGetLikes"></v-text-field>
+            <v-text-field label="Delay between requests, ms" type="number" min=100 step=100 v-model.number="delay"></v-text-field>
             <v-btn id="start" :disabled="startButtonDisabled" color="primary">Calculate likes!</v-btn>
             <v-btn :disabled="!isInProgress" color="primary" v-on:click="stop=true">Stop it!</v-btn>
           </v-flex>
@@ -61,7 +59,7 @@
   <script src="js/instaTimeout.js"></script>
 
   <script src="lib/vue/vue.js"></script>
-  <script src="lib/vue/vuetify.js"></script>
+  <script src="lib/vue/vuetify.min.js"></script>
   <script src="js/components/vue_likes.js"></script>
 
   <script src="js/pages/ga.js"></script>

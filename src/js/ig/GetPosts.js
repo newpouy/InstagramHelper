@@ -32,6 +32,14 @@ var GetPosts = function (settings) { //eslint-disable-line no-unused-vars
 
   init[mode]();  //initialize the needed class
 
+  function getTotal() { //only for getProfile
+    if (typeof instaPosts.getTotal === 'function') {
+      return instaPosts.getTotal();
+    } else {
+      return -1;
+    }
+  }
+
   function getPosts(restart) {
     //return instaPosts.getFeed(restart);
     return get[mode](restart);
@@ -70,7 +78,8 @@ var GetPosts = function (settings) { //eslint-disable-line no-unused-vars
     getPosts: getPosts,
     resolveUserName: resolveUserName,
     isNotLiked: isNotLiked,
-    hasMore: hasMore
+    hasMore: hasMore,
+    getTotal: getTotal
   };
 
 };

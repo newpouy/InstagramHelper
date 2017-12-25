@@ -48,6 +48,8 @@ window.onload = function () {
     instaPosts.getPosts(restart).then(media => {
 
       likes.fetchedPosts += media.length;
+      likes.totalPosts = instaPosts.getTotal();
+
       getLikes(instaPosts, media, 0);
 
     }).catch(e => {
@@ -55,31 +57,36 @@ window.onload = function () {
     });
   }
 
+  function whenCompleted() {
+    likes.updateStatusDiv(`Started at ${likes.startDate}`);
+    likes.updateStatusDiv(`Fetched ${likes.fetchedPosts} posts`);
+
+    likes.isInProgress = false;
+    //likes.log = JSON.stringify([...data]);
+
+    __items.length = 0;
+    Array.from(data.values()).forEach(e => {
+      e.taken = new Date(e.taken * 1000).toLocaleString();
+      __items.push(e);
+    });
+
+  }
+
   function getLikes(instaPosts, media, index) {
     if (likes.isCompleted) {
-
-      likes.updateStatusDiv(`Started at ${likes.startDate}`);
-      likes.updateStatusDiv(`Fetched ${likes.fetchedPosts} posts`);
-
-      likes.isInProgress = false;
-      //likes.log = JSON.stringify([...data]);
-
-      __items.length = 0;
-      Array.from(data.values()).forEach(e => {
-        e.taken = new Date(e.taken * 1000).toLocaleString();
-        __items.push(e);
-      }); //use for-cycle?
-
-      return;
+      return whenCompleted();
     }
 
     if (media.length > index) { //we still have something to get
       var obj = media[index];
       var url = obj.node.display_url;
       var taken = new Date(obj.node.taken_at_timestamp * 1000).toLocaleString();
-      var likesCount = obj.node.edge_media_preview_like.count;
       var shortcode = obj.node.shortcode;
-      likes.updateStatusDiv(`Post ${url} taken on ${taken} has ${likesCount} likes`);
+      likes.totalLikes = obj.node.edge_media_preview_like.count;
+      likes.processedLikes = 0;
+      likes.updateStatusDiv(`Post ${url} taken on ${taken} has ${likes.totalLikes} likes`);
+
+      //totalLikes, processedLikes
 
       var instaLike = new GetLikes({
         shortCode: shortcode,
@@ -101,6 +108,9 @@ window.onload = function () {
   }
 
   function getPostLikes(instaLike, instaPosts, media, index, taken) {
+    if (likes.isCompleted) {
+      return whenCompleted();
+    }
 
     instaLike.getLikes().then(result => {
       likes.updateStatusDiv(`... fetched information about ${result.length} likes`);
@@ -119,6 +129,7 @@ window.onload = function () {
         } else {
           data.set(userId, { userName: userName, count: 1, taken: taken, fullName: fullName, url: url });
         }
+        likes.processedLikes += 1;
       }
       if (instaLike.hasMore()) {
         setTimeout(() => getPostLikes(instaLike, instaPosts, media, index, taken), likes.delay);
@@ -129,13 +140,14 @@ window.onload = function () {
       }
     });
 
-
   }
 
   chrome.runtime.onMessage.addListener(function (request) {
     if (request.action === 'openLikesPage') {
 
-      likes.delay = request.likeDelay;
+      //console.log(request);
+
+      likes.delay = 1000 + request.likeDelay; //todo: just temp
 
       likes.viewerUserName = request.viewerUserName;
       likes.viewerUserId = request.viewerUserId;

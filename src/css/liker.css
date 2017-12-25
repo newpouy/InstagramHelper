@@ -38,3 +38,7 @@ textarea {
 .disabled {
   pointer-events:none;
 }
+
+#log_text_area {
+  font-size: 100%!important;
+}
