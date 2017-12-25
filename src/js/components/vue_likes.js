@@ -20,7 +20,6 @@ var myDataTable = {
       v-bind:items="items"
       v-bind:search="search"
       v-bind:pagination.sync="pagination"
-      v-bind:totalItems="totalItems"
     >
     <template slot="items" slot-scope="props">
       <td class="text-xs-right">
@@ -30,9 +29,6 @@ var myDataTable = {
       <td class="text-xs-right">{{ props.item.count }}</td>
       <td class="text-xs-right">{{ props.item.taken }}</td>
       <td class="text-xs-right">{{ props.item.fullName }}</td>
-    </template>
-    <template slot="pageText" slot-scope="{ pageStart, pageStop }">
-      From {{ pageStart }} to {{ pageStop }} of {{ totalItems }}
     </template>
   </v-data-table>
 </v-card>`,
@@ -47,8 +43,7 @@ var myDataTable = {
         { text: 'Last date', value: 'taken' },
         { text: 'Full Name', value: 'fullName' }
       ],
-      items: __items,
-      totalItems: __items.length
+      items: __items
     };
   }
 };
