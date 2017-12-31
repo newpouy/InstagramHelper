@@ -4,12 +4,12 @@ var instaMessages = (function () {
   'use strict';
 
   var m = {
-    HTTP400: 'Bad request [400]. The execution will continue in ${1} minutes!', //only for getFeed and like
-    HTTP404: 'Requested page not found [404]. The execution will continue in ${1} minutes!',
-    HTTP403: 'Got HTTP 403 Error [403]. The execution will continue in ${1} minutes!',
-    HTTP429: 'Instagram returned HTTP 429 Error Code that means too many requests were already sent. The execution will continue in ${1} minutes!',
-    HTTP50X: 'Got HTTP ${0} Error. The execution will continue in ${1} minutes!',
-    NOTCONNECTED: 'Not connected. Verify Network. Request will be retried in ${1} munutes!',
+    HTTP400: 'Bad request [400]. The execution will continue in ${0} minutes!', //only for getFeed and like
+    HTTP404: 'Requested page not found [404]. The execution will continue in ${0} minutes!',
+    HTTP403: 'Got HTTP 403 Error [403]. The execution will continue in ${0} minutes!',
+    HTTP429: 'Instagram returned HTTP 429 Error Code that means too many requests were already sent. The execution will continue in ${0} minutes!',
+    HTTP50X: 'Got HTTP ${0} Error. The execution will continue in ${0} minutes!',
+    NOTCONNECTED: 'Not connected. Verify Network. Request will be retried in ${0} munutes!',
     NOTLOGGEDIN: 'Seems you are not logged in!',
     NOTALLOWEDUSER: 'You cannot get the followers/following users of user ${0}, its account is private and you are not following it.',
     JSONPARSEERROR: 'Requested JSON parse failed.',
