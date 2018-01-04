@@ -52,7 +52,7 @@ $(function () {
     search: false
   }, {
     label: 'Info',
-    name: 'id',
+    name: 'username',
     sortable: false,
     formatter: function (cellvalue, model, row) {
       var ret = `id:${row.id}<br/>username:<strong>${row.username}</strong><br/>`;
@@ -64,7 +64,13 @@ $(function () {
     cellattr: function () {
       return 'style="white-space: normal;"';
     },
-    search: false
+    search: true,
+    stype: 'text',
+    searchoptions: {
+      dataInit: function(elem) {
+        $(elem).attr('placeholder', '<<Filter by username>>');
+      }
+    }
   }, {
     label: 'Bio',
     name: 'biography',
@@ -215,7 +221,7 @@ $(function () {
     search: false
   }, {
     label: 'Info',
-    name: 'id',
+    name: 'username',
     sortable: false,
     formatter: function (cellvalue, model, row) {
       var ret = `id:${row.id}<br/>username:<strong>${row.username}</strong><br/>`;
@@ -225,7 +231,13 @@ $(function () {
     cellattr: function () {
       return 'style="white-space: normal;"';
     },
-    search: false
+    search: true,
+    stype: 'text',
+    searchoptions: {
+      dataInit: function(elem) {
+        $(elem).attr('placeholder', '<<Filter by username>>');
+      }
+    }
   }, {
     label: 'Followed <br>by you',
     name: 'followed_by_viewer',
@@ -610,9 +622,12 @@ $(function () {
       colModel: colModel,
       viewrecords: true, // show the current page, data rang and total records on the toolbar
       loadonce: true,
+      ignoreCase: true,
       caption: 'All' === obj.requestRelType ? `${obj.requestRelType} users of ${obj.userName}` : `${obj.userName} ${obj.requestRelType}`
     }).jqGrid('filterToolbar', {
-      searchOperators: true
+      searchOperators: true,
+      defaultSearch: 'cn',
+      searchOnEnter: false
     }).jqGrid('navGrid', '#jqGridPager', {
       search: true,
       add: false,
