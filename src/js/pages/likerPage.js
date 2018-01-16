@@ -84,6 +84,7 @@ window.onload = function () {
       instaPosts.isNotLiked(obj).then(result => {
         if (result) { //not yet liked
           instaLike.like({ mediaId: id, csrfToken: liker.csrfToken, updateStatusDiv: liker.updateStatusDiv, vueStatus: liker }).then(function () {
+            //todo : if missing media, skip inc
             liker.updateStatusDiv(`...liked post ${++liker.liked} on ${new Date().toLocaleString()}`);
             setTimeout(() => likeMedia(instaPosts, media, ++index), liker.delay);
           });
