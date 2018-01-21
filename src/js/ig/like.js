@@ -16,7 +16,7 @@ instaLike.like = function (settings) {
 
   function successLike(data, resolve) {
     updateStatusDiv(`The request to like ${mediaId} was successful with response - ${data.data.status}`);
-    resolve(data.status);
+    resolve(true);
   }
 
   function retryError(message, errorNumber, resolve, reject) {
@@ -34,11 +34,15 @@ instaLike.like = function (settings) {
   function errorLike(error, resolve, reject) {
     console.log(error); //eslint-disable-line no-console
     var errorCode = error.response ? error.response.status : 0;
-    if (400 == errorCode) {
-      //if missing media, switch to the next media
-      //put the log and status div
-      //skip inc if missing media
-      //resolve();
+    if (400 === errorCode) {
+        alert('400');
+        if ('missing media' === error.text) {
+          alert ('missing media came'); //TODO
+          //if missing media, switch to the next media
+          //put the log and status div
+          //skip inc if missing media
+          resolve(false);
+        }
     }
     console.log(`Error making ajax request to like post ${mediaId}, status - ${errorCode}`); //eslint-disable-line no-console
 
