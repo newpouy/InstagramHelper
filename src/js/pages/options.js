@@ -8,18 +8,20 @@
   var defDelay = instaDefOptions.defDelay;
   var defFollowDelay = instaDefOptions.defFollowDelay;
   var defLikeDelay = instaDefOptions.defLikeDelay;
-
+  var defPageSizeForFeed = instaDefOptions.defPageSizeForFeed;
 
   function saveOptions() {
     var pageSize = document.getElementById('pageSize').value;
     var delay = document.getElementById('delay').value;
     var followDelay = document.getElementById('followDelay').value;
     var likeDelay = document.getElementById('likeDelay').value;
+    var pageSizeForFeed = document.getElementById('pageSizeForFeed').value;
     chrome.storage.sync.set({
       pageSize: pageSize,
       delay: delay,
       followDelay: followDelay,
-      likeDelay: likeDelay
+      likeDelay: likeDelay,
+      pageSizeForFeed: pageSizeForFeed
     }, function () {
       // Update status to let user know options were saved.
       var status = document.getElementById('status');
@@ -35,12 +37,14 @@
       pageSize: defPageSize,
       delay: defDelay,
       followDelay: defFollowDelay,
-      likeDelay: defLikeDelay
+      likeDelay: defLikeDelay,
+      pageSizeForFeed: pageSizeForFeed
     }, function (items) {
       document.getElementById('pageSize').value = items.pageSize;
       document.getElementById('delay').value = items.delay;
       document.getElementById('followDelay').value = items.followDelay;
       document.getElementById('likeDelay').value = items.likeDelay;
+      document.getElementById('pageSizeForFeed').value = items.pageSizeForFeed;
     });
   }
 
@@ -49,7 +53,8 @@
       pageSize: defPageSize,
       delay: defDelay,
       followDelay: defFollowDelay,
-      likeDelay: defLikeDelay
+      likeDelay: defLikeDelay,
+      pageSizeForFeed: defPageSizeForFeed
     }, function () {
       restoreOptions();
       var status = document.getElementById('status');

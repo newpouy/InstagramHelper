@@ -7,18 +7,22 @@
 
 <body>
   <h1>Options</h1>
-  <div>Page size for fetching users:
+  <div>
+    Page size for fetching feed:
     <br />
-    <input type="text" id="pageSize" />
+    <input type="number" id="pageSizeForFeed" />
+    <br />Page size for fetching users:
+    <br />
+    <input type="number" id="pageSize" />
     <br />Interval between requests for fetching users, ms:
     <br />
-    <input type="text" id="delay" />
+    <input type="number" id="delay" />
     <br />Interval between the follow requests, ms:
     <br />
-    <input type="text" id="followDelay" />
+    <input type="number" id="followDelay" />
     <br />Interval between the liking requests, ms:
     <br />
-    <input type="text" id="likeDelay" />
+    <input type="number" id="likeDelay" />
   </div>
   <div id="status" style="padding: 5px; font-weight: bold;"></div>
   <button id="save">Save</button>

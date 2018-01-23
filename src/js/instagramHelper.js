@@ -51,7 +51,8 @@
         pageSize: instaDefOptions.defPageSize,
         delay: instaDefOptions.defDelay,
         followDelay: instaDefOptions.defFollowDelay,
-        likeDelay: instaDefOptions.defLikeDelay
+        likeDelay: instaDefOptions.defLikeDelay,
+        pageSizeForFeed: instaDefOptions.defPageSizeForFeed
       }).then(function (items) {
 
         var sharedData = getSharedData();
@@ -60,6 +61,7 @@
         request.delay = items.delay;
         request.followDelay = items.followDelay;
         request.likeDelay = items.likeDelay;
+        request.pageSizeForFeed = items.pageSizeForFeed;
         request.csrfToken = sharedData.config.csrf_token;
 
         if (sharedData.config.viewer === null) {

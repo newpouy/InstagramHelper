@@ -8,7 +8,7 @@ var instaDefOptions = (function () {
     defFollowDelay: 5000,
     defLikeDelay: 5000,
     defPageSize: 20,
-    defFetchMedia: 12, //how many posts to requests in getting the feed //not sure if a big amount helps to speed up the process
+    defPageSizeForFeed: 24, //how many posts to requests in getting the feed
     gridPageSize: 500,
     noDelayForInit: true,
     requestsToSkipDelay: 100,

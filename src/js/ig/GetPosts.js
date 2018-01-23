@@ -7,13 +7,14 @@ var GetPosts = function (settings) { //eslint-disable-line no-unused-vars
 
   var instaPosts, postInfo;
 
+  //TODO: Apply page size for getting profile?
   var {
-    mode, updateStatusDiv, end_cursor, vueStatus, userName, userId
+    pageSize, mode, updateStatusDiv, end_cursor, vueStatus, userName, userId
   } = settings;
 
   var init = {
     'likeFeed': () => {
-      instaPosts = new GetFeed({ updateStatusDiv: updateStatusDiv, end_cursor: end_cursor, vueStatus: vueStatus });
+      instaPosts = new GetFeed({ updateStatusDiv: updateStatusDiv, end_cursor: end_cursor, vueStatus: vueStatus, pageSize : pageSize });
     },
     'likeProfile': () => {
       instaPosts = new GetProfile({ updateStatusDiv: updateStatusDiv, end_cursor: end_cursor, userId: userId, pageSize: 12, vueStatus: vueStatus });

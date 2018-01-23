@@ -8,7 +8,7 @@ var GetFeed = function (settings) { //eslint-disable-line no-unused-vars
   var has_next_page;
 
   var {
-    updateStatusDiv, end_cursor, vueStatus
+    updateStatusDiv, end_cursor, vueStatus, pageSize
   } = settings;
 
   function getFeed(restart) {
@@ -78,7 +78,7 @@ var GetFeed = function (settings) { //eslint-disable-line no-unused-vars
       params: {
         query_id: instaDefOptions.queryId.feed,
         variables: JSON.stringify({
-          'fetch_media_item_count': instaDefOptions.defFetchMedia, //also in options?
+          'fetch_media_item_count': pageSize,
           'fetch_media_item_cursor': end_cursor,
           'fetch_comment_count': 0,
           'fetch_like': 0,

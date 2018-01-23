@@ -15,6 +15,7 @@ window.onload = function () {
 
     var instaPosts =
       new GetPosts({
+        pageSize: liker.pageSize,
         mode: liker.whatToLike,
         updateStatusDiv: liker.updateStatusDiv,
         end_cursor: null,
@@ -112,14 +113,14 @@ window.onload = function () {
 
   chrome.runtime.onMessage.addListener(function (request) {
     if (request.action === 'openLikerPage') {
-      /*
-        todo: request.pageSize
-      */
+
       liker.csrfToken = request.csrfToken;
       liker.delay = request.likeDelay;
 
       liker.viewerUserName = request.viewerUserName;
       liker.viewerUserId = request.viewerUserId;
+
+      liker.pageSize = request.pageSizeForFeed; //is not binded
 
       liker.userToLike = request.userName === instaDefOptions.you ? request.viewerUserName : request.userName;
 

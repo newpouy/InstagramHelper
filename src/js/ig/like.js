@@ -35,12 +35,10 @@ instaLike.like = function (settings) {
     console.log(error); //eslint-disable-line no-console
     var errorCode = error.response ? error.response.status : 0;
     if (400 === errorCode) {
-        alert('400');
-        if ('missing media' === error.text) {
-          alert ('missing media came'); //TODO
+        if ('missing media' === error.response.data) {
           //if missing media, switch to the next media
+          alert ('missing media came'); //TODO
           //put the log and status div
-          //skip inc if missing media
           resolve(false);
         }
     }
