@@ -645,7 +645,6 @@ $(function () {
 
   }
 
-
 });
 
 window.onload = function () {

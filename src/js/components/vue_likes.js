@@ -21,13 +21,26 @@ var myDataTable = {
       v-bind:search="search"
       v-bind:pagination.sync="pagination"
     >
+    <template slot="headerCell" slot-scope="props">
+      <v-tooltip bottom>
+        <span slot="activator">
+          {{ props.header.text}}
+        </span>
+        <span>
+          {{ props.header.tooltip }}
+        </span>
+      </v-tooltip>
+    </template>
     <template slot="items" slot-scope="props">
-      <td class="text-xs-right">
+    <td class="text-xs-center">{{ props.index + 1 }}</td>
+    <td class="text-xs-right">
         <a v-bind:href="'https://www.instagram.com/'+[props.item.userName][0]" target="_blank"><img v-bind:src="[props.item.url][0]"></img></a>
       </td>
       <td class="text-xs-right">{{ props.item.userName }}</td>
       <td class="text-xs-right">{{ props.item.count }}</td>
-      <td class="text-xs-right">{{ props.item.taken }}</td>
+      <td class="text-xs-right">{{ props.item.firstLike }}</td>
+      <td class="text-xs-right">{{ props.item.lastLike }}</td>
+      <td class="text-xs-right">{{ props.item.diff }}</td>
       <td class="text-xs-right">{{ props.item.fullName }}</td>
     </template>
   </v-data-table>
@@ -37,10 +50,13 @@ var myDataTable = {
       search: '',
       pagination: { sortBy: 'count', rowsPerPage: 25, descending: true },
       headers: [
+        { text: '#', value: '', sortable: false },
         { text: 'Image', value: '', sortable: false },
         { text: 'Username', value: 'userName' },
-        { text: 'Count', value: 'count' },
-        { text: 'Last date', value: 'taken', sortable: false },
+        { text: 'Count', value: 'count', tooltip: 'Amount of likes' },
+        { text: 'First', value: 'firstLike' },
+        { text: 'Last', value: 'lastLike' },
+        { text: 'Days', value: 'diff' },
         { text: 'Full Name', value: 'fullName' }
       ],
       items: __items
@@ -96,7 +112,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       return this.isInProgress ||  //process is not running
         '' === this.userToGetLikes; //profile is specified
     },
-    binding () {
+    binding() {
       const binding = {};
 
       if (this.$vuetify.breakpoint.mdAndUp) {
@@ -121,5 +137,3 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     'my-data-table': myDataTable
   }
 });
-
-

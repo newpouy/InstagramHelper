@@ -12,6 +12,7 @@ window.onload = function () {
 
     var instaPosts =
       new GetPosts({
+        pageSize: likes.pageSize,
         mode: 'likeProfile',
         updateStatusDiv: likes.updateStatusDiv,
         end_cursor: null,
@@ -57,6 +58,13 @@ window.onload = function () {
     });
   }
 
+  function formatDate(date) {
+    var d = date.getDate();
+    var m = date.getMonth() + 1;
+    var y = date.getFullYear();
+    return '' + y + '-' + (m<=9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+  }
+
   function whenCompleted() {
     likes.updateStatusDiv(`Started at ${likes.startDate}`);
     likes.updateStatusDiv(`Fetched ${likes.fetchedPosts} posts`);
@@ -66,7 +74,10 @@ window.onload = function () {
 
     __items.length = 0;
     Array.from(data.values()).forEach(e => {
-      e.taken = new Date(e.taken * 1000).toLocaleString();
+      //convert dates
+      e.diff = Math.round((e.lastLike - e.firstLike) / 60 / 60 / 24);
+      e.lastLike = formatDate(new Date(e.lastLike * 1000));
+      e.firstLike = formatDate(new Date(e.firstLike * 1000));
       __items.push(e);
     });
 
@@ -92,7 +103,7 @@ window.onload = function () {
         shortCode: shortcode,
         end_cursor: '',
         updateStatusDiv: likes.updateStatusDiv,
-        pageSize: 20, //todo: parametrize
+        pageSize: instaDefOptions.defPageSizeForLikes, //todo: parametrize
         vueStatus: likes
       });
 
@@ -122,12 +133,14 @@ window.onload = function () {
         if (data.has(userId)) {
           var obj = data.get(userId);
           obj.count++;
-          if (taken > obj.taken) {
-            obj.taken = taken;
+          if (taken > obj.lastLike) {
+            obj.lastLike = taken;
+          } else if (taken < obj.firstLike) {
+            obj.firstLike = taken;
           }
           data.set(userId, obj);
         } else {
-          data.set(userId, { userName: userName, count: 1, taken: taken, fullName: fullName, url: url });
+          data.set(userId, { userName: userName, count: 1, lastLike: taken, firstLike: taken, fullName: fullName, url: url });
         }
         likes.processedLikes += 1;
       }
@@ -151,6 +164,8 @@ window.onload = function () {
 
       likes.viewerUserName = request.viewerUserName;
       likes.viewerUserId = request.viewerUserId;
+
+      likes.pageSize = request.pageSizeForFeed; //is not binded
 
       likes.userToGetLikes = request.userName === instaDefOptions.you ? request.viewerUserName : request.userName;
 

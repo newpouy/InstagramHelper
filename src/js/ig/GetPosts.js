@@ -17,7 +17,7 @@ var GetPosts = function (settings) { //eslint-disable-line no-unused-vars
       instaPosts = new GetFeed({ updateStatusDiv: updateStatusDiv, end_cursor: end_cursor, vueStatus: vueStatus, pageSize : pageSize });
     },
     'likeProfile': () => {
-      instaPosts = new GetProfile({ updateStatusDiv: updateStatusDiv, end_cursor: end_cursor, userId: userId, pageSize: 12, vueStatus: vueStatus });
+      instaPosts = new GetProfile({ updateStatusDiv: updateStatusDiv, end_cursor: end_cursor, userId: userId, pageSize: pageSize, vueStatus: vueStatus });
       postInfo = new GetPostInfo({ updateStatusDiv: updateStatusDiv, vueStatus: vueStatus });
     }
   };

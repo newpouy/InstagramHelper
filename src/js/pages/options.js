@@ -8,7 +8,7 @@
   var defDelay = instaDefOptions.defDelay;
   var defFollowDelay = instaDefOptions.defFollowDelay;
   var defLikeDelay = instaDefOptions.defLikeDelay;
-  var defPageSizeForFeed = instaDefOptions.defPageSizeForFeed;
+  var defPageSizeForFeed = instaDefOptions.defPageSizeForFeed; //and also page size for user profile
 
   function saveOptions() {
     var pageSize = document.getElementById('pageSize').value;
