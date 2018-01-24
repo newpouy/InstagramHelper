@@ -85,22 +85,19 @@ var FetchUsers = function (settings) {
     console.log(arguments); //eslint-disable-line no-console
     var message;
     if (jqXHR.status === 0) {
-      //setTimeout(() => this.fetchInstaUsers(), instaDefOptions.retryInterval);
-      //alert(instaMessages.getMessage('NOTCONNECTED', +instaDefOptions.retryInterval / 60000));
       console.log('Not connected.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('NOTCONNECTED', +instaDefOptions.retryInterval / 60000);
+      message = instaMessages.getMessage('NOTCONNECTED', null, +instaDefOptions.retryInterval / 60000);
       this.retryError(message, jqXHR.status);
     } else if (jqXHR.status === 429) {
       console.log('HTTP429 error.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('HTTP429', +instaDefOptions.retryInterval / 60000);
+      message = instaMessages.getMessage('HTTP429', null, +instaDefOptions.retryInterval / 60000);
       this.retryError(message, jqXHR.status);
     } else if ((jqXHR.status === 500) || (jqXHR.status === 502) || (jqXHR.status === 503) || (jqXHR.status === 504)) {
-      //alert(instaMessages.getMessage('HTTP50X', jqXHR.status, +instaDefOptions.retryInterval / 60000));
       console.log('HTTP50X error - ' + jqXHR.status, new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('HTTP50X', jqXHR.status, +instaDefOptions.retryInterval / 60000);
       this.retryError(message, jqXHR.status);
     } else if (jqXHR.status === 404) {
-      alert(instaMessages.getMessage('HTTP404'));
+      alert(instaMessages.getMessage('HTTP404I'));
     } else if (exception === 'parsererror') {
       alert(instaMessages.getMessage('JSONPARSEERROR'));
     } else if (exception === 'timeout') {

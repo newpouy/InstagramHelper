@@ -133,15 +133,15 @@ instaUserInfo.getUserProfile = function (settings) {
     var message;
     if (jqXHR.status === 0) {
       console.log('Not connected.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('NOTCONNECTED', +instaDefOptions.retryInterval / 60000);
+      message = instaMessages.getMessage('NOTCONNECTED', null, +instaDefOptions.retryInterval / 60000);
       retryError(message, jqXHR.status, resolve, reject);
     } else if (jqXHR.status === 403) {
       console.log('HTTP403 error getting the user profile.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('HTTP403', +instaDefOptions.retryInterval / 60000);
+      message = instaMessages.getMessage('HTTP403', null, +instaDefOptions.retryInterval / 60000);
       retryError(message, jqXHR.status, resolve, reject);
     } else if (jqXHR.status === 429) {
       console.log('HTTP429 error getting the user profile.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('HTTP429', +instaDefOptions.retryInterval / 60000);
+      message = instaMessages.getMessage('HTTP429', null, +instaDefOptions.retryInterval / 60000);
       retryError(message, jqXHR.status, resolve, reject);
     } else if ((jqXHR.status === 500) || (jqXHR.status === 502) || (jqXHR.status === 503) || (jqXHR.status === 504)) {
       console.log('HTTP50X error getting the user profile - ' + jqXHR.status, new Date()); //eslint-disable-line no-console

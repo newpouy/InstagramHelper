@@ -38,7 +38,7 @@
       delay: defDelay,
       followDelay: defFollowDelay,
       likeDelay: defLikeDelay,
-      pageSizeForFeed: pageSizeForFeed
+      pageSizeForFeed: defPageSizeForFeed
     }, function (items) {
       document.getElementById('pageSize').value = items.pageSize;
       document.getElementById('delay').value = items.delay;
