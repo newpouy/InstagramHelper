@@ -50,14 +50,14 @@ var myDataTable = {
       search: '',
       pagination: { sortBy: 'count', rowsPerPage: 25, descending: true },
       headers: [
-        { text: '#', value: '', sortable: false },
-        { text: 'Image', value: '', sortable: false },
-        { text: 'Username', value: 'userName' },
-        { text: 'Count', value: 'count', tooltip: 'Amount of likes' },
-        { text: 'First', value: 'firstLike' },
-        { text: 'Last', value: 'lastLike' },
-        { text: 'Days', value: 'diff' },
-        { text: 'Full Name', value: 'fullName' }
+        { text: '#', value: '', sortable: false, tooltip: '#' },
+        { text: 'Image', value: '', sortable: false, tooltip: 'Click the image to open the user profile on Instagram.com' },
+        { text: 'Username', value: 'userName', tooltip: 'User name' },
+        { text: 'Count', value: 'count', tooltip: 'The total amount of likes' },
+        { text: 'First', value: 'firstLike', tooltip: 'The date of first liked post' },
+        { text: 'Last', value: 'lastLike', tooltip: 'The date of last liked post' },
+        { text: 'Days', value: 'diff', tooltip: 'The amount of days between first and last liked posts' },
+        { text: 'Full Name', value: 'fullName', 'User full name' }
       ],
       items: __items
     };

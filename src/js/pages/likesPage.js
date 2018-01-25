@@ -158,9 +158,7 @@ window.onload = function () {
   chrome.runtime.onMessage.addListener(function (request) {
     if (request.action === 'openLikesPage') {
 
-      //console.log(request);
-
-      likes.delay = 1000 + request.likeDelay; //todo: just temp
+      likes.delay = request.likeDelay;
 
       likes.viewerUserName = request.viewerUserName;
       likes.viewerUserId = request.viewerUserId;
