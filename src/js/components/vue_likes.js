@@ -57,7 +57,7 @@ var myDataTable = {
         { text: 'First', value: 'firstLike', tooltip: 'The date of first liked post' },
         { text: 'Last', value: 'lastLike', tooltip: 'The date of last liked post' },
         { text: 'Days', value: 'diff', tooltip: 'The amount of days between first and last liked posts' },
-        { text: 'Full Name', value: 'fullName', 'User full name' }
+        { text: 'Full Name', value: 'fullName', tooltip: 'User full name' }
       ],
       items: __items
     };
