@@ -36,9 +36,7 @@ instaLike.like = function (settings) {
     var errorCode = error.response ? error.response.status : 0;
     if (400 === errorCode) {
         if ('missing media' === error.response.data) {
-          //if missing media, switch to the next media
-          alert ('missing media came'); //TODO
-          //put the log and status div
+          //if missing media, switch to the next media, as retrying doesn't make any sense
           resolve(false);
           return;
         }

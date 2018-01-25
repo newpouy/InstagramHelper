@@ -87,9 +87,9 @@ window.onload = function () {
           instaLike.like({ mediaId: id, csrfToken: liker.csrfToken, updateStatusDiv: liker.updateStatusDiv, vueStatus: liker }).then(function (result) {
             if (result) { //liked
               liker.updateStatusDiv(`...liked post ${++liker.liked} on ${new Date().toLocaleString()}`);
-            } else { //missing media case
-              //todo: calculate missing?
-              liker.updateStatusDiv(`...missing media error!`);
+            } else { //missing media error
+              //TODO: indicate at the end of processing how many "missing media" errors
+              liker.updateStatusDiv('...missing media, proceeding to the next post!');
             }
             setTimeout(() => likeMedia(instaPosts, media, ++index), liker.delay);
           });
