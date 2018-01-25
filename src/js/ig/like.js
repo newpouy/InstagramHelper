@@ -40,6 +40,7 @@ instaLike.like = function (settings) {
           alert ('missing media came'); //TODO
           //put the log and status div
           resolve(false);
+          return;
         }
     }
     console.log(`Error making ajax request to like post ${mediaId}, status - ${errorCode}`); //eslint-disable-line no-console
