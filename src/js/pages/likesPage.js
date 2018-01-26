@@ -97,13 +97,11 @@ window.onload = function () {
       likes.processedLikes = 0;
       likes.updateStatusDiv(`Post ${url} taken on ${taken} has ${likes.totalLikes} likes`);
 
-      //totalLikes, processedLikes
-
       var instaLike = new GetLikes({
         shortCode: shortcode,
         end_cursor: '',
         updateStatusDiv: likes.updateStatusDiv,
-        pageSize: instaDefOptions.defPageSizeForLikes, //todo: parametrize
+        pageSize: instaDefOptions.defPageSizeForLikes, //TODO: parametrize
         vueStatus: likes
       });
 

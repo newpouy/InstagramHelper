@@ -1,6 +1,6 @@
 var instaCountdown = function () { };
 
-//2 last parameters are options
+//2 last parameters are optional
 instaCountdown.doCountdown = function (element, errorNumber, prefix, stopTime, vueStatus, color) {
 
   'use strict';
@@ -22,7 +22,7 @@ instaCountdown.doCountdown = function (element, errorNumber, prefix, stopTime, v
       if (time <= 0) {
         clearInterval(interval);
         message = `${prefix} / Countdown is completed`;
-        if (vueStatus) { //spike
+        if (vueStatus) { //spike?
           vueStatus.status = message;
         } else {
           el.textContent = message;
@@ -39,7 +39,7 @@ instaCountdown.doCountdown = function (element, errorNumber, prefix, stopTime, v
         }
         var text = minutes + ':' + seconds;
         message = `${prefix} paused because of HTTP${errorNumber} error. Continue in ${text}.`;
-        if (vueStatus) { //spike
+        if (vueStatus) { //spike?
           vueStatus.status = message;
         } else {
           el.textContent = message;

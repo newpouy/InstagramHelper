@@ -217,8 +217,6 @@ $(function () {
   }
 
   function updateStatusDiv(div, message, color) {
-    //console.log(htmlElements);
-    //console.log(arguments);
     htmlElements[div].textContent = message;
     htmlElements[div].style.color = color || 'black';
   }
@@ -233,7 +231,7 @@ $(function () {
       height: '100%',
       rownumbers: true,
       colModel: colModel,
-      viewrecords: true, // show the current page, data rang and total records on the toolbar
+      viewrecords: true, // show the current page, data range and total records on the toolbar
       loadonce: true,
       ignoreCase: true,
       caption: `Common Users of ${request.user_1.userName} and ${request.user_2.userName}`,

@@ -31,7 +31,6 @@ var FetchUsers = function (settings) {
         data.edges[i].node.user_follows = false; //explicitly set the value for correct search
         data.edges[i].node.user_followed_by = false; //explicitly set the value for correct search
         data.edges[i].node['user_' + obj.relType] = true;
-        //console.log(data.edges[i].node);
         if (data.edges[i].node.requested_by_viewer) {
           data.edges[i].node.followed_by_viewer = null;
         }
@@ -56,7 +55,7 @@ var FetchUsers = function (settings) {
       }
     }
 
-    htmlElements[obj.relType].asProgress('finish').asProgress('stop'); //stopProgressBar(obj);
+    htmlElements[obj.relType].asProgress('finish').asProgress('stop');
     if (obj.callBoth) {
       obj.end_cursor = null;
       obj.relType = obj.relType === 'follows' ? 'followed_by' : 'follows';

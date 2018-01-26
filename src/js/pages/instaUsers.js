@@ -359,7 +359,7 @@ $(function () {
         userId: arr[obj.processedUsers].id,
         updateStatusDiv: updateStatusDiv
       }).then(function (user) {
-        //todo: delete user when JSON is not returned by get user profile?
+        //TODO: delete user when JSON is not returned by get user profile?
         myData[obj.processedUsers] = $.extend({}, myData[obj.processedUsers], user);
         obj.receivedResponses++;
         htmlElements.detailedinfo.asProgress('go', obj.processedUsers++);
@@ -386,16 +386,11 @@ $(function () {
     }
     updateStatusDiv(`Mass following users: ${obj.followProcessedUsers + 1} of ${arr.length}`);
 
-    //console.log(obj);
-    //console.log(arr[obj.followProcessedUsers]);
-
     if ((arr[obj.followProcessedUsers].followed_by_viewer === null) ||
       (arr[obj.followProcessedUsers].followed_by_viewer)) { //requested or already followed
-      //console.log(`${arr[obj.followProcessedUsers].username} is already followed or requested.`);
       obj.followProcessedUsers++;
       massFollow(obj, arr, resolve, reject);
     } else if (arr[obj.followProcessedUsers].id === obj.viewerUserId) { //shame - it is me
-      //console.log('it is me', arr[obj.followProcessedUsers].id);
       obj.followProcessedUsers++;
       massFollow(obj, arr, resolve, reject);
     } else { //is not followed yet
@@ -594,7 +589,6 @@ $(function () {
         return `Users: ${obj.processedUsers}/${arr.length}/${percentage}%`;
       }
     });
-    //assign on click event if confirm
   }
 
   function showJQGrid(obj, colModel) {
@@ -620,7 +614,7 @@ $(function () {
       height: '100%',
       rownumbers: true,
       colModel: colModel,
-      viewrecords: true, // show the current page, data rang and total records on the toolbar
+      viewrecords: true, // show the current page, data range and total records on the toolbar
       loadonce: true,
       ignoreCase: true,
       caption: 'All' === obj.requestRelType ? `${obj.requestRelType} users of ${obj.userName}` : `${obj.userName} ${obj.requestRelType}`

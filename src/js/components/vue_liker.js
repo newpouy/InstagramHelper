@@ -15,14 +15,12 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
 
     amountToLike: 100, //how many should be liked
     stopCriterion: 'amountPosts', //stop criterion assigned to radio button
-    delay: 0, //interval ldbetween sending the http requests
+    delay: 0, //interval between sending the http requests
     liked: 0, //how many liked during execution
     alreadyLiked: 0, //how many found already liked
 
     restarted: 0, //how many times the getting feed was restarted
     fetched: 0, //how may posts were fetched
-
-    // startDate: null, //timestamp when process was started
 
     stop: false, //if user requested the proceess to be stopped by clicking the button
 

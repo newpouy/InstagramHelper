@@ -23,7 +23,7 @@
       likeDelay: likeDelay,
       pageSizeForFeed: pageSizeForFeed
     }, function () {
-      // Update status to let user know options were saved.
+      // Update status to let user know that the options were saved.
       var status = document.getElementById('status');
       status.textContent = 'Options were saved.';
       setTimeout(function () {

@@ -15,8 +15,6 @@ followUser.follow = function (settings) {
   });
 
   function successFollow(data, resolve) {
-    //console.log("successFollow");
-    //console.log(arguments);
     updateStatusDiv(`The request to follow ${username} was successful with response - ${data.result}`);
     resolve(data.result);
   }
@@ -62,7 +60,6 @@ followUser.follow = function (settings) {
 
   function follow(userId, csrfToken, resolve, reject) {
     var link = `https://www.instagram.com/web/friendships/${userId}/follow/`;
-    //console.log(link);
     $.ajax({
       url: link,
       method: 'POST',

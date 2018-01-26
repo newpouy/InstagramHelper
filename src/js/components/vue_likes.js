@@ -69,7 +69,6 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
   created() {
     this.viewerUserId = '';
     this.viewerUserName = '';
-    // this.csrfToken = '';
 
     this.startDate = null; //timestamp when process was started
   },
