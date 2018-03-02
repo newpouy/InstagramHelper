@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Insta Users</title>
-    <link rel="stylesheet" type="text/css" media="screen" href="lib/jqGrid/css/jquery-ui.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="lib/jqGrid/css/ui.jqgrid.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="lib/jqGrid/css/ui.jqgrid.custom.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="css/main.css" />
-    <link rel="stylesheet" href="lib/asProgress/css/asProgress.css" />
-  </head>
-  <body>
+
+<head>
+  <title>Insta Users</title>
+  <link rel="stylesheet" type="text/css" media="screen" href="lib/jqGrid/css/jquery-ui.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="lib/jqGrid/css/ui.jqgrid.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="lib/jqGrid/css/ui.jqgrid.custom.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="css/main.css" />
+  <link rel="stylesheet" href="lib/asProgress/css/asProgress.css" />
+</head>
+
+<body>
 
   <div id="status" style="padding: 5px; font-weight: bold;"></div>
   <div id="tempUiElements" style="padding: 5px; padding-bottom: 0px; font-weight: bold;">
@@ -38,6 +40,17 @@
   <div id="exportDiv" style="display:none; padding: 5px; font-weight: bold;">
     <button id="export_XLSX">Export to Excel</button>
     <button id="massFollow">Follow all not followed/not requested users</button>
+    <button id="massUnFollow">Unfollow all users who don't follow</button>
+  </div>
+  <div id="unfollowDiv" style="display: none; border: 0.5px solid; margin: 10px; padding: 10px; font-weight: bold;">
+    <p>It will unfollow the users who do not follow, it runs on short data so it assumes you are checking your list</p>
+    <textarea id="keepUsers" rows="5" style="width: 100%"></textarea>
+    <br />
+    <!--
+    <input type="checkbox" id="keepPrivateAccounts" checked>Unfollowing keep private accounts</checkbox>
+    <br/>
+    -->
+    <button id="startMassUnFollow">Start Unfollowing</button>
   </div>
 
   <table id="jqGrid"></table>
@@ -55,6 +68,7 @@
   <script src="js/pages/instaUsers.js"></script>
   <script src="js/ig/FetchUsers.js"></script>
   <script type="text/ecmascript" src="lib/jqGrid/jquery.jqGrid.min.js"></script>
-  <script type="text/ecmascript" src="lib/jqGrid/grid.locale-en.js"></script></body>
+  <script type="text/ecmascript" src="lib/jqGrid/grid.locale-en.js"></script>
   <script src="js/pages/ga.js"></script>
+</body>
 </html>

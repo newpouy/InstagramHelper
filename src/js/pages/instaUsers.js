@@ -67,7 +67,7 @@ $(function () {
     search: true,
     stype: 'text',
     searchoptions: {
-      dataInit: function(elem) {
+      dataInit: function (elem) {
         $(elem).attr('placeholder', '<<Filter by username>>');
       }
     }
@@ -234,7 +234,7 @@ $(function () {
     search: true,
     stype: 'text',
     searchoptions: {
-      dataInit: function(elem) {
+      dataInit: function (elem) {
         $(elem).attr('placeholder', '<<Filter by username>>');
       }
     }
@@ -292,8 +292,6 @@ $(function () {
     search: true
   }];
 
-
-
   function startFetching(request) {
 
     var fetchSettings = {
@@ -341,6 +339,24 @@ $(function () {
                 followed/${fetchSettings.requestedUsers} requested`);
           });
         }
+      });
+
+      $('#massUnFollow').on('click', function () {
+        $('#unfollowDiv').show();
+        $('#startMassUnFollow').on('click', function () {
+          // fetchSettings.keepPrivate = $('#keepPrivateAccounts').is(':checked');
+          if ('' === $('#keepUsers').val().trim()) {
+            alert('You have not specified any user to be kept');
+            return;
+          }
+          fetchSettings.keepUsers = $('#keepUsers').val().replace(/[\n\r]/g, ',').split(',');
+          fetchSettings.keepUsers.push(obj.viewerUserId); //to keep viewer itself - avoid shame condition
+          promiseMassUnFollow(fetchSettings, myData).then(function () {
+            updateStatusDiv(
+              `Completed: ${fetchSettings.unFollowProcessedUsers}
+                processed/${fetchSettings.unFollowedUsers}`);
+          });
+        });
       });
 
       promiseGetFullInfo(fetchSettings, myData).then(function () {
@@ -419,7 +435,7 @@ $(function () {
           }
           updateStatusDiv(
             `The request to follow ${username} was successful -
-              ${result}/processed ${obj.followProcessedUsers + 1} of ${arr.length}/
+              ${result}/processed ${obj.followProcessedUsers} of ${arr.length}/
               followed - ${obj.followedUsers}/requested - ${obj.requestedUsers}`);
           setTimeout(function () {
             massFollow(obj, arr, resolve, reject);
@@ -429,6 +445,55 @@ $(function () {
 
   }
 
+  function massUnFollow(obj, arr, resolve, reject) {
+
+    if (obj.unFollowProcessedUsers >= arr.length) {
+      resolve();
+      return;
+    }
+    updateStatusDiv(`Mass unFollowing users: ${obj.unFollowProcessedUsers + 1} of ${arr.length}`);
+
+    if (!arr[obj.unFollowProcessedUsers].user_followed_by) {
+
+      var username = arr[obj.unFollowProcessedUsers].username;
+      var userId = arr[obj.unFollowProcessedUsers].id;
+
+      if (!obj.keepUsers.includes(userId)) { //no exception
+
+        console.log(`${username} is followed and it will be unfollowed.`); // eslint-disable-line no-console
+        updateStatusDiv(`${username} is followed:
+            processed ${obj.unFollowProcessedUsers + 1} of ${arr.length}/
+            followed - ${obj.unFollowedUsers}`);
+
+        followUser.unFollow(
+          {
+            username: username,
+            userId: userId,
+            csrfToken: obj.csrfToken,
+            updateStatusDiv: updateStatusDiv
+          }).then(function (result) {
+            obj.unFollowProcessedUsers++;
+            obj.receivedResponses++;
+            obj.unFollowedUsers++;
+            updateStatusDiv(
+              `The request to unfollow ${username} was successful -
+                processed ${obj.unFollowProcessedUsers} of ${arr.length}/unfollowed - ${obj.unFollowedUsers}`);
+            setTimeout(function () {
+              massUnFollow(obj, arr, resolve, reject);
+            }, obj.followDelay);
+          });
+
+      } else {
+        console.log(`>>>>>>>>>>>>>>>${username} is followed and it will NOT be unfollowed.`); // eslint-disable-line no-console
+        obj.unFollowProcessedUsers++;
+        massUnFollow(obj, arr, resolve, reject);
+      }
+    } else {
+      obj.unFollowProcessedUsers++;
+      massUnFollow(obj, arr, resolve, reject);
+    }
+
+  }
 
   function promiseFetchInstaUsers(obj) {
     return new Promise(function (resolve) {
@@ -467,7 +532,7 @@ $(function () {
         includeGroupHeader: false,
         includeFooter: false,
         fileName:
-        `${obj.requestRelType}_users_${obj.userName}${obj.limit > 0 ? '_limit_' + obj.limit : ''}_${exportUtils.formatDate(new Date())}.xlsx`,
+          `${obj.requestRelType}_users_${obj.userName}${obj.limit > 0 ? '_limit_' + obj.limit : ''}_${exportUtils.formatDate(new Date())}.xlsx`,
         replaceStr: exportUtils.replaceStr
       });
     });
@@ -573,6 +638,14 @@ $(function () {
       obj.followedUsers = 0;
       obj.requestedUsers = 0;
       massFollow(obj, arr, resolve, reject);
+    });
+  }
+
+  function promiseMassUnFollow(obj, arr) {
+    return new Promise(function (resolve, reject) {
+      obj.unFollowProcessedUsers = 0;
+      obj.unFollowedUsers = 0;
+      massUnFollow(obj, arr, resolve, reject);
     });
   }
 
