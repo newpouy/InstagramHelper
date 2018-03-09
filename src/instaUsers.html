@@ -43,8 +43,8 @@
     <button id="massUnFollow">Unfollow all users who don't follow</button>
   </div>
   <div id="unfollowDiv" style="display: none; border: 0.5px solid; margin: 10px; padding: 10px; font-weight: bold;">
-    <p>It will unfollow the users who do not follow, it runs on short data so it assumes you are checking your list</p>
-    <textarea id="keepUsers" rows="5" style="width: 100%"></textarea>
+    <p>It will unfollow the users who do not follow</p>
+    <textarea id="keepUsers" rows="5" style="width: 100%" placeholder="Specify the id of users you want to keep following even if they don't follow. Put each id on separate line."></textarea>
     <br />
     <!--
     <input type="checkbox" id="keepPrivateAccounts" checked>Unfollowing keep private accounts</checkbox>
@@ -71,4 +71,5 @@
   <script type="text/ecmascript" src="lib/jqGrid/grid.locale-en.js"></script>
   <script src="js/pages/ga.js"></script>
 </body>
+
 </html>

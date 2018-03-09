@@ -346,16 +346,18 @@ $(function () {
         $('#startMassUnFollow').on('click', function () {
           // fetchSettings.keepPrivate = $('#keepPrivateAccounts').is(':checked');
           if ('' === $('#keepUsers').val().trim()) {
-            alert('You have not specified any user to be kept');
+            alert('You have not specified the users to be kept.');
             return;
           }
-          fetchSettings.keepUsers = $('#keepUsers').val().replace(/[\n\r]/g, ',').split(',');
-          fetchSettings.keepUsers.push(obj.viewerUserId); //to keep viewer itself - avoid shame condition
-          promiseMassUnFollow(fetchSettings, myData).then(function () {
-            updateStatusDiv(
-              `Completed: ${fetchSettings.unFollowProcessedUsers}
+          if (confirm('It will unfollow all users who don\'t follow except the users whose id you specified in the textarea. Continue?')) {
+            fetchSettings.keepUsers = $('#keepUsers').val().replace(/[\n\r]/g, ',').split(',');
+            fetchSettings.keepUsers.push(obj.viewerUserId); //to keep viewer itself - avoid shame condition
+            promiseMassUnFollow(fetchSettings, myData).then(function () {
+              updateStatusDiv(
+                `Completed: ${fetchSettings.unFollowProcessedUsers}
                 processed/${fetchSettings.unFollowedUsers}`);
-          });
+            });
+          }
         });
       });
 

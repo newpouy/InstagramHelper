@@ -40,6 +40,10 @@ followUser.follow = function (settings) {
       console.log('Not connected.', new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('NOTCONNECTED', null, +instaDefOptions.retryInterval / 60000);
       retryError(message, jqXHR.status, resolve, reject);
+    } else if (jqXHR.status === 400) {
+      console.log('HTTP400 error trying to follow user.', new Date()); //eslint-disable-line no-console
+      message = instaMessages.getMessage('HTTP400', null, +instaDefOptions.retryInterval / 60000);
+      retryError(message, jqXHR.status, resolve, reject);
     } else if (jqXHR.status === 403) {
       console.log('HTTP403 error trying to follow user.', new Date()); //eslint-disable-line no-console
       message = instaMessages.getMessage('HTTP403', null, +instaDefOptions.retryInterval / 60000);
