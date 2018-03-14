@@ -53,7 +53,8 @@ instaUserInfo.getUserProfile = function (settings) {
   }
 
   function successGetUserProfile(data, status, xhr, link, resolve) {
-    if (isJson(data.user)) {
+    // console.log(data.graphql.user);
+    if (isJson(data.graphql.user)) {
       var {
 				id,
         username,
@@ -69,10 +70,10 @@ instaUserInfo.getUserProfile = function (settings) {
         blocked_by_viewer,
         requested_by_viewer,
         has_blocked_viewer
-			} = data.user;
-      var follows_count = data.user.follows.count;
-      var followed_by_count = data.user.followed_by.count;
-      var media_count = data.user.media.count;
+			} = data.graphql.user;
+      var follows_count = data.graphql.user.edge_follow.count;
+      var followed_by_count = data.graphql.user.edge_followed_by.count;
+      var media_count = data.graphql.user.edge_owner_to_timeline_media.count;
 
       followed_by_viewer = requested_by_viewer ? null : followed_by_viewer;
       follows_viewer = has_requested_viewer ? null : follows_viewer;
