@@ -618,7 +618,9 @@ $(function () {
 			sent HTTP requests - ${obj.receivedResponses}`);
 
     if (resolved) {
-      $('.ui-jqgrid').replaceWith('<table id="jqGrid"></table>');
+      $('.ui-jqgrid').replaceWith('<table id="jqGrid"></table><div id="jqGridPager"></div>');
+      // $('#jqGridPager').replaceWith('<div id="jqGridPager"></div>');
+
       showJQGrid(obj, fullColModel);
     }
 
