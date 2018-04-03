@@ -34,6 +34,11 @@ instaLike.like = function (settings) {
   function errorLike(error, resolve, reject) {
     console.log(error); //eslint-disable-line no-console
     var errorCode = error.response ? error.response.status : 0;
+
+    if (errorCode > 0) {
+      console.log(`error response data - ${error.response.data}/${errorCode}`);
+    }
+
     if (400 === errorCode) {
         if ('missing media' === error.response.data) {
           //if missing media, switch to the next media, as retrying doesn't make any sense
