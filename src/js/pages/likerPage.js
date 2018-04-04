@@ -79,27 +79,34 @@ window.onload = function () {
       var id = obj.node.id;
       var url = obj.node.display_url;
       var taken = new Date(obj.node.taken_at_timestamp * 1000).toLocaleString();
-      var userName = 'likeProfile' === liker.whatToLike ? liker.userToLike : obj.node.owner.username;
-      var likesCount = obj.node.edge_media_preview_like.count;
-      liker.updateStatusDiv(`Post ${url} taken on ${taken} by ${userName} has ${likesCount} likes`);
-      instaPosts.isNotLiked(obj).then(result => {
-        if (result) { //not yet liked
-          instaLike.like({ mediaId: id, csrfToken: liker.csrfToken, updateStatusDiv: liker.updateStatusDiv, vueStatus: liker }).then(
-            function (result) {
-              if (result) { //liked
-                liker.updateStatusDiv(`...liked post ${++liker.liked} on ${new Date().toLocaleString()}`);
-              } else { //missing media error
-                //TODO: indicate at the end of processing how many "missing media" errors
-                liker.updateStatusDiv('...missing media, proceeding to the next post!');
-              }
-              setTimeout(() => likeMedia(instaPosts, media, ++index), liker.delay);
-            });
-        } else {
-          liker.updateStatusDiv('...and it is already liked by you!');
-          liker.alreadyLiked += 1;
-          setTimeout(() => likeMedia(instaPosts, media, ++index), 0);
-        }
-      });
+      if (!obj.node.owner) {
+        liker.updateStatusDiv('Post skipped as there are no owner, maybe suggested users...');
+        // no owner - maybe it is suggested users
+        // "__typename": "GraphSuggestedUserFeedUnit",
+        setTimeout(() => likeMedia(instaPosts, media, ++index), 0);
+      } else {
+        var userName = 'likeProfile' === liker.whatToLike ? liker.userToLike : obj.node.owner.username;
+        var likesCount = obj.node.edge_media_preview_like.count;
+        liker.updateStatusDiv(`Post ${url} taken on ${taken} by ${userName} has ${likesCount} likes`);
+        instaPosts.isNotLiked(obj).then(result => {
+          if (result) { //not yet liked
+            instaLike.like({ mediaId: id, csrfToken: liker.csrfToken, updateStatusDiv: liker.updateStatusDiv, vueStatus: liker }).then(
+              function (result) {
+                if (result) { //liked
+                  liker.updateStatusDiv(`...liked post ${++liker.liked} on ${new Date().toLocaleString()}`);
+                } else { //missing media error
+                  //TODO: indicate at the end of processing how many "missing media" errors
+                  liker.updateStatusDiv('...missing media, proceeding to the next post!');
+                }
+                setTimeout(() => likeMedia(instaPosts, media, ++index), liker.delay);
+              });
+          } else {
+            liker.updateStatusDiv('...and it is already liked by you!');
+            liker.alreadyLiked += 1;
+            setTimeout(() => likeMedia(instaPosts, media, ++index), 0);
+          }
+        });
+      }
     } else if (instaPosts.hasMore()) { //do we still have something to fetch
       liker.updateStatusDiv(`The more posts will be fetched now...${new Date()}`);
       setTimeout(() => getPosts(instaPosts, false), liker.delay);
