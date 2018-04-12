@@ -54,6 +54,8 @@ instaUserInfo.getUserProfile = function (settings) {
 
   function successGetUserProfile(data, status, xhr, link, resolve) {
     // console.log(data.graphql.user);
+    //console.log(data.entry_data.ProfilePage[0].graphql);
+    data = data.entry_data.ProfilePage[0];
     if (isJson(data.graphql.user)) {
       var {
 				id,
@@ -169,11 +171,16 @@ instaUserInfo.getUserProfile = function (settings) {
   }
 
   function getUserProfile(username, resolve, reject) {
-    var link = `https://www.instagram.com/${username}/?__a=1`;
+//    var link = `https://www.instagram.com/${username}/?__a=1`;
+    var link = `https://www.instagram.com/${username}/`;
     $.ajax({
       url: link,
       success: function (data, status, xhr) {
-        successGetUserProfile(data, status, xhr, link, resolve);
+        // console.log(data);
+        var regexp = /window._sharedData = (.*);<\/script>/i
+        var json = JSON.parse(regexp.exec(data)[1])
+        // console.log(json);
+        successGetUserProfile(json, status, xhr, link, resolve);
       },
       error: function (jqXHR) {
         errorGetUserProfile(jqXHR, resolve, reject);
