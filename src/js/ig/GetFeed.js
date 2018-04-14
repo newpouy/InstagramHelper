@@ -76,7 +76,7 @@ var GetFeed = function (settings) { //eslint-disable-line no-unused-vars
     axios.get(link, {
       params: {
         //query_id: instaDefOptions.queryId.feed,
-        query_hash: '485c25657308f08317c1e4b967356828',
+        query_hash: instaDefOptions.queryHash.feed,
         variables: JSON.stringify({
           'fetch_media_item_count': pageSize,
           'fetch_media_item_cursor': end_cursor,

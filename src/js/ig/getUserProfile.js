@@ -1,7 +1,10 @@
 /* globals alert, $, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
 /* jshint -W106 */
 
-var instaUserInfo = function () { };
+var igUserProfileRegularExpression = /window._sharedData = (.*);<\/script>/i;
+
+var instaUserInfo = function () {
+};
 
 instaUserInfo.getUserProfile = function (settings) {
 
@@ -176,10 +179,7 @@ instaUserInfo.getUserProfile = function (settings) {
     $.ajax({
       url: link,
       success: function (data, status, xhr) {
-        // console.log(data);
-        var regexp = /window._sharedData = (.*);<\/script>/i
-        var json = JSON.parse(regexp.exec(data)[1])
-        // console.log(json);
+        var json = JSON.parse(igUserProfileRegularExpression.exec(data)[1])
         successGetUserProfile(json, status, xhr, link, resolve);
       },
       error: function (jqXHR) {

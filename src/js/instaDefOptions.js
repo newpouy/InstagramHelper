@@ -28,6 +28,9 @@ var instaDefOptions = (function () {
       profile: '17888483320059182',
       likes: '17864450716183058'
     },
+    queryHash: {
+      feed: '485c25657308f08317c1e4b967356828'
+    },
     httpErrorMap: {
       0: 'NOTCONNECTED',
       400: 'HTTP400',
