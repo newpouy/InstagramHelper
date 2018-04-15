@@ -40,6 +40,7 @@ gulp.task('build', ['clean'], () => {
       $.util.log($.util.colors.red('[Error]'), err.toString());
     }))))
     .pipe($.if('*like*.html', $.replace('vue.js', 'vue.min.js')))
+    .pipe($.if('*follow*.html', $.replace('vue.js', 'vue.min.js')))
     .pipe(gulp.dest('./build/'));
 });
 
