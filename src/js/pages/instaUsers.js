@@ -6,6 +6,9 @@ $(function () {
 
   'use strict';
 
+  // https://stackoverflow.com/questions/9775115/get-all-rows-not-filtered-from-jqgrid
+  var lastSelected;
+
   var myData = [];
   var userName = '';
   var cancelProcessing = false;
@@ -330,8 +333,9 @@ $(function () {
 
       $('#massFollow').on('click', function () {
         if (confirm(`Following will be done with the interval of ${request.followDelay / 1000}sec.\nYou can change the interval value in the settings.
-                    \nDon't set it to too small value, because Instagrm.com potentially could ban your account for doing that.
+                    \nDon't set it to too small value, because Instagram.com potentially could ban your account for doing that.
                     \n\nContinue?`)) {
+          //todo = check lastSelected ?
           promiseMassFollow(fetchSettings, myData).then(function () {
             updateStatusDiv(
               `Completed: ${fetchSettings.followProcessedUsers}
@@ -715,10 +719,24 @@ $(function () {
       },
       {}).jqGrid('setGridWidth', $('#jqGrid').width() - 20); //TODO: why autowidth doesn't work? what is taken into account
 
+    // https://stackoverflow.com/questions/9775115/get-all-rows-not-filtered-from-jqgrid
+    var oldFrom = $.jgrid.from;
+
+    $.jgrid.from = function (source, initalQuery) {
+      var result = oldFrom.call(this, source, initalQuery);
+      var old_select = result.select;
+      result.select = function (f) {
+        lastSelected = old_select.call(this, f);
+        return lastSelected;
+      };
+      return result;
+    };
+
   }
 
 });
 
 window.onload = function () {
+
   _gaq.push(['_trackPageview']);
 };
