@@ -36,7 +36,7 @@ instaLike.like = function (settings) {
     var errorCode = error.response ? error.response.status : 0;
 
     if (errorCode > 0) {
-      console.log(`error response data - ${error.response.data}/${errorCode}`);
+      console.log(`error response data - ${error.response.data}/${errorCode}`); //eslint-disable-line no-console
     }
 
     if (400 === errorCode) {

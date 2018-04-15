@@ -94,7 +94,7 @@ followUser.unFollow = function (settings) {
   'use strict';
 
   var {
-    username, userId, csrfToken, updateStatusDiv
+    username, userId, csrfToken, updateStatusDiv, vueStatus
   } = settings;
 
   return new Promise(function (resolve, reject) {

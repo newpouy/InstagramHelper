@@ -1,5 +1,5 @@
 /* globals _gaq, chrome, alert */
-/* globals instaDefOptions */
+/* globals follow, followUser */
 /* jshint -W106 */
 
 window.onload = function () {
@@ -18,7 +18,7 @@ window.onload = function () {
 
     var value = document.getElementById('ids').value;
     follow.processUsers = value.replace(/[\n\r]/g, ',').split(',');
-    console.log('the length - ' + follow.processUsers.length)
+    // console.log('the length - ' + follow.processUsers.length);
     follow.followedUsers = 0;
     follow.requestedUsers = 0;
 
@@ -56,7 +56,7 @@ window.onload = function () {
   };
 
   chrome.runtime.onMessage.addListener(function (request) {
-    console.log(request);
+    // console.log(request);
     if (request.action === 'openMassFollowPage') {
 
       follow.delay = request.followDelay;
