@@ -529,6 +529,7 @@ $(function () {
     $('#exportDiv').show();
 
     $('#export_XLSX').on('click', function () {
+      event.preventDefault();
       $('#jqGrid').jqGrid('exportToExcel', {
         includeLabels: true,
         includeGroupHeader: false,

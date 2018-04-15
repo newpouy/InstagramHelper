@@ -28,7 +28,8 @@
       ('get_insta_users' === request.action) ||
       ('get_common_users' === request.action) ||
       ('openLikerPage' === request.action) ||
-      ('openLikesPage' === request.action)
+      ('openLikesPage' === request.action) ||
+      ('openMassFollowPage' === request.action)
     ) {
       url = chrome.extension.getURL(request.page);
       promiseChrome.promiseCreateTab({

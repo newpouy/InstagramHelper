@@ -35,6 +35,18 @@ $(function () {
     });
   });
 
+  $('#massfollow').click(function () {
+
+    promiseChrome.promiseQuery({
+      active: true,
+      currentWindow: true
+    }).then(function (tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, {
+        action: 'openMassFollowPage',
+        page: 'follow.html'
+      });
+    });
+  });
 
   $('#instaUsers').click(function () {
 
