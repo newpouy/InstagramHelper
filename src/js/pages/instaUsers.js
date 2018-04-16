@@ -332,11 +332,19 @@ $(function () {
       prepareHtmlElementsUserDetails(fetchSettings, myData);
 
       $('#massFollow').on('click', function () {
-        if (confirm(`Following will be done with the interval of ${request.followDelay / 1000}sec.\nYou can change the interval value in the settings.
-                    \nDon't set it to too small value, because Instagram.com potentially could ban your account for doing that.
+        if (confirm(`It will follow ALL users DISPLAYED in the table below (it means filtering in table is respected).
+                    \nFollowing will be done with the interval of ${request.followDelay / 1000}sec.
+                    \nYou can change the interval value in the settings.
+                    \nDon't set it to too small value, because Instagram.com could ban your account for big traffic generated.
                     \n\nContinue?`)) {
-          //todo = check lastSelected ?
-          promiseMassFollow(fetchSettings, myData).then(function () {
+          if (lastSelected) {
+            console.log('Have filtered list', lastSelected.length); // eslint-disable-line no-console
+            var arr = lastSelected; // if we have filtered data set?
+          } else {
+            console.log('DO NOT have filtered list', myData.length); // eslint-disable-line no-console
+            var arr = myData; // if we do not have filtered data set?
+          }
+          promiseMassFollow(fetchSettings, arr).then(function () {
             updateStatusDiv(
               `Completed: ${fetchSettings.followProcessedUsers}
                 processed/${fetchSettings.followedUsers}
@@ -350,13 +358,21 @@ $(function () {
         $('#startMassUnFollow').on('click', function () {
           // fetchSettings.keepPrivate = $('#keepPrivateAccounts').is(':checked');
           if ('' === $('#keepUsers').val().trim()) {
-            alert('You have not specified the users to be kept.');
-            return;
+            if (!confirm('You have not specified the users to be kept. Continue')) {
+              return;
+            }
           }
-          if (confirm('It will unfollow all users who don\'t follow except the users whose id you specified in the textarea. Continue?')) {
+          if (confirm('It will unfollow ALL USERS displayed in the table below except the users whose id you specified in the textarea. Continue?')) {
             fetchSettings.keepUsers = $('#keepUsers').val().replace(/[\n\r]/g, ',').split(',');
-            fetchSettings.keepUsers.push(obj.viewerUserId); //to keep viewer itself - avoid shame condition
-            promiseMassUnFollow(fetchSettings, myData).then(function () {
+            fetchSettings.keepUsers.push(obj.viewerUserId); // to keep viewer itself - shame condition
+            if (lastSelected) {
+              console.log('Have a filtered list', lastSelected.length); // eslint-disable-line no-console
+              var arr = lastSelected; // if we have filtered data set?
+            } else {
+              console.log('DO NOT have a filtered list', myData.length); // eslint-disable-line no-console
+              var arr = myData; // if we do not have filtered data set?
+            }
+            promiseMassUnFollow(fetchSettings, arr).then(function () {
               updateStatusDiv(
                 `Completed: ${fetchSettings.unFollowProcessedUsers}
                 processed/${fetchSettings.unFollowedUsers}`);
@@ -452,52 +468,51 @@ $(function () {
   }
 
   function massUnFollow(obj, arr, resolve, reject) {
-
     if (obj.unFollowProcessedUsers >= arr.length) {
       resolve();
       return;
     }
     updateStatusDiv(`Mass unFollowing users: ${obj.unFollowProcessedUsers + 1} of ${arr.length}`);
 
-    if (!arr[obj.unFollowProcessedUsers].user_followed_by) {
+    // if (!arr[obj.unFollowProcessedUsers].user_followed_by) { // take only who doesn't follow
 
-      var username = arr[obj.unFollowProcessedUsers].username;
-      var userId = arr[obj.unFollowProcessedUsers].id;
+    var username = arr[obj.unFollowProcessedUsers].username;
+    var userId = arr[obj.unFollowProcessedUsers].id;
 
-      if (!obj.keepUsers.includes(userId)) { //no exception
+    if (!obj.keepUsers.includes(userId)) { //no exception
 
-        console.log(`${username} is followed and it will be unfollowed.`); // eslint-disable-line no-console
-        updateStatusDiv(`${username} is followed:
+      console.log(`${username}/${userId} will be unfollowed.`); // eslint-disable-line no-console
+      updateStatusDiv(`${username}/${userId} will be unfollowed:
             processed ${obj.unFollowProcessedUsers + 1} of ${arr.length}/
             followed - ${obj.unFollowedUsers}`);
 
-        followUser.unFollow(
-          {
-            username: username,
-            userId: userId,
-            csrfToken: obj.csrfToken,
-            updateStatusDiv: updateStatusDiv
-          }).then(function (result) {
-            obj.unFollowProcessedUsers++;
-            obj.receivedResponses++;
-            obj.unFollowedUsers++;
-            updateStatusDiv(
-              `The request to unfollow ${username} was successful -
+      followUser.unFollow(
+        {
+          username: username,
+          userId: userId,
+          csrfToken: obj.csrfToken,
+          updateStatusDiv: updateStatusDiv
+        }).then(function (result) {
+          obj.unFollowProcessedUsers++;
+          obj.receivedResponses++;
+          obj.unFollowedUsers++;
+          updateStatusDiv(
+            `The request to unfollow ${username} was successful -
                 processed ${obj.unFollowProcessedUsers} of ${arr.length}/unfollowed - ${obj.unFollowedUsers}`);
-            setTimeout(function () {
-              massUnFollow(obj, arr, resolve, reject);
-            }, obj.followDelay);
-          });
+          setTimeout(function () {
+            massUnFollow(obj, arr, resolve, reject);
+          }, obj.followDelay);
+        });
 
-      } else {
-        console.log(`>>>>>>>>>>>>>>>${username} is followed and it will NOT be unfollowed.`); // eslint-disable-line no-console
-        obj.unFollowProcessedUsers++;
-        massUnFollow(obj, arr, resolve, reject);
-      }
     } else {
+      console.log(`>>>>>>>>>>>>>>>${username} is followed and it will NOT be unfollowed.`); // eslint-disable-line no-console
       obj.unFollowProcessedUsers++;
       massUnFollow(obj, arr, resolve, reject);
     }
+    // } else { //else for those who doesn't follow
+    //  obj.unFollowProcessedUsers++;
+    //  massUnFollow(obj, arr, resolve, reject);
+    // }
 
   }
 
