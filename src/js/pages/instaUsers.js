@@ -332,11 +332,11 @@ $(function () {
       prepareHtmlElementsUserDetails(fetchSettings, myData);
 
       $('#massFollow').on('click', function () {
-        if (confirm(`It will follow ALL users DISPLAYED in the table below (it means filtering in table is respected).
-                    \nFollowing will be done with the interval of ${request.followDelay / 1000}sec.
-                    \nYou can change the interval value in the settings.
-                    \nDon't set it to too small value, because Instagram.com could ban your account for big traffic generated.
-                    \n\nContinue?`)) {
+        if (confirm('It will follow ALL not-followed/not-requested ousers DISPLAYED in the table below (it means filtering in table is respected).' +
+                    `\nFollowing will be done with the interval of ${request.followDelay / 1000}sec.` +
+                    '\nYou can change the interval value in the settings' +
+                    '\nWhen process is started, the change of filter criteria in the table is ignored.' +
+                    '\nContinue?')) {
           if (lastSelected) {
             console.log('Have filtered list', lastSelected.length); // eslint-disable-line no-console
             var arr = lastSelected; // if we have filtered data set?
@@ -358,11 +358,15 @@ $(function () {
         $('#startMassUnFollow').on('click', function () {
           // fetchSettings.keepPrivate = $('#keepPrivateAccounts').is(':checked');
           if ('' === $('#keepUsers').val().trim()) {
-            if (!confirm('You have not specified the users to be kept. Continue')) {
+            if (!confirm('You have not specified the users to be kept. Continue?')) {
               return;
             }
           }
-          if (confirm('It will unfollow ALL USERS displayed in the table below except the users whose id you specified in the textarea. Continue?')) {
+          if (confirm(
+            'It will unfollow ALL USERS displayed in the table below except the users whose id you specified in the textarea.' +
+            `\nFollowing will be done with the interval of ${request.followDelay / 1000}sec.` +
+            '\nWhen process is started, the changes of filter criteria in the table or/and the list of users to be kept are ignored.' +
+            '\nContinue?')) {
             fetchSettings.keepUsers = $('#keepUsers').val().replace(/[\n\r]/g, ',').split(',');
             fetchSettings.keepUsers.push(obj.viewerUserId); // to keep viewer itself - shame condition
             if (lastSelected) {
