@@ -9,8 +9,8 @@ var GetProfile = function (settings) { //eslint-disable-line no-unused-vars
   var totalMedia;
 
   var {
-      userId, updateStatusDiv, end_cursor, pageSize, vueStatus
-    } = settings;
+    userId, updateStatusDiv, end_cursor, pageSize, vueStatus
+  } = settings;
 
 
   function setUserId(value) {
@@ -92,8 +92,8 @@ var GetProfile = function (settings) { //eslint-disable-line no-unused-vars
       }
     }, config).
       then(
-      response => successGetProfile(response, resolve),
-      error => errorGetProfile(error, resolve, reject)
+        response => successGetProfile(response, resolve),
+        error => errorGetProfile(error, resolve, reject)
       );
   }
 

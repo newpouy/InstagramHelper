@@ -1,13 +1,13 @@
-/* globals alert, chrome, _gaq, $ */
+/* globals alert, chrome, _gaq */
 /* globals PromiseChrome, instaDefOptions, instaMessages, instaUserInfo */
 /* jshint -W106 */
 
-$(function () {
+document.addEventListener("DOMContentLoaded", function () {
   'use strict';
 
   var promiseChrome = new PromiseChrome();
 
-  $('#liker').click(function () {
+  document.getElementById('liker').click(function () {
 
     promiseChrome.promiseQuery({
       active: true,
@@ -21,7 +21,7 @@ $(function () {
     });
   });
 
-  $('#likes').click(function () {
+  document.getElementById('likes').click(function () {
 
     promiseChrome.promiseQuery({
       active: true,
@@ -35,7 +35,7 @@ $(function () {
     });
   });
 
-  $('#massfollow').click(function () {
+  document.getElementById('massfollow').click(function () {
 
     promiseChrome.promiseQuery({
       active: true,
@@ -48,7 +48,7 @@ $(function () {
     });
   });
 
-  $('#instaUsers').click(function () {
+  document.getElementById('instaUsers').click(function () {
 
     var userName = $('#username').val();
     if (!userName) {
@@ -82,7 +82,7 @@ $(function () {
     }, () => alert(instaMessages.getMessage('TABISOPEN')));
   });
 
-  $('#findCommonUsers').click(function () {
+  document.getElementById('findCommonUsers').click(function () {
     var userName_1 = $('#username_1').val();
     if (!userName_1) {
       alert(instaMessages.getMessage('USERNAMEISREQPAR', '1st'));
@@ -136,6 +136,7 @@ $(function () {
     }, () => alert(instaMessages.getMessage('TABISOPEN')));
   });
 });
+
 
 window.onload = function () {
   'use strict';

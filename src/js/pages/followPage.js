@@ -18,7 +18,6 @@ window.onload = function () {
 
     var value = document.getElementById('ids').value;
     follow.processUsers = value.replace(/[\n\r]/g, ',').split(',');
-    // console.log('the length - ' + follow.processUsers.length);
     follow.followedUsers = 0;
     follow.requestedUsers = 0;
 

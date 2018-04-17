@@ -55,9 +55,7 @@ instaUserInfo.getUserProfile = function (settings) {
     return true;
   }
 
-  function successGetUserProfile(data, status, xhr, link, resolve) {
-    // console.log(data.graphql.user);
-    //console.log(data.entry_data.ProfilePage[0].graphql);
+  function successGetUserProfile(data, link, resolve) {
     data = data.entry_data.ProfilePage[0];
     if (isJson(data.graphql.user)) {
       var {
@@ -130,7 +128,6 @@ instaUserInfo.getUserProfile = function (settings) {
         console.log('Continue execution after HTTP error', errorNumber, new Date()); //eslint-disable-line no-console
         getUserProfile(username, resolve, reject);
       });
-
   }
 
   function errorGetUserProfile(jqXHR, resolve, reject) {
@@ -174,18 +171,22 @@ instaUserInfo.getUserProfile = function (settings) {
   }
 
   function getUserProfile(username, resolve, reject) {
-//    var link = `https://www.instagram.com/${username}/?__a=1`;
+
     var link = `https://www.instagram.com/${username}/`;
-    $.ajax({
-      url: link,
-      success: function (data, status, xhr) {
-        var json = JSON.parse(igUserProfileRegularExpression.exec(data)[1])
-        successGetUserProfile(json, status, xhr, link, resolve);
-      },
-      error: function (jqXHR) {
-        errorGetUserProfile(jqXHR, resolve, reject);
-      },
-      async: true
-    });
+
+    var config = {
+      headers: {
+        'x-instagram-ajax': 1,
+        'eferer': 'https://www.instagram.com/'
+      }
+    };
+    axios.get(link, {}, config).
+      then(
+        response => {
+          var json = JSON.parse(igUserProfileRegularExpression.exec(response.data)[1])
+          successGetUserProfile(json, link, resolve);
+          },
+        error => errorGetUserProfile(error, resolve, reject)
+      );
   }
 };

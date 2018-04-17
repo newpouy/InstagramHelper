@@ -1,6 +1,7 @@
 /* exported instaMessages */
 
 var instaMessages = (function () {
+
   'use strict';
 
   var m = {
@@ -22,7 +23,7 @@ var instaMessages = (function () {
     THESAMEUSERS: 'You are going to find the common users between the same users, please provide the different first or second user name.',
     ERRGETTINGUSER: 'Error getting the ${0} user profile, status - ${1}.',
     ERRGETTINGFEED: 'Error getting your feed, status - ${0}.',
-    ERRFOLLOWUSER: 'Error trying to follow ${0} user, status - ${1}.',
+    ERRFOLLOWUSER: 'Error trying to (un)follow ${0} user, status - ${1}.',
     ERRLIKEMEDIA: 'Error liking the ${0} post, status - ${1}.',
     USERNAMEISREQ: 'Please provide the user name.',
     USERNAMEISREQPAR: 'Please specify the ${0} user name.',

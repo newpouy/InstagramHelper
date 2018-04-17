@@ -1,4 +1,4 @@
-/* globals alert, $, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
+/* globals alert, axios, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
 
 var followUser = function () { };
 
@@ -38,53 +38,39 @@ followUser.follow = function (settings) {
   }
 
   function errorFollow(jqXHR, resolve, reject) {
-    console.log(`Error making ajax request to follow ${username}, status - ${jqXHR.status}`); //eslint-disable-line no-console
-    console.log(arguments); //eslint-disable-line no-console
-    var message;
-    if (jqXHR.status === 0) {
-      console.log('Not connected.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('NOTCONNECTED', null, +instaDefOptions.retryInterval / 60000);
-      retryError(message, jqXHR.status, resolve, reject);
-    } else if (jqXHR.status === 400) {
-      console.log('HTTP400 error trying to follow user.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('HTTP400', null, +instaDefOptions.retryInterval / 60000);
-      retryError(message, jqXHR.status, resolve, reject);
-    } else if (jqXHR.status === 403) {
-      console.log('HTTP403 error trying to follow user.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('HTTP403', null, +instaDefOptions.retryInterval / 60000);
-      retryError(message, jqXHR.status, resolve, reject);
-    } else if (jqXHR.status === 429) {
-      console.log('HTTP429 error trying to follow user.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('HTTP429', null, +instaDefOptions.retryInterval / 60000);
-      retryError(message, jqXHR.status, resolve, reject);
-    } else if ((jqXHR.status === 500) || (jqXHR.status === 502) || (jqXHR.status === 503) || (jqXHR.status === 504)) {
-      console.log('HTTP50X error trying to follow user - ' + jqXHR.status, new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('HTTP50X', jqXHR.status, +instaDefOptions.retryInterval / 60000);
-      retryError(message, jqXHR.status, resolve, reject);
-    } else {
-      alert(instaMessages.getMessage('ERRFOLLOWUSER', username, jqXHR.status));
-      reject();
+    console.log(error); //eslint-disable-line no-console
+    var errorCode = error.response ? error.response.status : 0;
+
+    if (errorCode > 0) {
+      console.log(`error response data - ${error.response.data}/${errorCode}`); //eslint-disable-line no-console
     }
+
+    console.log(`Error making http request to unfollow ${username}, status - ${errorCode}`); //eslint-disable-line no-console
+
+    if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
+      console.log(`HTTP${errorCode} error trying to like the media.`, new Date()); //eslint-disable-line no-console
+      var message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], errorCode, +instaDefOptions.retryInterval / 60000);
+      retryError(message, errorCode, resolve, reject);
+      return;
+    }
+    alert(instaMessages.getMessage('ERRFOLLOWUSER', username, errorCode));
+    reject();
   }
 
   function follow(userId, csrfToken, resolve, reject) {
+
     var link = `https://www.instagram.com/web/friendships/${userId}/follow/`;
-    $.ajax({
-      url: link,
-      method: 'POST',
-      success: function (data) {
-        successFollow(data, resolve);
-      },
-      error: function (jqXHR) {
-        errorFollow(jqXHR, resolve, reject);
-      },
+    var config = {
       headers: {
         'X-CSRFToken': csrfToken,
         'x-instagram-ajax': 1,
-        'eferer': 'https://www.instagram.com/' //+ obj.userName + '/'
-      },
-      async: true
-    });
+        'eferer': 'https://www.instagram.com/'
+      }
+    };
+    axios.post(link, '', config).then(
+      response => successFollow(response.data, resolve),
+      error => errorFollow(error, resolve, reject)
+    );
   }
 };
 
@@ -103,7 +89,7 @@ followUser.unFollow = function (settings) {
 
   function successUnFollow(data, resolve) {
     updateStatusDiv(`The request to unfollow ${username} was successful with response - ${data.status}`);
-    resolve(data.result);
+    resolve(data);
   }
 
   function retryError(message, errorNumber, resolve, reject) {
@@ -139,7 +125,7 @@ followUser.unFollow = function (settings) {
       retryError(message, errorCode, resolve, reject);
       return;
     }
-    alert(instaMessages.getMessage('ERRFOLLOWUSER', mediaId, errorCode));
+    alert(instaMessages.getMessage('ERRFOLLOWUSER', username, errorCode));
     reject();
   }
 
@@ -153,7 +139,7 @@ followUser.unFollow = function (settings) {
       }
     };
     axios.post(link, '', config).then(
-      response => successUnFollow(response, resolve),
+      response => successUnFollow(response.data, resolve),
       error => errorUnFollow(error, resolve, reject)
     );
   }
