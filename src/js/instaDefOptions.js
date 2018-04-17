@@ -5,8 +5,8 @@ var instaDefOptions = (function () {
   return {
     you: '<<YOU>>',
     defDelay: 2000,
-    defFollowDelay: 20000,
-    defLikeDelay: 5000,
+    defFollowDelay: 30000,
+    defLikeDelay: 7000,
     defPageSize: 20,
     defPageSizeForFeed: 24, //how many posts to requests in getting the feed and also for user profile
     defPageSizeForLikes: 50,
