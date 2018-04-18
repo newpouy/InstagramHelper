@@ -7,12 +7,12 @@ var FetchUsers = function (settings) {
   'use strict';
 
   var {
-	obj,
+    obj,
     myData,
     htmlElements,
     updateStatusDiv,
     resolve
-	} = settings;
+  } = settings;
 
   function checkForDuplicates(obj, data, i) {
     for (let j = 0; j < myData.length; j++) {
@@ -23,7 +23,7 @@ var FetchUsers = function (settings) {
     }
   }
 
-  function updateDataArray(obj, data){
+  function updateDataArray(obj, data) {
     for (let i = 0; i < data.edges.length; i++) {
       //only when the second run happens (or we started with already opened result page)
       var found = obj.checkDuplicates && checkForDuplicates(obj, data, i);
@@ -79,7 +79,22 @@ var FetchUsers = function (settings) {
       });
   };
 
-  var errorFetch = function (jqXHR, exception) {
+  var errorFetch = function (error, resolve, reject) {
+    console.log(error); //eslint-disable-line no-console
+    var errorCode = error.response ? error.response.status : 0;
+    console.log(`Error making ajax request to fetch the users, status - ${errorCode}`); //eslint-disable-line no-console
+
+    if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
+      console.log(`HTTP${errorCode} error trying to get your feed.`, new Date()); //eslint-disable-line no-console
+      var message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], errorCode, +instaDefOptions.retryInterval / 60000);
+      retryError(message, errorCode, resolve, reject);
+      return;
+    }
+
+    alert(instaMessages.getMessage('ERRGETTINGFEED', errorCode));
+    reject();
+
+
     console.log('error ajax'); //eslint-disable-line no-console
     console.log(arguments); //eslint-disable-line no-console
     var message;
@@ -108,26 +123,28 @@ var FetchUsers = function (settings) {
     }
   };
 
-
   var fetchInstaUsers = function () {
-
-    $.ajax({
-      url: 'https://www.instagram.com/graphql/query',
-      data: {
-        query_id: instaDefOptions.queryId[obj.relType],
-        id: obj.userId,
-        first: obj.pageSize,
-        after: obj.end_cursor ? obj.end_cursor : null
-      },
-      context: this,
-      method: 'GET',
+    var link = 'https://www.instagram.com/graphql/query';
+    var config = {
       headers: {
-        'X-CSRFToken': obj.csrfToken,
-        'eferer': 'https://www.instagram.com/' + obj.userName + '/'
-      },
-      success: successFetch,
-      error: errorFetch
-    });
+        'X-CSRFToken': csrfToken,
+        'x-instagram-ajax': 1,
+        'eferer': 'https://www.instagram.com/'
+      }
+    };
+    axios.get(link, {
+      params: {
+        query_id: instaDefOptions.queryId[obj.relType],
+        variables: JSON.stringify({
+          id: obj.userId,
+          first: obj.pageSize,
+          after: obj.end_cursor ? obj.end_cursor : null
+      })
+      }
+    }, config).then(
+      response => successFetch(response.data, resolve),
+      error => errorFetch(error, resolve, reject)
+    );
   };
 
   function calculateTimeOut(obj) {
