@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var promiseChrome = new PromiseChrome();
 
-  document.getElementById('liker').click(function () {
+  document.getElementById('liker').addEventListener("click", function () {
 
     promiseChrome.promiseQuery({
       active: true,
@@ -16,13 +16,12 @@ document.addEventListener("DOMContentLoaded", function () {
       chrome.tabs.sendMessage(tabs[0].id, {
         action: 'openLikerPage',
         page: 'liker.html',
-        userName: $('#username').val()
+        userName: document.getElementById('username').value
       });
     });
   });
 
-  document.getElementById('likes').click(function () {
-
+  document.getElementById('likes').addEventListener("click", function () {
     promiseChrome.promiseQuery({
       active: true,
       currentWindow: true
@@ -30,13 +29,12 @@ document.addEventListener("DOMContentLoaded", function () {
       chrome.tabs.sendMessage(tabs[0].id, {
         action: 'openLikesPage',
         page: 'likes.html',
-        userName: $('#username').val()
+        userName: document.getElementById('username').value
       });
     });
   });
 
-  document.getElementById('massfollow').click(function () {
-
+  document.getElementById('massfollow').addEventListener("click", function () {
     promiseChrome.promiseQuery({
       active: true,
       currentWindow: true
@@ -48,9 +46,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  document.getElementById('instaUsers').click(function () {
 
-    var userName = $('#username').val();
+  document.getElementById('instaUsers').addEventListener("click", function () {
+
+    var userName = document.getElementById('username').value;
     if (!userName) {
       alert(instaMessages.getMessage('USERNAMEISREQ'));
       return;
@@ -64,6 +63,16 @@ document.addEventListener("DOMContentLoaded", function () {
         active: true,
         currentWindow: true
       });
+
+      // todo : find checked radiobutton
+      var relType = 'All';
+      var radios = document.getElementsByName('relType');
+      for (var i = 0, length = radios.length; i < length; i++) {
+        if (radios[i].checked) {
+            relType = radios[i].id;
+            break;
+        }
+    }
       Promise.all([promiseUserInfo, promiseQueryActiveTab]).then(values => {
         let [obj, tabs] = values;
         chrome.tabs.sendMessage(tabs[0].id, {
@@ -76,20 +85,20 @@ document.addEventListener("DOMContentLoaded", function () {
           follows_count: obj.follows_count,
           followed_by_count: obj.followed_by_count,
           limit: +document.getElementById('first').value,
-          relType: $('input[name=relType]:checked').attr('id')
+          relType: relType // $('input[name=relType]:checked').attr('id')
         });
       });
     }, () => alert(instaMessages.getMessage('TABISOPEN')));
   });
 
-  document.getElementById('findCommonUsers').click(function () {
-    var userName_1 = $('#username_1').val();
+  document.getElementById('findCommonUsers').addEventListener("click", function () {
+    var userName_1 = document.getElementById('username_1').value;
     if (!userName_1) {
       alert(instaMessages.getMessage('USERNAMEISREQPAR', '1st'));
       return;
     }
 
-    var userName_2 = $('#username_2').val();
+    var userName_2 = document.getElementById('username_2').value;
     if (!userName_2) {
       alert(instaMessages.getMessage('USERNAMEISREQPAR', '2nd'));
       return;
@@ -164,15 +173,15 @@ window.onload = function () {
             }
           }
         }
-        $('#username').val(obj.username);
-        $('#username_1').val(obj.username);
-        $('#username_2').val(instaDefOptions.you);
-        $('#details').html($html);
+        document.getElementById('username').value = obj.username;
+        document.getElementById('username_1').value = obj.username;
+        document.getElementById('username_2').value = instaDefOptions.you;
+        document.getElementById('details').innerHTML = $html;
       });
     } else {
-      $('#details').text('UserName is not found in URL');
-      $('#username').val(instaDefOptions.you);
-      $('#username_1').val(instaDefOptions.you);
+      document.getElementById('details').innetHTML = 'UserName is not found in URL';
+      document.getElementById('username').value = instaDefOptions.you;
+      document.getElementById('username_1').value = instaDefOptions.you;
     }
   });
 };

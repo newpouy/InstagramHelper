@@ -37,7 +37,7 @@ followUser.follow = function (settings) {
 
   }
 
-  function errorFollow(jqXHR, resolve, reject) {
+  function errorFollow(error, resolve, reject) {
     console.log(error); //eslint-disable-line no-console
     var errorCode = error.response ? error.response.status : 0;
 

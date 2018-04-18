@@ -337,12 +337,13 @@ $(function () {
                     '\nYou can change the interval value in the settings' +
                     '\nWhen process is started, the change of filter criteria in the table is ignored.' +
                     '\nContinue?')) {
+          var arr = [];
           if (lastSelected) {
             console.log('Have filtered list', lastSelected.length); // eslint-disable-line no-console
-            var arr = lastSelected; // if we have filtered data set?
+            arr = lastSelected; // if we have filtered data set?
           } else {
             console.log('DO NOT have filtered list', myData.length); // eslint-disable-line no-console
-            var arr = myData; // if we do not have filtered data set?
+            arr = myData; // if we do not have filtered data set?
           }
           promiseMassFollow(fetchSettings, arr).then(function () {
             updateStatusDiv(
@@ -369,12 +370,13 @@ $(function () {
             '\nContinue?')) {
             fetchSettings.keepUsers = $('#keepUsers').val().replace(/[\n\r]/g, ',').split(',');
             fetchSettings.keepUsers.push(obj.viewerUserId); // to keep viewer itself - shame condition
+            var arr = [];
             if (lastSelected) {
               console.log('Have a filtered list', lastSelected.length); // eslint-disable-line no-console
-              var arr = lastSelected; // if we have filtered data set?
+              arr = lastSelected; // if we have filtered data set?
             } else {
               console.log('DO NOT have a filtered list', myData.length); // eslint-disable-line no-console
-              var arr = myData; // if we do not have filtered data set?
+              arr = myData; // if we do not have filtered data set?
             }
             promiseMassUnFollow(fetchSettings, arr).then(function () {
               updateStatusDiv(
