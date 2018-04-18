@@ -34,11 +34,9 @@ instaLike.like = function (settings) {
   function errorLike(error, resolve, reject) {
     console.log(error); //eslint-disable-line no-console
     var errorCode = error.response ? error.response.status : 0;
-
     if (errorCode > 0) {
       console.log(`error response data - ${error.response.data}/${errorCode}`); //eslint-disable-line no-console
     }
-
     if (400 === errorCode) {
         if ('missing media' === error.response.data) {
           //if missing media, switch to the next media, as retrying doesn't make any sense
@@ -46,7 +44,7 @@ instaLike.like = function (settings) {
           return;
         }
     }
-    console.log(`Error making ajax request to like post ${mediaId}, status - ${errorCode}`); //eslint-disable-line no-console
+    console.log(`Error making http request to like post ${mediaId}, status - ${errorCode}`); //eslint-disable-line no-console
 
     if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
       console.log(`HTTP${errorCode} error trying to like the media.`, new Date()); //eslint-disable-line no-console

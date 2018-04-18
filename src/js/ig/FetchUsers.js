@@ -1,4 +1,4 @@
-/* globals alert, $, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
+/* globals alert, axios, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
 /* exported FetchUsers */
 /* jshint -W106 */
 
@@ -50,7 +50,7 @@ var FetchUsers = function (settings) {
     if ((obj.limit === 0) || (obj[obj.relType + '_processed'] < obj.limit)) {
       if (data.page_info.has_next_page) { //need to continue
         obj.end_cursor = data.page_info.end_cursor;
-        setTimeout(() => this.fetchInstaUsers(), calculateTimeOut(obj));
+        setTimeout(() => fetchInstaUsers(), calculateTimeOut(obj));
         return;
       }
     }
@@ -61,7 +61,7 @@ var FetchUsers = function (settings) {
       obj.relType = obj.relType === 'follows' ? 'followed_by' : 'follows';
       obj.callBoth = false;
       obj.checkDuplicates = true;
-      setTimeout(() => this.fetchInstaUsers(), calculateTimeOut(obj));
+      setTimeout(() => fetchInstaUsers(), calculateTimeOut(obj));
       return;
     }
     resolve(obj);
@@ -79,57 +79,30 @@ var FetchUsers = function (settings) {
       });
   };
 
-  var errorFetch = function (error, resolve, reject) {
+  var errorFetch = function (error) {
     console.log(error); //eslint-disable-line no-console
     var errorCode = error.response ? error.response.status : 0;
-    console.log(`Error making ajax request to fetch the users, status - ${errorCode}`); //eslint-disable-line no-console
+    if (errorCode > 0) {
+      console.log(`error response data - ${error.response.data}/${errorCode}`); //eslint-disable-line no-console
+    }
+    console.log(`Error making http request to fetch the users, status - ${errorCode}`); //eslint-disable-line no-console
 
     if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
-      console.log(`HTTP${errorCode} error trying to get your feed.`, new Date()); //eslint-disable-line no-console
+      console.log(`HTTP${errorCode} error trying to fetch the users.`, new Date()); //eslint-disable-line no-console
       var message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], errorCode, +instaDefOptions.retryInterval / 60000);
-      retryError(message, errorCode, resolve, reject);
+      retryError(message, errorCode);
       return;
     }
-
     alert(instaMessages.getMessage('ERRGETTINGFEED', errorCode));
-    reject();
-
-
-    console.log('error ajax'); //eslint-disable-line no-console
-    console.log(arguments); //eslint-disable-line no-console
-    var message;
-    if (jqXHR.status === 0) {
-      console.log('Not connected.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('NOTCONNECTED', null, +instaDefOptions.retryInterval / 60000);
-      this.retryError(message, jqXHR.status);
-    } else if (jqXHR.status === 429) {
-      console.log('HTTP429 error.', new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('HTTP429', null, +instaDefOptions.retryInterval / 60000);
-      this.retryError(message, jqXHR.status);
-    } else if ((jqXHR.status === 500) || (jqXHR.status === 502) || (jqXHR.status === 503) || (jqXHR.status === 504)) {
-      console.log('HTTP50X error - ' + jqXHR.status, new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage('HTTP50X', jqXHR.status, +instaDefOptions.retryInterval / 60000);
-      this.retryError(message, jqXHR.status);
-    } else if (jqXHR.status === 404) {
-      alert(instaMessages.getMessage('HTTP404I'));
-    } else if (exception === 'parsererror') {
-      alert(instaMessages.getMessage('JSONPARSEERROR'));
-    } else if (exception === 'timeout') {
-      alert(instaMessages.getMessage('TIMEOUT'));
-    } else if (exception === 'abort') {
-      alert(instaMessages.getMessage('AJAXABORT'));
-    } else {
-      alert(instaMessages.getMessage('UNCAUGHT', jqXHR.responseText));
-    }
   };
 
   var fetchInstaUsers = function () {
     var link = 'https://www.instagram.com/graphql/query';
     var config = {
       headers: {
-        'X-CSRFToken': csrfToken,
+        'X-CSRFToken': obj.csrfToken,
         'x-instagram-ajax': 1,
-        'eferer': 'https://www.instagram.com/'
+        'eferer': 'https://www.instagram.com/' + obj.userName + '/'
       }
     };
     axios.get(link, {
@@ -142,8 +115,8 @@ var FetchUsers = function (settings) {
       })
       }
     }, config).then(
-      response => successFetch(response.data, resolve),
-      error => errorFetch(error, resolve, reject)
+      response => successFetch(response.data),
+      error => errorFetch(error)
     );
   };
 

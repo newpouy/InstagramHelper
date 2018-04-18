@@ -39,18 +39,20 @@ var GetPostInfo = function (settings) { //eslint-disable-line no-unused-vars
 
   function errorGetPostInfo(post, error, resolve, reject) {
     console.log(error); //eslint-disable-line no-console
-    var message;
     var errorCode = error.response ? error.response.status : 0;
-    console.log(`Error making ajax request to get post info, status - ${errorCode}`); //eslint-disable-line no-console
+    if (errorCode > 0) {
+      console.log(`error response data - ${error.response.data}/${errorCode}`); //eslint-disable-line no-console
+    }
+    console.log(`Error making http request to get post info, status - ${errorCode}`); //eslint-disable-line no-console
 
     if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
       console.log(`HTTP${errorCode} error trying to get post info.`, new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], errorCode, +instaDefOptions.retryInterval / 60000);
+      var message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], errorCode, +instaDefOptions.retryInterval / 60000);
       retryError(post, message, errorCode, resolve, reject);
       return;
     }
 
-    alert(instaMessages.getMessage('ERRGETTINGFEED', errorCode));
+    alert(instaMessages.getMessage('ERRGETTINGPOST', post, errorCode));
     reject();
   }
 

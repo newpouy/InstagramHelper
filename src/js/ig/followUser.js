@@ -40,11 +40,9 @@ followUser.follow = function (settings) {
   function errorFollow(error, resolve, reject) {
     console.log(error); //eslint-disable-line no-console
     var errorCode = error.response ? error.response.status : 0;
-
     if (errorCode > 0) {
       console.log(`error response data - ${error.response.data}/${errorCode}`); //eslint-disable-line no-console
     }
-
     console.log(`Error making http request to follow ${username}, status - ${errorCode}`); //eslint-disable-line no-console
 
     if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
@@ -112,11 +110,9 @@ followUser.unFollow = function (settings) {
   function errorUnFollow(error, resolve, reject) {
     console.log(error); //eslint-disable-line no-console
     var errorCode = error.response ? error.response.status : 0;
-
     if (errorCode > 0) {
       console.log(`error response data - ${error.response.data}/${errorCode}`); //eslint-disable-line no-console
     }
-
     console.log(`Error making http request to unfollow ${username}, status - ${errorCode}`); //eslint-disable-line no-console
 
     if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {

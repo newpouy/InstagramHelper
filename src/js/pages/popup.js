@@ -179,7 +179,7 @@ window.onload = function () {
         document.getElementById('details').innerHTML = $html;
       });
     } else {
-      document.getElementById('details').innetHTML = 'UserName is not found in URL';
+      document.getElementById('details').innerHTML = 'UserName is not found in URL';
       document.getElementById('username').value = instaDefOptions.you;
       document.getElementById('username_1').value = instaDefOptions.you;
     }

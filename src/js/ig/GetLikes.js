@@ -46,17 +46,19 @@ var GetLikes = function (settings) { //eslint-disable-line no-unused-vars
 
   function errorGetLikes(error, resolve, reject) {
     console.log(error); //eslint-disable-line no-console
-    var message;
     var errorCode = error.response ? error.response.status : 0;
-    console.log(`Error making ajax request to get the likes for post, status - ${errorCode}`); //eslint-disable-line no-console
+    if (errorCode > 0) {
+      console.log(`error response data - ${error.response.data}/${errorCode}`); //eslint-disable-line no-console
+    }
+    console.log(`Error making http request to get the likes for post, status - ${errorCode}`); //eslint-disable-line no-console
 
     if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
       console.log(`HTTP${errorCode} error trying to get the likes for post.`, new Date()); //eslint-disable-line no-console
-      message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], errorCode, +instaDefOptions.retryInterval / 60000);
+      var message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], errorCode, +instaDefOptions.retryInterval / 60000);
       retryError(message, errorCode, resolve, reject);
       return;
     }
-    alert(instaMessages.getMessage('ERRGETTINGFEED', errorCode));
+    alert(instaMessages.getMessage('ERRGETTINGLIKES', errorCode));
     reject();
   }
 
