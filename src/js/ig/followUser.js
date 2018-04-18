@@ -45,10 +45,10 @@ followUser.follow = function (settings) {
       console.log(`error response data - ${error.response.data}/${errorCode}`); //eslint-disable-line no-console
     }
 
-    console.log(`Error making http request to unfollow ${username}, status - ${errorCode}`); //eslint-disable-line no-console
+    console.log(`Error making http request to follow ${username}, status - ${errorCode}`); //eslint-disable-line no-console
 
     if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
-      console.log(`HTTP${errorCode} error trying to like the media.`, new Date()); //eslint-disable-line no-console
+      console.log(`HTTP${errorCode} error trying to follow the user.`, new Date()); //eslint-disable-line no-console
       var message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], errorCode, +instaDefOptions.retryInterval / 60000);
       retryError(message, errorCode, resolve, reject);
       return;
@@ -120,7 +120,7 @@ followUser.unFollow = function (settings) {
     console.log(`Error making http request to unfollow ${username}, status - ${errorCode}`); //eslint-disable-line no-console
 
     if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
-      console.log(`HTTP${errorCode} error trying to like the media.`, new Date()); //eslint-disable-line no-console
+      console.log(`HTTP${errorCode} error trying to follow the user.`, new Date()); //eslint-disable-line no-console
       var message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], errorCode, +instaDefOptions.retryInterval / 60000);
       retryError(message, errorCode, resolve, reject);
       return;
