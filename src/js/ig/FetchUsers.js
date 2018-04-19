@@ -107,7 +107,8 @@ var FetchUsers = function (settings) {
     };
     axios.get(link, {
       params: {
-        query_id: instaDefOptions.queryId[obj.relType],
+        //query_id: instaDefOptions.queryId[obj.relType],
+        query_hash: instaDefOptions.queryHash[obj.relType],
         variables: JSON.stringify({
           id: obj.userId,
           first: obj.pageSize,

@@ -87,7 +87,7 @@ followUser.unFollow = function (settings) {
 
   function successUnFollow(data, resolve) {
     updateStatusDiv(`The request to unfollow ${username} was successful with response - ${data.status}`);
-    resolve(data);
+    resolve(data.status);
   }
 
   function retryError(message, errorNumber, resolve, reject) {

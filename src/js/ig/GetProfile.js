@@ -76,7 +76,6 @@ var GetProfile = function (settings) { //eslint-disable-line no-unused-vars
 
   function getProfileInternal(resolve, reject) {
     var link = 'https://www.instagram.com/graphql/query/';
-
     var config = {
       headers: {
         'x-instagram-ajax': 1,
@@ -85,7 +84,8 @@ var GetProfile = function (settings) { //eslint-disable-line no-unused-vars
     };
     axios.get(link, {
       params: {
-        query_id: instaDefOptions.queryId.profile,
+        //query_id: instaDefOptions.queryId.profile,
+        query_hash: instaDefOptions.queryHash.profile,
         variables: JSON.stringify({
           'id': userId,
           'first': pageSize,
