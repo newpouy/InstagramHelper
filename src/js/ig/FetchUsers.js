@@ -75,7 +75,7 @@ var FetchUsers = function (settings) {
       })
       .then(() => {
         console.log('Continue execution after HTTP error', errorNumber, new Date()); //eslint-disable-line no-console
-        this.fetchInstaUsers();
+        fetchInstaUsers();
       });
   };
 
