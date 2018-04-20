@@ -112,7 +112,8 @@ $(function () {
 
     Promise.all([p1, p2]).then(values => {
       let [obj1, obj2] = values;
-      let arr = intersectArrays(obj1.myData, obj2.myData);
+      //let arr = intersectArrays(obj1.myData, obj2.myData);
+      let arr = obj1.myData.concat(obj2.myData);
       if (arr.length > 0) { //if common users are found
         prepareHtmlElementsForIntersection(arr);
         promiseGetFullInfo(arr).then(function () {
@@ -131,7 +132,14 @@ $(function () {
   }
 
   function getFullInfo(arr, index, resolve) {
-    instaUserInfo.getUserProfile({ username: arr[index].username, userId: arr[index].id }).then(function (obj) {
+    instaUserInfo.getUserProfile({
+      username: arr[index].username,
+      userId: arr[index].id,
+      updateStatusDiv: function (message, color) {
+        htmlElements['statusDiv'].textContent = message;
+        htmlElements['statusDiv'].style.color = color || 'black';
+      }
+    }).then(function (obj) {
       obj.user_1_followed_by = arr[index].user_1_followed_by;
       obj.user_1_follows = arr[index].user_1_follows;
       obj.user_2_followed_by = arr[index].user_2_followed_by;
