@@ -28,7 +28,7 @@
             <v-btn id="startFollow" :disabled="startButtonDisabled" color="primary">Start Follow!</v-btn>
           </v-flex>
           <v-flex>
-            <v-text-field id="ids" label="Input of User Ids" multi-line v-model="ids"
+            <v-text-field id="ids" label="Input of User Ids" multi-line v-model="ids" :readonly="startButtonDisabled"
               placeholder="Specify the id of users you want to follow/unfollow. Put each id on separate line. Please pay attention that it should be id (numeric value), not username."></v-text-field>
           </v-flex>
           <v-flex>

@@ -67,6 +67,9 @@
     });
   }
 
+  document.getElementById('pageSize').setAttribute('max', maxPageSize);
+  document.getElementById('pageSizeForFeed').setAttribute('max', maxPageSizeForFeed);
+
   document.addEventListener('DOMContentLoaded', restoreOptions);
   document.getElementById('save').addEventListener('click', saveOptions);
   document.getElementById('restoreDefaults').addEventListener('click', restoreDefaults);
