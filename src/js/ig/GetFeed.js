@@ -11,6 +11,8 @@ var GetFeed = function (settings) { //eslint-disable-line no-unused-vars
     updateStatusDiv, end_cursor, vueStatus, pageSize
   } = settings;
 
+  pageSize = Math.min(pageSize, instaDefOptions.maxPageSizeForFeed); //to avoid HTTP400
+
   function getFeed(restart) {
     if (restart) {
       end_cursor = null;

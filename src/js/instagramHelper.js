@@ -58,11 +58,11 @@
 
         var sharedData = getSharedData();
 
-        request.pageSize = items.pageSize;
+        request.pageSize = Math.min(items.pageSize, instaDefOptions.maxPageSize); // to avoid HTTP400
         request.delay = items.delay;
         request.followDelay = items.followDelay;
         request.likeDelay = items.likeDelay;
-        request.pageSizeForFeed = items.pageSizeForFeed;
+        request.pageSizeForFeed = Math.min(items.pageSizeForFeed, instaDefOptions.maxPageSizeForFeed); // to avoid HTTP400
         request.csrfToken = sharedData.config.csrf_token;
 
         if (sharedData.config.viewer === null) {

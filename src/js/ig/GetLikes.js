@@ -8,8 +8,8 @@ var GetLikes = function (settings) { //eslint-disable-line no-unused-vars
   var has_next_page;
 
   var {
-        shortCode, end_cursor, updateStatusDiv, pageSize, vueStatus
-      } = settings;
+    shortCode, end_cursor, updateStatusDiv, pageSize, vueStatus
+  } = settings;
 
   function getLikes() {
     return new Promise(function (resolve, reject) {
@@ -83,8 +83,8 @@ var GetLikes = function (settings) { //eslint-disable-line no-unused-vars
       }
     }, config).
       then(
-      response => successGetLikes(response, resolve),
-      error => errorGetLikes(error, resolve, reject)
+        response => successGetLikes(response, resolve),
+        error => errorGetLikes(error, resolve, reject)
       );
   }
 

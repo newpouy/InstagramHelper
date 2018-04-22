@@ -12,6 +12,7 @@ var GetProfile = function (settings) { //eslint-disable-line no-unused-vars
     userId, updateStatusDiv, end_cursor, pageSize, vueStatus
   } = settings;
 
+  pageSize = Math.min(pageSize, instaDefOptions.maxPageSizeForFeed); // to avoid HTTP400
 
   function setUserId(value) {
     userId = value;
@@ -59,7 +60,7 @@ var GetProfile = function (settings) { //eslint-disable-line no-unused-vars
     console.log(error); //eslint-disable-line no-console
     var errorCode = error.response ? error.response.status : 0;
     if (errorCode > 0) {
-      console.log(`error response data - ${error.response.data}/${errorCode}`); //eslint-disable-line no-console
+      console.log(`error response data - ${JSON.stringify(error.response.data)}/${errorCode}`); //eslint-disable-line no-console
     }
     console.log(`Error making http request to get the user profile, status - ${errorCode}`); //eslint-disable-line no-console
 

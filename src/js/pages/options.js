@@ -9,6 +9,8 @@
   var defFollowDelay = instaDefOptions.defFollowDelay;
   var defLikeDelay = instaDefOptions.defLikeDelay;
   var defPageSizeForFeed = instaDefOptions.defPageSizeForFeed; //and also page size for user profile
+  var maxPageSize = instaDefOptions.maxPageSize;
+  var maxPageSizeForFeed = instaDefOptions.maxPageSizeForFeed;
 
   function saveOptions() {
     var pageSize = document.getElementById('pageSize').value;
@@ -40,11 +42,11 @@
       likeDelay: defLikeDelay,
       pageSizeForFeed: defPageSizeForFeed
     }, function (items) {
-      document.getElementById('pageSize').value = items.pageSize;
+      document.getElementById('pageSize').value = Math.min (items.pageSize, maxPageSize);
       document.getElementById('delay').value = items.delay;
       document.getElementById('followDelay').value = items.followDelay;
       document.getElementById('likeDelay').value = items.likeDelay;
-      document.getElementById('pageSizeForFeed').value = items.pageSizeForFeed;
+      document.getElementById('pageSizeForFeed').value = Math.min (items.pageSizeForFeed, maxPageSizeForFeed);
     });
   }
 
@@ -63,7 +65,6 @@
         status.textContent = '';
       }, 1000);
     });
-
   }
 
   document.addEventListener('DOMContentLoaded', restoreOptions);

@@ -1,4 +1,4 @@
-/* globals GetFeed, GetProfile, GetPostInfo, instaUserInfo */
+/* globals GetFeed, GetProfile, GetPostInfo, instaUserInfo, instaDefOptions */
 /* jshint -W106 */
 
 var GetPosts = function (settings) { //eslint-disable-line no-unused-vars
@@ -10,6 +10,8 @@ var GetPosts = function (settings) { //eslint-disable-line no-unused-vars
   var {
     pageSize, mode, updateStatusDiv, end_cursor, vueStatus, userName, userId
   } = settings;
+
+  pageSize = Math.min(pageSize, instaDefOptions.maxPageSizeForFeed); //to avoid HTTP400 error
 
   var init = {
     'likeFeed': () => {

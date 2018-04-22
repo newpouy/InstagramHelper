@@ -112,8 +112,8 @@ $(function () {
 
     Promise.all([p1, p2]).then(values => {
       let [obj1, obj2] = values;
-      //let arr = intersectArrays(obj1.myData, obj2.myData);
-      let arr = obj1.myData.concat(obj2.myData);
+      let arr = intersectArrays(obj1.myData, obj2.myData);
+      // let arr = obj1.myData.concat(obj2.myData); // to check download issue
       if (arr.length > 0) { //if common users are found
         prepareHtmlElementsForIntersection(arr);
         promiseGetFullInfo(arr).then(function () {

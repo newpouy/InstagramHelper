@@ -83,7 +83,7 @@ var FetchUsers = function (settings) {
     console.log(error); //eslint-disable-line no-console
     var errorCode = error.response ? error.response.status : 0;
     if (errorCode > 0) {
-      console.log(`error response data - ${error.response.data}/${errorCode}`); //eslint-disable-line no-console
+      console.log(`error response data - ${JSON.stringify(error.response.data)}/${errorCode}`); //eslint-disable-line no-console
     }
     console.log(`Error making http request to fetch the users, status - ${errorCode}`); //eslint-disable-line no-console
 
