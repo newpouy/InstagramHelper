@@ -68,7 +68,11 @@
   }
 
   document.getElementById('pageSize').setAttribute('max', maxPageSize);
+  document.getElementById('emPageSize').innerText =
+    document.getElementById('emPageSize').innerText.replace('%x%', maxPageSize);
   document.getElementById('pageSizeForFeed').setAttribute('max', maxPageSizeForFeed);
+  document.getElementById('emPageSizeForFeed').innerText =
+    document.getElementById('emPageSizeForFeed').innerText.replace('%x%', maxPageSizeForFeed);
 
   document.addEventListener('DOMContentLoaded', restoreOptions);
   document.getElementById('save').addEventListener('click', saveOptions);
