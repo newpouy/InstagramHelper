@@ -9,7 +9,40 @@ window.onload = function () {
   const timeout = ms => new Promise(res => setTimeout(res, ms));
 
   document.getElementById('startUnFollow').onclick = async function () {
-    alert('Coming soon');
+    follow.isInProgress = true;
+
+    var value = document.getElementById('ids').value;
+    follow.processUsers = value.replace(/[\n\r]/g, ',').split(',');
+    follow.unFollowedUsers = 0;
+
+    for (var i = 0; i < follow.processUsers.length; i++) {
+      if (follow.processUsers[i] != '') {
+        follow.updateStatusDiv(`Mass following users: ${follow.processUsers[i]}/${i + 1} of ${follow.processUsers.length}`);
+
+        var result = await followUser.unFollow(
+          {
+            username: follow.processUsers[i],
+            userId: follow.processUsers[i],
+            csrfToken: follow.csrfToken,
+            updateStatusDiv: follow.updateStatusDiv,
+            vueStatus: follow
+          });
+
+        if ('ok' === result) {
+          follow.unFollowedUsers++;
+        } else {
+          console.log('Not recognized result - ' + result); // eslint-disable-line no-console
+        }
+
+        await timeout(follow.delay);
+      }
+    }
+
+    follow.isInProgress = false;
+
+    follow.updateStatusDiv(
+      `Completed!
+        UnFollowed: ${follow.unFollowedUsers}`);
   };
 
   document.getElementById('startFollow').onclick = async function () {
