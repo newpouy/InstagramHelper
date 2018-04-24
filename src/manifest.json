@@ -15,7 +15,7 @@
 
 	"page_action": {
 		"default_icon": "img/icon19.png",
-		"default_title": "Helper Tools for Instagram.com - 0.339",
+		"default_title": "Helper Tools for Instagram.com",
 		"default_popup": "popup.html"
 	},
 
@@ -46,5 +46,5 @@
 		"https://www.instagram.com/*"
 	],
 
-	"incognito": "split"
+  "incognito": "split"
 }

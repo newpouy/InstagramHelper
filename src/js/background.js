@@ -21,6 +21,7 @@
         url: 'https://www.instagram.com/*'
       }).then(function (tabs) {
         for (var i = 0; i < tabs.length; i++) {
+          chrome.pageAction.setTitle({tabId: tabs[i].id, title :"Helper Tools for Instagram.com - " + chrome.app.getDetails().version});
           chrome.pageAction.show(tabs[i].id);
         }
       });
