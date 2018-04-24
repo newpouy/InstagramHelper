@@ -17,7 +17,8 @@ $(function () {
     statusDiv: document.getElementById('status'),
     follows: $('#follows'),
     followed_by: $('#followed_by'),
-    detailedinfo: $('#detailedinfo')
+    detailedinfo: $('#detailedinfo'),
+    detInfoCheckbox: $('#detInfoCheckbox')
   };
 
   chrome.runtime.onMessage.addListener(function (request) {
@@ -326,72 +327,24 @@ $(function () {
     prepareHtmlElements(fetchSettings);
     promiseFetchInstaUsers(fetchSettings).then(function (obj) {
 
+      //WHEN FETCHING IS COMPLETED
       showJQGrid(obj, simpleColModel);
-      showDetailsDiv(obj);
+      showExportDiv(obj);
 
-      prepareHtmlElementsUserDetails(fetchSettings, myData);
-
-      $('#massFollow').on('click', function () {
-        if (confirm('It will follow ALL not-followed/not-requested ousers DISPLAYED in the table below (it means filtering in table is respected).' +
-                    `\nFollowing will be done with the interval of ${request.followDelay / 1000}sec.` +
-                    '\nYou can change the interval value in the settings' +
-                    '\nWhen process is started, the change of filter criteria in the table is ignored.' +
-                    '\nContinue?')) {
-          var arr = [];
-          if (lastSelected) {
-            console.log('Have filtered list', lastSelected.length); // eslint-disable-line no-console
-            arr = lastSelected; // if we have filtered data set?
-          } else {
-            console.log('DO NOT have filtered list', myData.length); // eslint-disable-line no-console
-            arr = myData; // if we do not have filtered data set?
-          }
-          promiseMassFollow(fetchSettings, arr).then(function () {
-            updateStatusDiv(
-              `Completed: ${fetchSettings.followProcessedUsers}
-                processed/${fetchSettings.followedUsers}
-                followed/${fetchSettings.requestedUsers} requested`);
-          });
-        }
-      });
-
-      $('#massUnFollow').on('click', function () {
-        $('#unfollowDiv').show();
-        $('#startMassUnFollow').on('click', function () {
-          // fetchSettings.keepPrivate = $('#keepPrivateAccounts').is(':checked');
-          if ('' === $('#keepUsers').val().trim()) {
-            if (!confirm('You have not specified the users to be kept. Continue?')) {
-              return;
-            }
-          }
-          if (confirm(
-            'It will unfollow ALL USERS displayed in the table below except the users whose id you specified in the textarea.' +
-            `\nFollowing will be done with the interval of ${request.followDelay / 1000}sec.` +
-            '\nWhen process is started, the changes of filter criteria in the table or/and the list of users to be kept are ignored.' +
-            '\nContinue?')) {
-            fetchSettings.keepUsers = $('#keepUsers').val().replace(/[\n\r]/g, ',').split(',');
-            fetchSettings.keepUsers.push(obj.viewerUserId); // to keep viewer itself - shame condition
-            var arr = [];
-            if (lastSelected) {
-              console.log('Have a filtered list', lastSelected.length); // eslint-disable-line no-console
-              arr = lastSelected; // if we have filtered data set?
-            } else {
-              console.log('DO NOT have a filtered list', myData.length); // eslint-disable-line no-console
-              arr = myData; // if we do not have filtered data set?
-            }
-            promiseMassUnFollow(fetchSettings, arr).then(function () {
-              updateStatusDiv(
-                `Completed: ${fetchSettings.unFollowProcessedUsers}
-                processed/${fetchSettings.unFollowedUsers}`);
-            });
-          }
+      //DO WE NEED TO RUN DETAILED INFO COLLECTION
+      // $('#startDetailedInfoCollection').attr("disabled", "disabled");
+      if ($('#startDetailedInfoCollection').is(":checked")) {
+        showDetailsDiv();
+        prepareHtmlElementsUserDetails(obj, myData);
+        promiseGetFullInfo(obj, myData).then(function () {
+          generationCompleted(obj, true);
+        }).catch(function () {
+          generationCompleted(obj, false);
         });
-      });
-
-      promiseGetFullInfo(fetchSettings, myData).then(function () {
-        generationCompleted(fetchSettings, true);
-      }).catch(function () {
-        generationCompleted(fetchSettings, false);
-      });
+      } else {
+        generationCompleted(obj, false);
+      }
+      htmlElements.detInfoCheckbox.remove();
     });
   }
 
@@ -548,9 +501,8 @@ $(function () {
     }, 1000);
   }
 
-  function showDetailsDiv(obj) {
+  function showExportDiv(obj) {
 
-    $('#details').show();
     $('#exportDiv').show();
 
     $('#export_XLSX').on('click', function () {
@@ -565,8 +517,69 @@ $(function () {
       });
     });
 
-    $('#cancelDetInfo').on('click', () => cancelProcessing = confirm('Do you want to cancel?'));
+    $('#massFollow').on('click', function () {
+      if (confirm('It will follow ALL not-followed/not-requested ousers DISPLAYED in the table below (it means filtering in table is respected).' +
+        `\nFollowing will be done with the interval of ${obj.followDelay / 1000}sec.` +
+        '\nYou can change the interval value in the settings' +
+        '\nWhen process is started, the change of filter criteria in the table is ignored.' +
+        '\nContinue?')) {
+        var arr = [];
+        if (lastSelected) {
+          console.log('Have filtered list', lastSelected.length); // eslint-disable-line no-console
+          arr = lastSelected; // if we have filtered data set?
+        } else {
+          console.log('DO NOT have filtered list', myData.length); // eslint-disable-line no-console
+          arr = myData; // if we do not have filtered data set?
+        }
+        promiseMassFollow(obj, arr).then(function () {
+          updateStatusDiv(
+            `Completed: ${obj.followProcessedUsers}
+              processed/${obj.followedUsers}
+              followed/${obj.requestedUsers} requested`);
+        });
+      }
+    });
 
+    $('#massUnFollow').on('click', function () {
+      $('#unfollowDiv').show();
+      $('#startMassUnFollow').on('click', function () {
+        // obj.keepPrivate = $('#keepPrivateAccounts').is(':checked');
+        if ('' === $('#keepUsers').val().trim()) {
+          if (!confirm('You have not specified the users to be kept. Continue?')) {
+            return;
+          }
+        }
+        if (confirm(
+          'It will unfollow ALL USERS displayed in the table below except the users whose id you specified in the textarea.' +
+          `\nUnFollowing will be done with the interval of ${obj.followDelay / 1000}sec.` +
+          '\nWhen process is started, the changes of filter criteria in the table or/and the list of users to be kept are ignored.' +
+          '\nContinue?')) {
+          obj.keepUsers = $('#keepUsers').val().replace(/[\n\r]/g, ',').split(',');
+          obj.keepUsers.push(obj.viewerUserId); // to keep viewer itself - shame condition
+          var arr = [];
+          if (lastSelected) {
+            console.log('Have a filtered list', lastSelected.length); // eslint-disable-line no-console
+            arr = lastSelected; // if we have filtered data set?
+          } else {
+            console.log('DO NOT have a filtered list', myData.length); // eslint-disable-line no-console
+            arr = myData; // if we do not have filtered data set?
+          }
+          promiseMassUnFollow(obj, arr).then(function () {
+            updateStatusDiv(
+              `Completed: ${obj.unFollowProcessedUsers}
+              processed/${obj.unFollowedUsers}`);
+          });
+        }
+      });
+    });
+
+  }
+
+  function showDetailsDiv() {
+
+    $('#details').show();
+
+    $('#cancelDetInfo').on('click', () => cancelProcessing = confirm('Do you want to cancel?'));
   }
 
   function prepareFollowedElements(obj) {
@@ -621,6 +634,7 @@ $(function () {
 
     prepareFollowedElements(obj);
     prepareFollowsElements(obj);
+    htmlElements.detInfoCheckbox.show();
   }
 
   function generationCompleted(obj, resolved) {
