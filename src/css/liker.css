@@ -1,44 +1,23 @@
-textarea {
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-}
-
-.table {
-    display: table;
-}
-
-.table-row {
-    display: table-row;
-}
-
-.container {
-    width: 98%;
-    height: 96%;
-}
-
-.body {
-    height: 96%;
-}
-
-.body-content-wrapper {
-    width: 96%;
-    height: 96%;
-    position: relative;
-}
-
-.body-content {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
-
 .disabled {
   pointer-events:none;
 }
 
 #log_text_area {
   font-size: 100%!important;
+}
+
+.radio-group .input-group--text-field {
+  padding: 18px 0 0 !important;
+}
+
+.radio-group .input-group--text-field .input-group__details:before {
+  display: block !important;
+}
+
+.radio-group .input-group--select .input-group__input {
+  display: flex;
+}
+
+.radio-group input {
+  width: 100%;
 }

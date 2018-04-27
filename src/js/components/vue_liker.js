@@ -31,8 +31,11 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
 
     whatToLike: 'likeFeed', //radiobutton - like your feed or posts of another user (likeFeed or likeProfile)
     userToLike: '',
-    allPostsFetched: false // when all posts from user's profile are fetched
+    allPostsFetched: false, // when all posts from user's profile are fetched
 
+    skipVideo: true, //should video be skipped
+    skipOwnPosts: true, // do not like your own posts
+    minLike: 0 // like a post when already amount of likes >=
   },
   computed: {
     isCompleted: function () {
@@ -67,7 +70,8 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
       }, 0);
     },
     validateUserProfile: function (e) {
-      //e.target.select();
+      // todo : implement validateUserProfile
+      // e.target.select();
     }
   }
 });

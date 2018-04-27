@@ -1,80 +1,71 @@
 <!DOCTYPE html>
-<html style="height:98%">
+<html>
 
 <head>
   <title>Liker</title>
   <link rel="stylesheet" type="text/css" media="screen" href="css/liker.css" />
+  <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' />
+  <link rel="stylesheet" type="text/css" href="lib/vue/css/vuetify.min.css" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 </head>
 
-<body style="height:98%">
+<body>
 
-  <div class="table container" id="app">
-    <div class="table-row header">
-      <div id="status" v-if="isInProgress" v-bind:style="{ color : statusColor}" style="height:2em;width:100%;padding:5px;font-weight:bold;">
-        {{ status }}
-      </div>
-      <div id="stat" v-if="isInProgress" style="width:100%;padding: 5px; font-weight: bold;">
-        Started at {{startDate}}/Liked {{liked}}/Met already liked {{alreadyLiked}}/Fetched posts {{fetched}}/fetching feed restarted
-        {{restarted}}
-      </div>
-      <div id="liker_options" style="border: 0.5px solid; padding: 3px; margin: 3px; display: inline-block;">
-        <strong>
-          <label>You can like the posts in your feed.</label>
-          <br/>
-          <label>It is useful when you are following 1k+ users,</label>
-          <br/>
-          <label>and you want to make them all happy :)</label>
-          <br/>
-          <br/>
-          <label>And you can also like the posts of the specific user.</label>
-          <br/>
-        </strong>
-        <br/>
+  <div id="app">
+    <v-app>
 
-        <div :disabled="isInProgress" v-bind:class="{ disabled: isInProgress }">
-          <strong>
-            <label>Please specify what to like:</label>
-          </strong>
-          <br/>
-          <input type="radio" v-model="whatToLike" value="likeFeed" name="whatToLike" />
-          <label for="likeFeed">The posts in your feed</label>
-          <br />
-          <input type="radio" v-model="whatToLike" value="likeProfile" name="whatToLike" />
-          <label for="likeProfile">The posts of
-            <input type="text" v-model="userToLike" v-on:blur="validateUserProfile($event)" :disabled="whatToLike !== 'likeProfile'"
-            /> user</label>
-          <br />
-        </div>
+      <v-container grid-list-md>
+        <v-layout row wrap>
+          <v-flex xs12 v-if="isInProgress">
+            <div v-bind:style="{ color : statusColor}">
+              <strong>{{ status }}</strong>
+            </div>
+            <strong>Started at {{startDate}}/Liked {{liked}}/Met already liked {{alreadyLiked}}/Fetched posts {{fetched}}/fetching
+              feed restarted {{restarted}}</strong>
+          </v-flex>
+          <v-flex xs12 v-if="!isInProgress">
+            <strong>
+              You can like the posts in your feed. It is useful when you are following 1k+ users, and you want to make them all happy :)
+              You can also like the posts of the specific user.
+            </strong>
+          </v-flex>
 
-        <strong>
-          <label>Please specify when to stop the liking:</label>
-        </strong>
-        <br />
-        <input type="radio" v-model="stopCriterion" value="alreadyLiked" name="stopCriterion" id="AlreadyLiked" />
-        <label for="AlreadyLiked">When met an already liked post</label>
-        <br />
-        <input type="radio" v-model="stopCriterion" value="amountPosts" name="stopCriterion" id="AmountPosts" />
-        <label for="AmountPictures">When liked
-          <input type="number" min="100" step="100" :disabled="stopCriterion !=='amountPosts'" v-model.number="amountToLike" id="amount"
-          /> posts</label>
-        <br /> Delay between requests, ms:
-        <input type="number" min="100" step="100" v-model.number="delay" id="delay" />
-        <br />
-        <button id="start" :disabled="startButtonDisabled">Like the posts!</button>
-        <button id="cancel" :disabled="!isInProgress" v-on:click="stop=true">Stop it!</button>
-      </div>
-    </div>
+          <v-flex xs4>
+            <v-radio-group label="I want to like..." v-model="whatToLike" :disabled="isInProgress" v-bind:class="{ disabled: isInProgress }">
+              <v-radio :key="1" label="The posts in my feed" value="likeFeed"></v-radio>
+              <v-radio :key="2" label="The posts of " value="likeProfile"></v-radio>
+              <v-text-field label="username" type="string" v-validate="whatToLike == 'likeProfile' ? 'required' : ''" v-model="userToLike"
+                v-if="whatToLike == 'likeProfile'" v-on:blur="validateUserProfile($event)"></v-text-field>
+            </v-radio-group>
+          </v-flex>
+          <v-flex xs4>
+            <v-radio-group label="I want to stop..." v-model="stopCriterion">
+              <v-radio :key="1" label="When a liked post is met" value="alreadyLiked"></v-radio>
+              <v-radio :key="2" label="When liked " value="amountPosts"></v-radio>
+              <v-text-field label="posts" type="number" min=100 step=100 v-model.number="amountToLike" v-if="stopCriterion == 'amountPosts'"></v-text-field>
+            </v-radio-group>
+          </v-flex>
+          <v-flex xs4 pt5>
+            <v-container>
+              <v-checkbox label="Don't Like Video" v-model="skipVideo"></v-checkbox>
+              <v-checkbox label="Don't Like Your Own Posts" v-model="skipOwnPosts"></v-checkbox>
+              <v-text-field label="Like a post only when it has likes >= " type="number" min=0 step=100 v-model.number="minLike"></v-text-field>
+            </v-container>
+          </v-flex>
 
-    <div class="table-row body">
-      <div class="body-content-wrapper">
-        <div class="body-content">
-          <textarea v-model="log" id="log_text_area"></textarea>
-        </div>
-      </div>
-    </div>
+          <v-flex xs12 text-xs-center>
+            <v-text-field rows="5" label="Do not like the posts from following users (specify ID)" multi-line v-model="log"></v-text-field>
+            <v-text-field label="Delay between requests, ms" type="number" min=100 step=100 v-model.number="delay"></v-text-field>
+            <v-btn id="start" :disabled="startButtonDisabled" color="primary">Like the posts!</v-btn>
+            <v-btn :disabled="!isInProgress" color="primary" v-on:click="stop=true">Stop it!</v-btn>
+            <v-text-field id="log_text_area" rows="10" label="Log" multi-line v-model="log"></v-text-field>
+          </v-flex>
+        </v-layout>
+      </v-container>
 
+    </v-app>
   </div>
-
   <script src="lib/axios.min.js"></script>
   <script src="js/pages/likerPage.js"></script>
   <script src="js/ig/GetPosts.js"></script>
@@ -89,6 +80,7 @@
   <script src="js/instaTimeout.js"></script>
 
   <script src="lib/vue/vue.js"></script>
+  <script src="lib/vue/vuetify.min.js"></script>
   <script src="js/components/vue_liker.js"></script>
 
   <script src="js/pages/ga.js"></script>
