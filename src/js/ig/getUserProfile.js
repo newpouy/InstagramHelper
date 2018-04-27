@@ -61,8 +61,11 @@ instaUserInfo.getUserProfile = function (settings) {
   }
 
   function successGetUserProfile(data, link, resolve) {
-    data = data.entry_data.ProfilePage[0];
-    if (isJson(data.graphql.user)) {
+    var json = JSON.parse(igUserProfileRegularExpression.exec(data)[1]);
+    // console.log(json);
+
+    // handle the content is temporary not available
+    if ((json.entry_data.ProfilePage) &&(isJson(json.entry_data.ProfilePage[0].graphql.user))) {
       var {
         id,
         username,
@@ -78,10 +81,10 @@ instaUserInfo.getUserProfile = function (settings) {
         blocked_by_viewer,
         requested_by_viewer,
         has_blocked_viewer
-      } = data.graphql.user;
-      var follows_count = data.graphql.user.edge_follow.count;
-      var followed_by_count = data.graphql.user.edge_followed_by.count;
-      var media_count = data.graphql.user.edge_owner_to_timeline_media.count;
+      } = json.entry_data.ProfilePage[0].graphql.user;
+      var follows_count = json.entry_data.ProfilePage[0].graphql.user.edge_follow.count;
+      var followed_by_count = json.entry_data.ProfilePage[0].graphql.user.edge_followed_by.count;
+      var media_count = json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.count;
 
       followed_by_viewer = requested_by_viewer ? null : followed_by_viewer;
       follows_viewer = has_requested_viewer ? null : follows_viewer;
@@ -109,7 +112,7 @@ instaUserInfo.getUserProfile = function (settings) {
       resolve(obj);
     } else {
       console.log(`returned data in getUserProfile is not JSON - ${userId}/${link}`); // eslint-disable-line no-console
-      console.log(arguments); // eslint-disable-line no-console
+      console.log(data); // eslint-disable-line no-console
       resolve({ //such user should be removed from result list?
         full_name: 'NA',
         biography: 'The detailed user info was not returned by instagram',
@@ -181,8 +184,7 @@ instaUserInfo.getUserProfile = function (settings) {
     axios.get(link, {}, config).
       then(
         response => {
-          var json = JSON.parse(igUserProfileRegularExpression.exec(response.data)[1])
-          successGetUserProfile(json, link, resolve);
+          successGetUserProfile(response.data, link, resolve);
         },
         error => errorGetUserProfile(error, resolve, reject)
       );
