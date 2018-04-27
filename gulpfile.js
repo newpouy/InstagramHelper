@@ -39,8 +39,8 @@ gulp.task('build', ['clean'], () => {
     .pipe($.if(isProductionMode, $.if(isNotMinifiedFile, minify().on('error', function (err) {
       $.util.log($.util.colors.red('[Error]'), err.toString());
     }))))
-    .pipe($.if('*like*.html', $.replace('vue.js', 'vue.min.js')))
-    .pipe($.if('*follow*.html', $.replace('vue.js', 'vue.min.js')))
+    .pipe($.if(isProductionMode, $.if('*like*.html', $.replace('vue.js', 'vue.min.js'))))
+    .pipe($.if(isProductionMode, $.if('*follow*.html', $.replace('vue.js', 'vue.min.js'))))
     .pipe(gulp.dest('./build/'));
 });
 
