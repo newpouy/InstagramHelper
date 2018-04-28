@@ -19,7 +19,7 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
         liker.delay = request.likeDelay;
         liker.viewerUserName = request.viewerUserName;
         liker.viewerUserId = request.viewerUserId;
-        liker.pageSize = request.pageSizeForFeed; //is not parametrized
+        liker.pageSize = request.pageSizeForFeed;
         liker.userToLike = request.userName === instaDefOptions.you ? request.viewerUserName : request.userName;
       }
     });
@@ -110,39 +110,47 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
       var likesCount = obj.node.edge_media_preview_like.count;
       this.updateStatusDiv(`${obj.node.is_video === true ? 'Video' : 'Post'} ${url} taken on ${taken} by ${userName} has ${likesCount} likes`);
       if (!obj.node.owner) {
+        this.skippedSuggestedUsers++;
         this.updateStatusDiv('...Post skipped as there are no owner, maybe suggested users...');
         // "__typename": "GraphSuggestedUserFeedUnit",
         return false;
       }
       if (obj.node.is_video === this.skipVideo) {
+        this.skippedVideo++;
         this.updateStatusDiv('...Post skipped as it is video and video should be skipped...');
         return false;
       }
       if (userName === this.viewerUserName) {
+        this.skippedOwnPosts++;
         this.updateStatusDiv('...Post skipped as it is your post and you own posts should be skipped...');
         return false;
       }
       if (this.minLike > likesCount) {
+        this.skippedTooFewLike++;
         this.updateStatusDiv(`...Post skipped as it has only ${likesCount} likes, and min allowed ${this.minLike}...`);
         return false;
       }
       return true;
     },
-    likeMedia: function (instaPosts, media, index) {
+    scheduleNextRun: function(instaPosts, media, index, delay) {
       if (this.isCompleted) {
         this.updateStatusDiv(`Started at ${this.startDate}`);
         this.updateStatusDiv(`Liked ${this.liked} posts`);
         this.updateStatusDiv(`Found already liked ${this.alreadyLiked} posts`);
-        this.updateStatusDiv(`Skipped Suggested Users ${this.skippedSuggestedUsers} posts`);
-        this.updateStatusDiv(`Skipped Video ${this.skippedVideo} posts`);
-        this.updateStatusDiv(`Skipped Own Posts ${this.skippedOwnPosts} posts`);
-        this.updateStatusDiv(`Skipped because of too few likes ${this.skippedTooFewLike} posts`);
+        this.updateStatusDiv(`Skipped: Suggested Users ${this.skippedSuggestedUsers} posts`);
+        this.updateStatusDiv(`Skipped: Video ${this.skippedVideo} posts`);
+        this.updateStatusDiv(`Skipped: Own Posts ${this.skippedOwnPosts} posts`);
+        this.updateStatusDiv(`Skipped: No enough likes - ${this.skippedTooFewLike} posts`);
         this.updateStatusDiv(`Fetched ${this.fetched} posts`);
         this.updateStatusDiv(`Fetching feed restarted ${this.restarted} times`);
         this.updateStatusDiv(`Completed at ${new Date().toLocaleTimeString()}`);
         this.isInProgress = false;
         return;
+      } else {
+        setTimeout(() => liker.likeMedia(instaPosts, media, index), delay);
       }
+    },
+    likeMedia: function (instaPosts, media, index) {
 
       var i = media.length;
       if (i > index) { //we still have something to like
@@ -159,16 +167,16 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
                     //TODO: indicate at the end of processing how many "missing media" errors
                     liker.updateStatusDiv('...missing media, proceeding to the next post!');
                   }
-                  setTimeout(() => liker.likeMedia(instaPosts, media, ++index), liker.delay);
+                  liker.scheduleNextRun (instaPosts, media, ++index, liker.delay);
                 });
             } else {
               this.updateStatusDiv('...and it is already liked by you!');
               this.alreadyLiked += 1;
-              setTimeout(() => this.likeMedia(instaPosts, media, ++index), 0);
+              this.scheduleNextRun (instaPosts, media, ++index, 0);
             }
           });
         } else {
-          setTimeout(() => this.likeMedia(instaPosts, media, ++index), 0);
+          this.scheduleNextRun (instaPosts, media, ++index, 0); // no need to like
         }
       } else if (instaPosts.hasMore()) { //do we still have something to fetch
         this.updateStatusDiv(`The more posts will be fetched now...${new Date()}`);
@@ -179,7 +187,7 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
         setTimeout(() => this.getPosts(instaPosts, true), this.delay);
       } else { // nothing more found in profile >> no restart
         this.allPostsFetched = true;
-        setTimeout(() => this.likeMedia(instaPosts, media, ++index), 0);
+        this.scheduleNextRun (instaPosts, media, ++index, 0);
       }
     },
     startButtonClick: function () {

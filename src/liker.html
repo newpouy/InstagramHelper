@@ -55,7 +55,9 @@
           </v-flex>
 
           <v-flex xs12 text-xs-center>
-            <v-text-field rows="5" label="Do not like the posts from following users (specify ID)" multi-line v-model="ids"></v-text-field>
+            <!--
+            <v-text-field rows="5" label="Do not like the posts of the following users (specify IDs, each on the separate line)" multi-line v-model="ids"></v-text-field>
+            -->
             <v-text-field label="Delay between requests, ms" type="number" min=100 step=100 v-model.number="delay"></v-text-field>
             <v-btn id="start" :disabled="startButtonDisabled" color="primary" v-on:click="startButtonClick">Like the posts!</v-btn>
             <v-btn :disabled="!isInProgress" color="primary" v-on:click="stop=true">Stop it!</v-btn>
