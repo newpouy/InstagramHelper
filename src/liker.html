@@ -50,12 +50,12 @@
             <v-container>
               <v-checkbox label="Don't Like Video" v-model="skipVideo"></v-checkbox>
               <v-checkbox label="Don't Like Your Own Posts" v-model="skipOwnPosts"></v-checkbox>
-              <v-text-field label="Like a post only when it has likes >= " type="number" min=0 step=100 v-model.number="minLike"></v-text-field>
+              <v-text-field label="Like a post only when it has likes >= " type="number" min=0 step=1 v-model.number="minLike"></v-text-field>
             </v-container>
           </v-flex>
 
           <v-flex xs12 text-xs-center>
-            <v-text-field rows="5" label="Do not like the posts from following users (specify ID)" multi-line v-model="log"></v-text-field>
+            <v-text-field rows="5" label="Do not like the posts from following users (specify ID)" multi-line v-model="ids"></v-text-field>
             <v-text-field label="Delay between requests, ms" type="number" min=100 step=100 v-model.number="delay"></v-text-field>
             <v-btn id="start" :disabled="startButtonDisabled" color="primary">Like the posts!</v-btn>
             <v-btn :disabled="!isInProgress" color="primary" v-on:click="stop=true">Stop it!</v-btn>

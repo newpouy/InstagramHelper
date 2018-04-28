@@ -33,9 +33,10 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
     userToLike: '',
     allPostsFetched: false, // when all posts from user's profile are fetched
 
-    skipVideo: true, //should video be skipped
+    skipVideo: true, // do not like video
     skipOwnPosts: true, // do not like your own posts
-    minLike: 0 // like a post when already amount of likes >=
+    minLike: 0, // like a post when already amount of likes >=
+    ids: ''
   },
   computed: {
     isCompleted: function () {

@@ -69,10 +69,12 @@ window.onload = function () {
       liker.updateStatusDiv(`Found already liked ${liker.alreadyLiked} posts`);
       liker.updateStatusDiv(`Fetched ${liker.fetched} posts`);
       liker.updateStatusDiv(`Fetching feed restarted ${liker.restarted} times`);
+      liker.updateStatusDiv(`Completed at ${new Date().toLocaleDateString()}`);
 
       liker.isInProgress = false;
       return;
     }
+
     var i = media.length;
     if (i > index) { //we still have something to like
       var obj = media[index];
@@ -85,9 +87,17 @@ window.onload = function () {
         // "__typename": "GraphSuggestedUserFeedUnit",
         setTimeout(() => likeMedia(instaPosts, media, ++index), 0);
       } else {
+
+        // console.log(obj.node);
+
         var userName = 'likeProfile' === liker.whatToLike ? liker.userToLike : obj.node.owner.username;
         var likesCount = obj.node.edge_media_preview_like.count;
-        liker.updateStatusDiv(`Post ${url} taken on ${taken} by ${userName} has ${likesCount} likes`);
+        var isVideo = obj.node.is_video;
+        // todo : check vidoe
+        liker.updateStatusDiv(`{isVideo ? 'Video' : 'Post'} ${url} taken on ${taken} by ${userName} has ${likesCount} likes`);
+
+        // todo : check amount of likes if application
+
         instaPosts.isNotLiked(obj).then(result => {
           if (result) { //not yet liked
             instaLike.like({ mediaId: id, csrfToken: liker.csrfToken, updateStatusDiv: liker.updateStatusDiv, vueStatus: liker }).then(
