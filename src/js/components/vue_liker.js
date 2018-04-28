@@ -1,13 +1,34 @@
-/* globals Vue */
+/* globals Vue, chrome, _gaq, instaDefOptions, instaLike, GetPosts */
 
 var liker = new Vue({ // eslint-disable-line no-unused-vars
   el: '#app',
   created() {
+    console.log('liker created...');
     this.viewerUserId = '';
     this.viewerUserName = '';
     this.csrfToken = '';
 
     this.startDate = null; //timestamp when process was started
+
+  },
+  mounted: () => {
+    console.log('liker mounted...');
+    _gaq.push(['_trackPageview']);
+
+    chrome.runtime.onMessage.addListener( (request) => {
+      if (request.action === 'openLikerPage') {
+
+        liker.csrfToken = request.csrfToken;
+        liker.delay = request.likeDelay;
+
+        liker.viewerUserName = request.viewerUserName;
+        liker.viewerUserId = request.viewerUserId;
+
+        liker.pageSize = request.pageSizeForFeed; //is not parametrized
+
+        liker.userToLike = request.userName === instaDefOptions.you ? request.viewerUserName : request.userName;
+      }
+    });
 
   },
   data: {
@@ -73,6 +94,125 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
     validateUserProfile: function (e) {
       // todo : implement validateUserProfile
       // e.target.select();
+    },
+    getPosts: function (instaPosts, restart) {
+      instaPosts.getPosts(restart).then(media => {
+
+        this.fetched += media.length;
+        this.likeMedia(instaPosts, media, 0);
+
+      }).catch(e => {
+        this.updateStatusDiv(e.toString());
+      });
+    },
+    likeMedia: function(instaPosts, media, index){
+      if (this.isCompleted) {
+
+        this.updateStatusDiv(`Started at ${this.startDate}`);
+        this.updateStatusDiv(`Liked ${this.liked} posts`);
+        this.updateStatusDiv(`Found already liked ${this.alreadyLiked} posts`);
+        this.updateStatusDiv(`Fetched ${this.fetched} posts`);
+        this.updateStatusDiv(`Fetching feed restarted ${this.restarted} times`);
+        this.updateStatusDiv(`Completed at ${new Date().toLocaleTimeString()}`);
+
+        this.isInProgress = false;
+        return;
+      }
+
+      var i = media.length;
+      if (i > index) { //we still have something to like
+        var obj = media[index];
+        var id = obj.node.id;
+        var url = obj.node.display_url;
+        var taken = new Date(obj.node.taken_at_timestamp * 1000).toLocaleString();
+        if (!obj.node.owner) {
+          this.updateStatusDiv('Post skipped as there are no owner, maybe suggested users...');
+          // "__typename": "GraphSuggestedUserFeedUnit",
+          setTimeout(() => this.likeMedia(instaPosts, media, ++index), 0);
+        } else {
+
+          var userName = 'likeProfile' === this.whatToLike ? this.userToLike : obj.node.owner.username;
+          var likesCount = obj.node.edge_media_preview_like.count;
+          this.updateStatusDiv(`${obj.node.is_video === true ? 'Video' : 'Post'} ${url} taken on ${taken} by ${userName} has ${likesCount} likes`);
+
+          // todo : check amount of likes if application
+          // todo : check video
+          // todo : check owner
+
+
+          instaPosts.isNotLiked(obj).then(result => {
+            if (result) { //not yet liked
+              instaLike.like({ mediaId: id, csrfToken: this.csrfToken, updateStatusDiv: this.updateStatusDiv, vueStatus: liker }).then(
+                function (result) {
+                  if (result) { //liked
+                    liker.updateStatusDiv(`...liked post ${++liker.liked} on ${new Date().toLocaleString()}`);
+                  } else { //missing media error
+                    //TODO: indicate at the end of processing how many "missing media" errors
+                    liker.updateStatusDiv('...missing media, proceeding to the next post!');
+                  }
+                  setTimeout(() => liker.likeMedia(instaPosts, media, ++index), liker.delay);
+                });
+            } else {
+              this.updateStatusDiv('...and it is already liked by you!');
+              this.alreadyLiked += 1;
+              setTimeout(() => this.likeMedia(instaPosts, media, ++index), 0);
+            }
+          });
+        }
+      } else if (instaPosts.hasMore()) { //do we still have something to fetch
+        this.updateStatusDiv(`The more posts will be fetched now...${new Date()}`);
+        setTimeout(() => this.getPosts(instaPosts, false), this.delay);
+      } else if ('likeFeed' === this.whatToLike) { // nothing more in feed > restart
+        this.updateStatusDiv(`IG has returned no more posts, restart ...${new Date()}`);
+        this.restarted++;
+        setTimeout(() => this.getPosts(instaPosts, true), this.delay);
+      } else { // nothing more found in profile >> no restart
+        this.allPostsFetched = true;
+        setTimeout(() => this.likeMedia(instaPosts, media, ++index), 0);
+      }
+    },
+    startButtonClick: function() {
+
+      var message = {
+        'alreadyLiked': 'It will be stopped when already liked post is met',
+        'amountPosts': `It will be stopped when ${this.amountToLike} posts will be liked.`
+      };
+
+      var instaPosts =
+        new GetPosts({
+          pageSize: this.pageSize,
+          mode: this.whatToLike,
+          updateStatusDiv: this.updateStatusDiv,
+          end_cursor: null,
+          vueStatus: this,
+          userName: this.userToLike,
+          userId: this.viewerUserName === this.userToLike ? this.viewerUserId : ''
+        });
+
+      instaPosts.resolveUserName().then(() => {
+
+        liker.liked = 0;
+        liker.alreadyLiked = 0;
+        liker.restarted = 0;
+        liker.fetched = 0;
+        liker.startDate = (new Date()).toLocaleTimeString();
+        liker.stop = false;
+        liker.log = '';
+        liker.allPostsFetched = false;
+
+        liker.isInProgress = true;
+
+        liker.updateStatusDiv(`The interval between liking requests is ${liker.delay}ms`);
+        liker.updateStatusDiv(message[liker.stopCriterion]);
+        liker.updateStatusDiv('You can change the stop criteria during running the process');
+
+        liker.getPosts(instaPosts, true);
+
+      }, () => {
+        alert('Specified user was not found');
+        instaPosts = null;
+      });
+
     }
   }
 });

@@ -18,7 +18,7 @@
       <v-container grid-list-md>
         <v-layout row wrap>
           <v-flex xs12 v-if="isInProgress">
-            <div v-bind:style="{ color : statusColor}">
+            <div style="height: 3em;" v-bind:style="{ color : statusColor}">
               <strong>{{ status }}</strong>
             </div>
             <strong>Started at {{startDate}}/Liked {{liked}}/Met already liked {{alreadyLiked}}/Fetched posts {{fetched}}/fetching
@@ -57,7 +57,7 @@
           <v-flex xs12 text-xs-center>
             <v-text-field rows="5" label="Do not like the posts from following users (specify ID)" multi-line v-model="ids"></v-text-field>
             <v-text-field label="Delay between requests, ms" type="number" min=100 step=100 v-model.number="delay"></v-text-field>
-            <v-btn id="start" :disabled="startButtonDisabled" color="primary">Like the posts!</v-btn>
+            <v-btn id="start" :disabled="startButtonDisabled" color="primary" v-on:click="startButtonClick">Like the posts!</v-btn>
             <v-btn :disabled="!isInProgress" color="primary" v-on:click="stop=true">Stop it!</v-btn>
             <v-text-field id="log_text_area" rows="10" label="Log" multi-line v-model="log"></v-text-field>
           </v-flex>
@@ -67,7 +67,7 @@
     </v-app>
   </div>
   <script src="lib/axios.min.js"></script>
-  <script src="js/pages/likerPage.js"></script>
+
   <script src="js/ig/GetPosts.js"></script>
   <script src="js/ig/GetFeed.js"></script>
   <script src="js/ig/GetProfile.js"></script>
@@ -81,9 +81,9 @@
 
   <script src="lib/vue/vue.js"></script>
   <script src="lib/vue/vuetify.min.js"></script>
-  <script src="js/components/vue_liker.js"></script>
 
   <script src="js/pages/ga.js"></script>
+  <script src="js/components/vue_liker.js"></script>
 
 </body>
 
