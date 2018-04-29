@@ -61,11 +61,10 @@ instaUserInfo.getUserProfile = function (settings) {
   }
 
   function successGetUserProfile(data, link, resolve) {
-    var json = JSON.parse(igUserProfileRegularExpression.exec(data)[1]);
-    // console.log(json);
-
     // handle the content is temporary not available
+    var json = JSON.parse(igUserProfileRegularExpression.exec(data)[1]);
     if ((json.entry_data.ProfilePage) &&(isJson(json.entry_data.ProfilePage[0].graphql.user))) {
+      // console.log(json);
       var {
         id,
         username,
@@ -85,6 +84,14 @@ instaUserInfo.getUserProfile = function (settings) {
       var follows_count = json.entry_data.ProfilePage[0].graphql.user.edge_follow.count;
       var followed_by_count = json.entry_data.ProfilePage[0].graphql.user.edge_followed_by.count;
       var media_count = json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.count;
+
+      if (media_count > 0) { // get the date of the latest post
+        if (json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.edges[0]) {
+          var latestPostDate =
+            new Date(json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.edges[0].node.taken_at_timestamp * 1000)
+            .toLocaleDateString();
+        }
+      }
 
       followed_by_viewer = requested_by_viewer ? null : followed_by_viewer;
       follows_viewer = has_requested_viewer ? null : follows_viewer;
@@ -107,7 +114,8 @@ instaUserInfo.getUserProfile = function (settings) {
         has_blocked_viewer,
         follows_count,
         followed_by_count,
-        media_count
+        media_count,
+        latestPostDate
       });
       resolve(obj);
     } else {

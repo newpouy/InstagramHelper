@@ -55,11 +55,17 @@ $(function () {
     },
     search: false
   }, {
+    label: 'User Id',
+    name: 'id',
+    width: '80',
+    align: 'center',
+    search: true
+  }, {
     label: 'Info',
     name: 'username',
     sortable: false,
     formatter: function (cellvalue, model, row) {
-      var ret = `id:${row.id}<br/>username:<strong>${row.username}</strong><br/>`;
+      var ret = `username:<strong>${row.username}</strong><br/>`;
       ret += row.full_name ? `full name:<strong>${row.full_name}</strong><br/>` : '';
       ret += row.connected_fb_page ? `FB:<a href='${row.connected_fb_page}' target='_blank'>${row.connected_fb_page}</a><br/>` : '';
       ret += row.external_url ? `url:<a href='${row.external_url}' target='_blank'>${row.external_url}</a>` : '';
@@ -212,6 +218,16 @@ $(function () {
     cellattr: function () {
       return 'title="Posts"';
     }
+  }, {
+    label: 'Date of latest post',
+    name: 'latestPostDate',
+    width: '70',
+    align: 'center',
+    sorttype: 'date',
+    search: true,
+    cellattr: function () {
+      return 'title="The date of the latest post (cannot be displayed for private accounts you don\'t follow)"';
+    }
   }];
 
   var simpleColModel = [{
@@ -224,11 +240,17 @@ $(function () {
     },
     search: false
   }, {
+    label: 'User Id',
+    name: 'id',
+    width: '80',
+    align: 'center',
+    search: true
+  }, {
     label: 'Info',
     name: 'username',
     sortable: false,
     formatter: function (cellvalue, model, row) {
-      var ret = `id:${row.id}<br/>username:<strong>${row.username}</strong><br/>`;
+      var ret = `username:<strong>${row.username}</strong><br/>`;
       ret += row.full_name ? `full name:<strong>${row.full_name}</strong><br/>` : '';
       return ret;
     },
@@ -661,6 +683,7 @@ $(function () {
       $('.ui-jqgrid').replaceWith('<table id="jqGrid"></table><div id="jqGridPager"></div>');
       // $('#jqGridPager').replaceWith('<div id="jqGridPager"></div>');
 
+      // console.log(myData);
       showJQGrid(obj, fullColModel);
     }
 
