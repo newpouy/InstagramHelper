@@ -223,8 +223,34 @@ $(function () {
     name: 'latestPostDate',
     width: '70',
     align: 'center',
+    formatter: 'date',
     sorttype: 'date',
     search: true,
+    searchoptions: {
+      sopt: ['eq', 'ne', 'ge', 'le'] /*,
+      dataInit: function (elem) {
+        var self = this;
+        $(elem).datepicker({
+          dateFormat: 'mm/dd/yy',
+          changeYear: true,
+          changeMonth: true,
+          showButtonPanel: true,
+          showOn: 'focus',
+          onSelect: function () {
+            if (this.id.substr(0, 3) === "gs_") {
+              // in case of searching toolbar
+              setTimeout(function () {
+                self.triggerToolbar();
+              }, 50);
+            } else {
+              // refresh the filter in case of
+              // searching dialog
+              $(this).trigger('change');
+            }
+          }
+        });
+      }*/
+    },
     cellattr: function () {
       return 'title="The date of the latest post (cannot be displayed for private accounts you don\'t follow)"';
     }

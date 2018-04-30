@@ -89,7 +89,7 @@ instaUserInfo.getUserProfile = function (settings) {
         if (json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.edges[0]) {
           var latestPostDate =
             new Date(json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.edges[0].node.taken_at_timestamp * 1000)
-            .toLocaleDateString();
+            // .toLocaleDateString();
         }
       }
 
