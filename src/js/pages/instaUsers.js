@@ -227,7 +227,7 @@ $(function () {
     sorttype: 'date',
     search: true,
     searchoptions: {
-      sopt: ['eq', 'ne', 'ge', 'le'] /*,
+      sopt: ['ge', 'le'],
       dataInit: function (elem) {
         var self = this;
         $(elem).datepicker({
@@ -249,10 +249,10 @@ $(function () {
             }
           }
         });
-      }*/
+      }
     },
     cellattr: function () {
-      return 'title="The date of the latest post (cannot be displayed for private accounts you don\'t follow)"';
+      return 'title="The date of the latest post (cannot be displayed for private accounts you don\'t follow)\r\n\r\nDate format is MM/DD/YYYY"';
     }
   }];
 

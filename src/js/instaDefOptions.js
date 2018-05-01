@@ -21,7 +21,7 @@ var instaDefOptions = (function () {
     // regCheckBox: /^\s*<\s*input.+type\s*=\s*"checkbox".+value\s*=\s*(?:"|')\s*(true|false)/i,
     regCheckBox: /checkbox[\s\S]*value\s*=\s*(?:"|')(true|false)/i,
     regProfile: /^\s*<\s*a\s.*href\s*=\s*(?:"|')([^"']+)/i,
-    regTestInfo: /^\s*id:/,
+    regTestInfo: /^\s*username:/,
     cleanInfo: /<\/?.[^>]*>/g,
     newLine: /<br\s*\/>(?=.)/gi, //should be followed by at least one symbol
     queryId: {
