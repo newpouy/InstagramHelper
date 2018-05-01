@@ -11,12 +11,12 @@
     <div style="border: 1px solid; padding: 5px;">
       Page size for fetching feed AND posts in user profile:
       <br />
-      <input type="number" id="pageSizeForFeed" />
+      <input type="number" min="10" id="pageSizeForFeed" />
       <br /><em id="emPageSizeForFeed">Max value is %x%, as IG returns the HTTP400 error when higher value is used</em>
       <br />
       <br />Page size for fetching users (insta and common users):
       <br />
-      <input type="number" id="pageSize" />
+      <input type="number" min="10" id="pageSize" />
       <br/><em id="emPageSize">Max value is %x%, as IG returns the HTTP400 error when higher value is used</em>
     </div>
     <br />Interval between fetching users requests (insta and common), ms:

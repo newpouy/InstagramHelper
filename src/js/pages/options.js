@@ -12,6 +12,19 @@
   var maxPageSize = instaDefOptions.maxPageSize;
   var maxPageSizeForFeed = instaDefOptions.maxPageSizeForFeed;
 
+  var onKeyUpFunc = function () {
+    if (+this.value > +this.max) {
+      this.value = this.max;
+    }
+    if (+this.value < +this.min) {
+      this.value = this.min;
+    }
+  }
+
+  document.getElementById("pageSizeForFeed").onkeyup = onKeyUpFunc;
+  document.getElementById("pageSize").onkeyup = onKeyUpFunc;
+
+
   function saveOptions() {
     var pageSize = document.getElementById('pageSize').value;
     var delay = document.getElementById('delay').value;
