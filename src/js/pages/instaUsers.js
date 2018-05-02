@@ -553,17 +553,41 @@ $(function () {
 
     $('#exportDiv').show();
 
+    function s2ab(s) {
+      var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+      var view = new Uint8Array(buf);  //create uint8array as viewer
+      for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
+      return buf;
+    }
+
     $('#export_XLSX').on('click', function () {
-      event.preventDefault();
-      $('#jqGrid').jqGrid('exportToExcel', {
-        includeLabels: true,
-        includeGroupHeader: false,
-        includeFooter: false,
-        fileName:
-          `${obj.requestRelType}_users_${obj.userName}${obj.limit > 0 ? '_limit_' + obj.limit : ''}_${exportUtils.formatDate(new Date())}.xlsx`,
-        replaceStr: exportUtils.replaceStr
-      });
+      console.log(lastSelected);
+      var wb = XLSX.utils.book_new();
+      wb.Props = {
+        Title: "SheetJS Tutorial",
+        Subject: "Test",
+        Author: "Instagram Helper",
+        CreatedDate: new Date()
+      };
+      wb.SheetNames.push("Test Sheet");
+      var ws = XLSX.utils.json_to_sheet(myData);
+      wb.Sheets["Test Sheet"] = ws;
+      var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+      saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'test.xlsx');
     });
+
+    /*
+        $('#export_XLSX').on('click', function () {
+          event.preventDefault();
+          $('#jqGrid').jqGrid('exportToExcel', {
+            includeLabels: true,
+            includeGroupHeader: false,
+            includeFooter: false,
+            fileName:
+              `${obj.requestRelType}_users_${obj.userName}${obj.limit > 0 ? '_limit_' + obj.limit : ''}_${exportUtils.formatDate(new Date())}.xlsx`,
+            replaceStr: exportUtils.replaceStr
+          });
+        }); */
 
     $('#massFollow').on('click', function () {
       if (confirm('It will follow ALL not-followed/not-requested ousers DISPLAYED in the table below (it means filtering in table is respected).' +
