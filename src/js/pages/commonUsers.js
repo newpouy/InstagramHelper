@@ -265,7 +265,42 @@ $(function () {
 
   function showExportDiv(obj) {
 
-    var filename = `commonusers_${obj.user_1.userName}_and_${obj.user_2.userName}_${exportUtils.formatDate(new Date())}.xlsx`;
+    function s2ab(s) {
+      var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+      var view = new Uint8Array(buf);  //create uint8array as viewer
+      for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
+      return buf;
+    }
+
+    $('#export_XLSX').on('click', function () {
+      var fileName = `commonusers_${obj.user_1.userName}_and_${obj.user_2.userName}_${exportUtils.formatDate(new Date())}.xlsx`;
+      // var fileName =
+      //  `${obj.requestRelType}_users_${obj.userName}${obj.limit > 0 ? '_limit_' + obj.limit : ''}_${exportUtils.formatDate(new Date())}.xlsx`;
+      /* var arr = [];
+      if (lastSelected) {
+        console.log('Have filtered list', lastSelected.length); // eslint-disable-line no-console
+        arr = lastSelected; // if we have filtered data set?
+        //  fileName = 'FILTERED_' + fileName;
+      } else {
+        console.log('DO NOT have filtered list', myData.length); // eslint-disable-line no-console
+        arr = myData; // if we do not have filtered data set?
+      } */
+      var arr = myData;
+      var wb = XLSX.utils.book_new();
+      wb.Props = {
+        Title: "Users Title",
+        Subject: "Users Subject",
+        Author: "Instagram Helper",
+        CreatedDate: new Date()
+      };
+      wb.SheetNames.push("UsersSheet");
+      var ws = XLSX.utils.json_to_sheet(arr);
+      wb.Sheets["UsersSheet"] = ws;
+      var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+      saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), fileName);
+    });
+
+    /* var filename = `commonusers_${obj.user_1.userName}_and_${obj.user_2.userName}_${exportUtils.formatDate(new Date())}.xlsx`;
     $('#export_XLSX').on('click', function () {
       event.preventDefault();
       $('#jqGrid').jqGrid('exportToExcel', {
@@ -275,7 +310,7 @@ $(function () {
         fileName: filename,
         replaceStr: exportUtils.replaceStr
       });
-    });
+    }); */
 
     $('#exportDiv').show();
 
@@ -410,7 +445,7 @@ $(function () {
       search: true,
       stype: 'text',
       searchoptions: {
-        dataInit: function(elem) {
+        dataInit: function (elem) {
           $(elem).attr('placeholder', '<<Filter by username>>');
         }
       }

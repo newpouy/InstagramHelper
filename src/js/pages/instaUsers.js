@@ -561,19 +561,30 @@ $(function () {
     }
 
     $('#export_XLSX').on('click', function () {
-      console.log(lastSelected);
+      var fileName =
+        `${obj.requestRelType}_users_${obj.userName}${obj.limit > 0 ? '_limit_' + obj.limit : ''}_${exportUtils.formatDate(new Date())}.xlsx`;
+      var arr = [];
+      if (lastSelected) {
+        console.log('Have filtered list', lastSelected.length); // eslint-disable-line no-console
+        arr = lastSelected; // if we have filtered data set?
+      //  fileName = 'FILTERED_' + fileName;
+      } else {
+        console.log('DO NOT have filtered list', myData.length); // eslint-disable-line no-console
+        arr = myData; // if we do not have filtered data set?
+      }
+
       var wb = XLSX.utils.book_new();
       wb.Props = {
-        Title: "SheetJS Tutorial",
-        Subject: "Test",
+        Title: "Users Title",
+        Subject: "Users Subject",
         Author: "Instagram Helper",
         CreatedDate: new Date()
       };
-      wb.SheetNames.push("Test Sheet");
-      var ws = XLSX.utils.json_to_sheet(myData);
-      wb.Sheets["Test Sheet"] = ws;
+      wb.SheetNames.push("UsersSheet");
+      var ws = XLSX.utils.json_to_sheet(arr);
+      wb.Sheets["UsersSheet"] = ws;
       var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
-      saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'test.xlsx');
+      saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), fileName);
     });
 
     /*
