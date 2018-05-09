@@ -28,6 +28,7 @@ var FetchUsers = function (settings) {
       //only when the second run happens (or we started with already opened result page)
       var found = obj.checkDuplicates && checkForDuplicates(obj, data, i);
       if (!found) {
+        data.edges[i].node.user_profile = 'https://www.instagram.com/' + data.edges[i].node.username; // to have profile url in Excel
         data.edges[i].node.user_follows = false; //explicitly set the value for correct search
         data.edges[i].node.user_followed_by = false; //explicitly set the value for correct search
         data.edges[i].node['user_' + obj.relType] = true;
@@ -113,7 +114,7 @@ var FetchUsers = function (settings) {
           id: obj.userId,
           first: obj.pageSize,
           after: obj.end_cursor ? obj.end_cursor : null
-      })
+        })
       }
     }, config).then(
       response => successFetch(response.data),
