@@ -567,7 +567,7 @@ $(function () {
       if (lastSelected) {
         console.log('Have filtered list', lastSelected.length); // eslint-disable-line no-console
         arr = lastSelected; // if we have filtered data set?
-      //  fileName = 'FILTERED_' + fileName;
+        //  fileName = 'FILTERED_' + fileName;
       } else {
         console.log('DO NOT have filtered list', myData.length); // eslint-disable-line no-console
         arr = myData; // if we do not have filtered data set?
@@ -581,10 +581,46 @@ $(function () {
         CreatedDate: new Date()
       };
       wb.SheetNames.push("UsersSheet");
-      var ws = XLSX.utils.json_to_sheet(arr);
+
+      var headers = [
+        'id',
+        'username',
+        'full_name',
+        'user_profile',
+        'followed_by_viewer',
+        'requested_by_viewer',
+        'user_follows',
+        'user_followed_by',
+        'profile_pic_url',
+        'profile_pic_url_hd',
+        'is_private',
+        'follows_count',
+        'followed_by_count',
+        'media_count',
+        'latestPostDate',
+        'follows_viewer',
+        'has_requested_viewer',
+        'blocked_by_viewer',
+        'has_blocked_viewer',
+        'biography',
+        'connected_fb_page',
+        'external_url',
+        'is_verified'
+      ];
+
+      var ws = XLSX.utils.json_to_sheet(arr, {header: headers, cellDates: true});
+      // console.log(ws['!cols']);
+
+
+      var endRow = XLSX.utils.decode_range(ws['!ref']).e.r + 1;
+      //ws['H2'].f = "HYPERLINK('http://www.test.com', 'U')";
+      for (let i = 2; i <= endRow; i++) { // format URL for user profile
+        XLSX.utils.cell_set_hyperlink(ws['D' + i], ws['D' + i].v, ws['D' + i].v);
+      }
+
       wb.Sheets["UsersSheet"] = ws;
       var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
-      saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), fileName);
+      saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), fileName);
     });
 
     /*
