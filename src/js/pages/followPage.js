@@ -17,7 +17,7 @@ window.onload = function () {
 
     for (var i = 0; i < follow.processUsers.length; i++) {
       if (follow.processUsers[i] != '') {
-        follow.updateStatusDiv(`Mass following users: ${follow.processUsers[i]}/${i + 1} of ${follow.processUsers.length}`);
+        follow.updateStatusDiv(`Mass unfollowing users: ${follow.processUsers[i]}/${i + 1} of ${follow.processUsers.length}`);
 
         var result = await followUser.unFollow(
           {
