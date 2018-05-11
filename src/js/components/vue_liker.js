@@ -115,7 +115,7 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
         // "__typename": "GraphSuggestedUserFeedUnit",
         return false;
       }
-      if (obj.node.is_video === this.skipVideo) {
+      if (obj.node.is_video && obj.node.is_video === this.skipVideo) {
         this.skippedVideo++;
         this.updateStatusDiv('...Post skipped as it is video and video should be skipped...');
         return false;
