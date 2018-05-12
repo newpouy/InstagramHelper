@@ -157,9 +157,9 @@ instaUserInfo.getUserProfile = function (settings) {
     if (errorCode === 404) {
       console.log('>>>HTTP404 error getting the user profile.', username, new Date()); //eslint-disable-line no-console
       if (userId) {
-        console.log('>>>user id is defined - ' + userId);
+        console.log('>>>user id is defined - ' + userId); // eslint-disable-line no-console
         promiseGetUsernameById(userId).then(function (username) {
-          console.log('>>>', userId, username);
+          console.log('>>>', userId, username); // eslint-disable-line no-console
           getUserProfile(username, resolve, reject);
         }).catch(function () {
           alert('The error trying to find a new username for - ' + userId);

@@ -1,4 +1,5 @@
-/* globals Vue */
+/* globals Vue, chrome, _gaq, instaDefOptions */
+/* globals GetLikes, GetPosts */
 
 var __items = [];
 
@@ -20,6 +21,8 @@ var myDataTable = {
       v-bind:items="items"
       v-bind:search="search"
       v-bind:pagination.sync="pagination"
+      item-key="userName"
+      hide-actions
     >
     <template slot="headerCell" slot-scope="props">
       <v-tooltip bottom>
@@ -32,8 +35,9 @@ var myDataTable = {
       </v-tooltip>
     </template>
     <template slot="items" slot-scope="props">
-    <td class="text-xs-center">{{ props.index + 1 }}</td>
-    <td class="text-xs-right">
+      <tr @click="props.expanded = !props.expanded">
+      <td class="text-xs-center">{{ props.index + 1 }}</td>
+      <td class="text-xs-right">
         <a v-bind:href="'https://www.instagram.com/'+[props.item.userName][0]" target="_blank"><img v-bind:src="[props.item.url][0]"></img></a>
       </td>
       <td class="text-xs-right">{{ props.item.userName }}</td>
@@ -42,6 +46,12 @@ var myDataTable = {
       <td class="text-xs-right">{{ props.item.lastLike }}</td>
       <td class="text-xs-right">{{ props.item.diff }}</td>
       <td class="text-xs-right">{{ props.item.fullName }}</td>
+      </tr>
+    </template>
+    <template slot="expand" slot-scope="props">
+      <v-card flat>
+        <v-card-text>{{props.item.userName}}</v-card-text>
+      </v-card>
     </template>
   </v-data-table>
 </v-card>`,
@@ -72,10 +82,30 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
     this.startDate = null; //timestamp when process was started
   },
+  mounted: () => {
+    console.log('likes mounted...'); // eslint-disable-line no-console
+    _gaq.push(['_trackPageview']);
+
+    chrome.runtime.onMessage.addListener(function (request) {
+      if (request.action === 'openLikesPage') {
+
+        likes.delay = request.likeDelay;
+
+        likes.viewerUserName = request.viewerUserName;
+        likes.viewerUserId = request.viewerUserId;
+
+        likes.pageSize = request.pageSizeForFeed; //is not binded
+
+        likes.userToGetLikes = request.userName === instaDefOptions.you ? request.viewerUserName : request.userName;
+
+      }
+    });
+
+  },
   data: {
     isInProgress: false,
 
-    delay: 0, //interval ldbetween sending the http requests
+    delay: 0, //interval between sending the http requests
 
     fetchedPosts: 0, //how may posts were fetched
     processedPosts: 0, //for how much posts the likes were already analyzed
@@ -130,6 +160,152 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         var textarea = document.getElementById('log_text_area');
         textarea.scrollTop = textarea.scrollHeight;
       }, 0);
+    },
+    getPosts: function (instaPosts, restart) {
+      instaPosts.getPosts(restart).then(media => {
+
+        likes.fetchedPosts += media.length;
+        likes.totalPosts = instaPosts.getTotal();
+
+        this.getLikes(instaPosts, media, 0);
+
+      }).catch(e => {
+        likes.updateStatusDiv(e.toString());
+      });
+    },
+    formatDate: function (date) {
+      var d = date.getDate();
+      var m = date.getMonth() + 1;
+      var y = date.getFullYear();
+      return '' + y + '-' + (m <= 9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+    },
+    whenCompleted: function () {
+      likes.updateStatusDiv(`Started at ${likes.startDate}`);
+      likes.updateStatusDiv(`Fetched ${likes.fetchedPosts} posts`);
+
+      likes.isInProgress = false;
+      //likes.log = JSON.stringify([...data]);
+
+      __items.length = 0;
+      Array.from(this.data.values()).forEach(e => {
+        //convert dates
+        e.diff = Math.round((e.lastLike - e.firstLike) / 60 / 60 / 24);
+        e.lastLike = this.formatDate(new Date(e.lastLike * 1000));
+        e.firstLike = this.formatDate(new Date(e.firstLike * 1000));
+        __items.push(e);
+      });
+
+    },
+    getLikes: function (instaPosts, media, index) {
+      if (likes.isCompleted) {
+        return this.whenCompleted();
+      }
+
+      if (media.length > index) { //we still have something to get
+        var obj = media[index];
+        var url = obj.node.display_url;
+        var taken = new Date(obj.node.taken_at_timestamp * 1000).toLocaleString();
+        var shortcode = obj.node.shortcode;
+        likes.totalLikes = obj.node.edge_media_preview_like.count;
+        likes.processedLikes = 0;
+        likes.updateStatusDiv(`Post ${url} taken on ${taken} has ${likes.totalLikes} likes`);
+
+        var instaLike = new GetLikes({
+          shortCode: shortcode,
+          end_cursor: '',
+          updateStatusDiv: likes.updateStatusDiv,
+          pageSize: instaDefOptions.defPageSizeForLikes, //TODO: parametrize
+          vueStatus: likes
+        });
+
+        this.getPostLikes(instaLike, instaPosts, media, index, obj.node.taken_at_timestamp);
+
+      } else if (instaPosts.hasMore()) { //do we still have something to fetch
+        likes.updateStatusDiv(`The more posts will be fetched now...${new Date()}`);
+        setTimeout(() => this.getPosts(instaPosts, false), likes.delay);
+      } else { // nothing more found in profile
+        likes.allPostsFetched = true;
+        setTimeout(() => this.getLikes(instaPosts, media, ++index), 0);
+      }
+    },
+    getPostLikes: function (instaLike, instaPosts, media, index, taken) {
+      if (likes.isCompleted) {
+        return this.whenCompleted();
+      }
+
+      instaLike.getLikes().then(result => {
+        likes.updateStatusDiv(`... fetched information about ${result.length} likes`);
+        for (var i = 0; i < result.length; i++) {
+          var userId = result[i].node.id;
+          var userName = result[i].node.username;
+          var fullName = result[i].node.full_name;
+          var url = result[i].node.profile_pic_url;
+          if (this.data.has(userId)) {
+            var obj = this.data.get(userId);
+            obj.count++;
+            if (taken > obj.lastLike) {
+              obj.lastLike = taken;
+            } else if (taken < obj.firstLike) {
+              obj.firstLike = taken;
+            }
+            this.data.set(userId, obj);
+          } else {
+            this.data.set(userId, {
+              userId: userId,
+              userName: userName,
+              count: 1,
+              lastLike: taken,
+              firstLike: taken,
+              fullName: fullName,
+              url: url
+            });
+          }
+          likes.processedLikes += 1;
+        }
+        if (instaLike.hasMore()) {
+          setTimeout(() => this.getPostLikes(instaLike, instaPosts, media, index, taken), likes.delay);
+        } else {
+          instaLike = null;
+          likes.processedPosts += 1;
+          setTimeout(() => this.getLikes(instaPosts, media, ++index), likes.delay);
+        }
+      });
+    },
+    startButtonClick: function () {
+      var instaPosts =
+        new GetPosts({
+          pageSize: likes.pageSize,
+          mode: 'likeProfile',
+          updateStatusDiv: likes.updateStatusDiv,
+          end_cursor: null,
+          vueStatus: likes,
+          userName: likes.userToGetLikes,
+          userId: likes.viewerUserName === likes.userToGetLikes ? likes.viewerUserId : ''
+        });
+
+      instaPosts.resolveUserName().then(() => {
+
+        likes.data = new Map();
+
+        likes.startDate = (new Date()).toLocaleTimeString();
+        likes.fetchedPosts = 0;
+        likes.processedPosts = 0;
+        likes.totalPosts = 0;
+        likes.stop = false;
+        likes.log = '';
+        likes.allPostsFetched = false;
+
+        likes.isInProgress = true;
+
+        likes.updateStatusDiv(`The interval between the requests is ${likes.delay}ms`);
+
+        this.getPosts(instaPosts, true);
+
+      }, () => {
+        alert('Specified user was not found');
+        instaPosts = null;
+      });
+
     }
   },
   components: {

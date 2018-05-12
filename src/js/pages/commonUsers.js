@@ -1,5 +1,5 @@
 /* globals chrome, $, _gaq */
-/* globals instaDefOptions, instaUserInfo, exportUtils, FetchUsers */
+/* globals instaDefOptions, instaUserInfo, exportUtils, FetchUsers, XLSX, saveAs */
 /* jshint -W106 */
 
 
