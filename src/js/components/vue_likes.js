@@ -55,7 +55,7 @@ var myDataTable = {
       </ul>
 -->
       <v-layout row wrap child-flex>
-        <v-flex v-for="post in props.item.posts" :key="post.id" xs12 sm6>
+        <v-flex v-for="post in props.item.posts" :key="post.id" xs12 sm3>
             <v-card :href="post.url" target="_blank">
               <v-card-media :src="post.pic" height="200px" contain>
               </v-card-media>
@@ -259,13 +259,13 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         return this.whenCompleted();
       }
 
-      instaLike.getLikes().then((result, shortCode, postUrl) => {
-        likes.updateStatusDiv(`... fetched information about ${result.length} likes`);
-        for (var i = 0; i < result.length; i++) {
-          var userId = result[i].node.id;
-          var userName = result[i].node.username;
-          var fullName = result[i].node.full_name;
-          var url = result[i].node.profile_pic_url;
+      instaLike.getLikes().then(result => {
+        likes.updateStatusDiv(`... fetched information about ${result.data.length} likes`);
+        for (var i = 0; i < result.data.length; i++) {
+          var userId = result.data[i].node.id;
+          var userName = result.data[i].node.username;
+          var fullName = result.data[i].node.full_name;
+          var url = result.data[i].node.profile_pic_url;
           if (this.data.has(userId)) { // already was
             var obj = this.data.get(userId);
             obj.count++;
@@ -275,8 +275,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
               obj.firstLike = taken;
             }
             obj.posts.push({
-                id: shortCode,
-                pic: postUrl
+              id: result.shortCode,
+              pic: result.url,
+              url: `https://www.instagram.com/p/${result.shortCode}`
             });
             this.data.set(userId, obj);
           } else {
@@ -289,8 +290,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
               fullName: fullName,
               url: url,
               posts: [{
-                  id: shortCode,
-                  pic: postUrl
+                id: result.shortCode,
+                pic: result.url,
+                url: `https://www.instagram.com/p/${result.shortCode}`
               }]
             });
           }
