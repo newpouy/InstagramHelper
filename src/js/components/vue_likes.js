@@ -203,7 +203,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         e.lastLike = this.formatDate(new Date(e.lastLike * 1000));
         e.firstLike = this.formatDate(new Date(e.firstLike * 1000));
         //TEMP
- //       /*
+        /*
         e.posts = [
           {
             id: '123',
@@ -216,7 +216,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
             url: 'https://www.instagram.com'
           }
         ];
-//        */ //TEMP
+        */ //TEMP
         __items.push(e);
       });
 
@@ -240,7 +240,8 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
           end_cursor: '',
           updateStatusDiv: likes.updateStatusDiv,
           pageSize: instaDefOptions.defPageSizeForLikes, //TODO: parametrize
-          vueStatus: likes
+          vueStatus: likes,
+          url: url
         });
 
         this.getPostLikes(instaLike, instaPosts, media, index, obj.node.taken_at_timestamp);
@@ -258,14 +259,14 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         return this.whenCompleted();
       }
 
-      instaLike.getLikes().then(result => {
+      instaLike.getLikes().then((result, shortCode, postUrl) => {
         likes.updateStatusDiv(`... fetched information about ${result.length} likes`);
         for (var i = 0; i < result.length; i++) {
           var userId = result[i].node.id;
           var userName = result[i].node.username;
           var fullName = result[i].node.full_name;
           var url = result[i].node.profile_pic_url;
-          if (this.data.has(userId)) {
+          if (this.data.has(userId)) { // already was
             var obj = this.data.get(userId);
             obj.count++;
             if (taken > obj.lastLike) {
@@ -273,6 +274,10 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
             } else if (taken < obj.firstLike) {
               obj.firstLike = taken;
             }
+            obj.posts.push({
+                id: shortCode,
+                pic: postUrl
+            });
             this.data.set(userId, obj);
           } else {
             this.data.set(userId, {
@@ -282,7 +287,11 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
               lastLike: taken,
               firstLike: taken,
               fullName: fullName,
-              url: url
+              url: url,
+              posts: [{
+                  id: shortCode,
+                  pic: postUrl
+              }]
             });
           }
           likes.processedLikes += 1;

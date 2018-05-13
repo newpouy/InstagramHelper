@@ -8,7 +8,7 @@ var GetLikes = function (settings) { //eslint-disable-line no-unused-vars
   var has_next_page;
 
   var {
-    shortCode, end_cursor, updateStatusDiv, pageSize, vueStatus
+    shortCode, end_cursor, updateStatusDiv, pageSize, vueStatus, url
   } = settings;
 
   function getLikes() {
@@ -24,7 +24,7 @@ var GetLikes = function (settings) { //eslint-disable-line no-unused-vars
   function successGetLikes(data, resolve) {
     has_next_page = data.data.data.shortcode_media.edge_liked_by.page_info.has_next_page;
     end_cursor = data.data.data.shortcode_media.edge_liked_by.page_info.end_cursor;
-    resolve(data.data.data.shortcode_media.edge_liked_by.edges);
+    resolve(data.data.data.shortcode_media.edge_liked_by.edges, shortCode, url);
   }
 
   function retryError(message, errorNumber, resolve, reject) {
