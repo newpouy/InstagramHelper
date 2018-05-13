@@ -49,9 +49,19 @@ var myDataTable = {
       </tr>
     </template>
     <template slot="expand" slot-scope="props">
-      <v-card flat>
-        <v-card-text>{{props.item.userName}}</v-card-text>
-      </v-card>
+<!--
+      <ul>
+        <li v-for="post in props.item.posts">{{post.url}}</li>
+      </ul>
+-->
+      <v-layout row wrap child-flex>
+        <v-flex v-for="post in props.item.posts" :key="post.id" xs12 sm6>
+            <v-card :href="post.url" target="_blank">
+              <v-card-media :src="post.pic" height="200px" contain>
+              </v-card-media>
+            </v-card>
+        </v-flex>
+      </v-layout>
     </template>
   </v-data-table>
 </v-card>`,
@@ -192,6 +202,21 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         e.diff = Math.round((e.lastLike - e.firstLike) / 60 / 60 / 24);
         e.lastLike = this.formatDate(new Date(e.lastLike * 1000));
         e.firstLike = this.formatDate(new Date(e.firstLike * 1000));
+        //TEMP
+ //       /*
+        e.posts = [
+          {
+            id: '123',
+            pic: 'https://scontent-arn2-1.cdninstagram.com/vp/ff8e3f6f9ce686dbb21218b693782f9d/5B9768E0/t51.2885-15/e35/31428012_1733885336659847_410768988562259968_n.jpg',
+            url: 'https://www.instagram.com'
+          },
+          {
+            id: '124',
+            pic: 'https://scontent-arn2-1.cdninstagram.com/vp/45fbf5b279bfde493b865973c7c84f22/5B7C80C9/t51.2885-15/e35/31738516_241302856616286_4269011309686685696_n.jpg',
+            url: 'https://www.instagram.com'
+          }
+        ];
+//        */ //TEMP
         __items.push(e);
       });
 
