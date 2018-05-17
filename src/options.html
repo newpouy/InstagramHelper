@@ -12,12 +12,16 @@
       Page size for fetching feed AND posts in user profile:
       <br />
       <input type="number" min="10" id="pageSizeForFeed" />
-      <br /><em id="emPageSizeForFeed">Max value is %x%, as IG returns the HTTP400 error when higher value is used</em>
+      <br /><em id="emPageSizeForFeed">Max value is %x%, as IG returns the HTTP400 error when higher value is used
+          One user reported that even lower value 24 could cause the permanent HTTP400 error, so if you have it, try to lower this value
+      </em>
       <br />
       <br />Page size for fetching users (insta and common users):
       <br />
       <input type="number" min="10" id="pageSize" />
-      <br/><em id="emPageSize">Max value is %x%, as IG returns the HTTP400 error when higher value is used</em>
+      <br/><em id="emPageSize">Max value is %x%, as IG returns the HTTP400 error when higher value is used.
+        One user reported that even lower value 24 could cause the permanent HTTP400 error, so if you have it, try to lower this value
+      </em>
     </div>
     <br />Interval between fetching users requests (insta and common), ms:
     <br />
