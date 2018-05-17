@@ -9,7 +9,7 @@ var instaDefOptions = (function () {
     defLikeDelay: 7000,
     defPageSize: 24,
     maxPageSize: 50,
-    defPageSizeForFeed: 24, // how many posts to requests in getting the feed and also for user profile
+    defPageSizeForFeed: 12, // how many posts to be asked for getting the feed OR user profile
     maxPageSizeForFeed: 50,
     defPageSizeForLikes: 50, // TODO: parametrize
     gridPageSize: 500,
