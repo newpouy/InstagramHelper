@@ -265,13 +265,6 @@ $(function () {
 
   function showExportDiv(obj) {
 
-    function s2ab(s) {
-      var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
-      var view = new Uint8Array(buf);  //create uint8array as viewer
-      for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
-      return buf;
-    }
-
     $('#export_XLSX').on('click', function () {
       var fileName = `commonusers_${obj.user_1.userName}_and_${obj.user_2.userName}_${exportUtils.formatDate(new Date())}.xlsx`;
       // var fileName =
@@ -297,7 +290,7 @@ $(function () {
       var ws = XLSX.utils.json_to_sheet(arr);
       wb.Sheets["UsersSheet"] = ws;
       var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
-      saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), fileName);
+      saveAs(new Blob([exportUtils.s2ab(wbout)], { type: "application/octet-stream" }), fileName);
     });
 
     $('#exportDiv').show();

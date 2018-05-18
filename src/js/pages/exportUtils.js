@@ -19,8 +19,16 @@ var exportUtils = (function () {
     return '' + year + month + day + '_' + hour + minute;
   };
 
+  var s2ab = function(s) {
+    var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+    var view = new Uint8Array(buf);  //create uint8array as viewer
+    for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
+    return buf;
+  };
+
   return {
-    formatDate: formatDate
+    formatDate: formatDate,
+    s2ab: s2ab
   };
 
 }());

@@ -1,5 +1,5 @@
 /* globals Vue, chrome, _gaq, instaDefOptions */
-/* globals GetLikes, GetPosts */
+/* globals GetLikes, GetPosts, exportUtils, XLSX, saveAs */
 
 var __items = [];
 
@@ -151,6 +151,10 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       return this.isInProgress ||  //process is not running
         '' === this.userToGetLikes; //profile is specified
     },
+    exportButtonDisabled: function () {
+      return this.isInProgress ||  //process is not running
+        __items.length === 0; //no items to export
+    },
     binding() {
       const binding = {};
 
@@ -202,24 +206,8 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         e.diff = Math.round((e.lastLike - e.firstLike) / 60 / 60 / 24);
         e.lastLike = this.formatDate(new Date(e.lastLike * 1000));
         e.firstLike = this.formatDate(new Date(e.firstLike * 1000));
-        //TEMP
-        /*
-        e.posts = [
-          {
-            id: '123',
-            pic: 'https://scontent-arn2-1.cdninstagram.com/vp/ff8e3f6f9ce686dbb21218b693782f9d/5B9768E0/t51.2885-15/e35/31428012_1733885336659847_410768988562259968_n.jpg',
-            url: 'https://www.instagram.com'
-          },
-          {
-            id: '124',
-            pic: 'https://scontent-arn2-1.cdninstagram.com/vp/45fbf5b279bfde493b865973c7c84f22/5B7C80C9/t51.2885-15/e35/31738516_241302856616286_4269011309686685696_n.jpg',
-            url: 'https://www.instagram.com'
-          }
-        ];
-        */ //TEMP
         __items.push(e);
       });
-
     },
     getLikes: function (instaPosts, media, index) {
       if (likes.isCompleted) {
@@ -306,6 +294,25 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
           setTimeout(() => this.getLikes(instaPosts, media, ++index), likes.delay);
         }
       });
+    },
+    exportToExcel: function () {
+      var fileName =
+        `getLikes_${this.userToGetLikes}_${exportUtils.formatDate(new Date())}.xlsx`;
+
+      var wb = XLSX.utils.book_new();
+      wb.Props = {
+        Title: "Get Likes Title",
+        Subject: "Get Likes Subject",
+        Author: "Instagram Helper",
+        CreatedDate: new Date()
+      };
+      wb.SheetNames.push("GetLikesSheet");
+
+      var ws = XLSX.utils.json_to_sheet(__items, {cellDates: true});
+
+      wb.Sheets["GetLikesSheet"] = ws;
+      var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+      saveAs(new Blob([exportUtils.s2ab(wbout)], { type: "application/octet-stream" }), fileName);
     },
     startButtonClick: function () {
       var instaPosts =
