@@ -623,19 +623,6 @@ $(function () {
       saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), fileName);
     });
 
-    /*
-        $('#export_XLSX').on('click', function () {
-          event.preventDefault();
-          $('#jqGrid').jqGrid('exportToExcel', {
-            includeLabels: true,
-            includeGroupHeader: false,
-            includeFooter: false,
-            fileName:
-              `${obj.requestRelType}_users_${obj.userName}${obj.limit > 0 ? '_limit_' + obj.limit : ''}_${exportUtils.formatDate(new Date())}.xlsx`,
-            replaceStr: exportUtils.replaceStr
-          });
-        }); */
-
     $('#massFollow').on('click', function () {
       if (confirm('It will follow ALL not-followed/not-requested ousers DISPLAYED in the table below (it means filtering in table is respected).' +
         `\nFollowing will be done with the interval of ${obj.followDelay / 1000}sec.` +

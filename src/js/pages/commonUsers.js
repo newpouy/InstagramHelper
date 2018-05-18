@@ -300,18 +300,6 @@ $(function () {
       saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), fileName);
     });
 
-    /* var filename = `commonusers_${obj.user_1.userName}_and_${obj.user_2.userName}_${exportUtils.formatDate(new Date())}.xlsx`;
-    $('#export_XLSX').on('click', function () {
-      event.preventDefault();
-      $('#jqGrid').jqGrid('exportToExcel', {
-        includeLabels: true,
-        includeGroupHeader: false,
-        includeFooter: false,
-        fileName: filename,
-        replaceStr: exportUtils.replaceStr
-      });
-    }); */
-
     $('#exportDiv').show();
 
   }

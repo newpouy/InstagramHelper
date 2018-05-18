@@ -21,6 +21,7 @@ var myDataTable = {
       v-bind:items="items"
       v-bind:search="search"
       v-bind:pagination.sync="pagination"
+      v-bind:rows-per-page-items="[10,20,50,100,500,1000,{ text: 'All', value: -1 }]"
       item-key="userName"
     >
     <template slot="headerCell" slot-scope="props">
@@ -67,7 +68,7 @@ var myDataTable = {
   data: function () {
     return {
       search: '',
-      pagination: { sortBy: 'count', rowsPerPage: 25, descending: true },
+      pagination: { sortBy: 'count', rowsPerPage: 50, descending: true },
       headers: [
         { text: '#', value: '', sortable: false, tooltip: '#' },
         { text: 'Image', value: '', sortable: false, tooltip: 'Click the image to open the user profile on Instagram.com' },

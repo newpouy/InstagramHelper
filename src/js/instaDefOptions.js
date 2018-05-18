@@ -6,24 +6,18 @@ var instaDefOptions = (function () {
     you: '<<YOU>>',
     defDelay: 2000,
     defFollowDelay: 30000,
-    defLikeDelay: 7000,
-    defPageSize: 10, //reduced from 24 to avoid HTTP400 error
+    defLikeDelay: 7000, // TODO: separate parameter for Get Likes
+    defPageSize: 10, // reduced from 24 to avoid HTTP400 error
     maxPageSize: 50,
     defPageSizeForFeed: 10, // how many posts to be asked for getting the feed OR user profile
     maxPageSizeForFeed: 50,
     defPageSizeForLikes: 50, // TODO: parametrize
     gridPageSize: 500,
-    noDelayForInit: true,
-    requestsToSkipDelay: 100,
+    noDelayForInit: true, // respect requestsToSkipDelay
+    requestsToSkipDelay: 100, // for insta and common users
     retryInterval: 180000,
     regFindUser: /link rel="canonical" href="https:\/\/www.instagram.com\/([^"/]*)\/?"/i,
     regExtractUserName: /instagram.com.*\/(?:\?taken-by=)?([^/?]+)\/?/, // fixes #10, respects the URL with parameters
-    // regCheckBox: /^\s*<\s*input.+type\s*=\s*"checkbox".+value\s*=\s*(?:"|')\s*(true|false)/i,
-    regCheckBox: /checkbox[\s\S]*value\s*=\s*(?:"|')(true|false)/i,
-    regProfile: /^\s*<\s*a\s.*href\s*=\s*(?:"|')([^"']+)/i,
-    regTestInfo: /^\s*username:/,
-    cleanInfo: /<\/?.[^>]*>/g,
-    newLine: /<br\s*\/>(?=.)/gi, //should be followed by at least one symbol
     queryId: {
       followed_by: '17851374694183129',
       follows: '17874545323001329',
