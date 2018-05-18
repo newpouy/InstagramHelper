@@ -4,7 +4,7 @@
 	"name": "Helper Tools for Instagram",
 	"short_name": "Helper For Insta",
 	"description": "Create followers/following list of IG account, find common users of 2 IG accounts, mass following, liking the posts in your feed",
-	"version": "0.346",
+	"version": "0.347",
 
 	"options_ui": {
 		"page": "options.html",

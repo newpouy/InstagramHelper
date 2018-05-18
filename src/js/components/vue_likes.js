@@ -22,7 +22,6 @@ var myDataTable = {
       v-bind:search="search"
       v-bind:pagination.sync="pagination"
       item-key="userName"
-      hide-actions
     >
     <template slot="headerCell" slot-scope="props">
       <v-tooltip bottom>
