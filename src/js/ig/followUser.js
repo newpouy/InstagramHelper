@@ -113,6 +113,15 @@ followUser.unFollow = function (settings) {
     if (errorCode > 0) {
       console.log(`error response data - ${JSON.stringify(error.response.data)}/${errorCode}`); //eslint-disable-line no-console
     }
+    if (400 === errorCode) {
+      if (error.response && error.response.data) {
+        if (('' === error.response.data.message) && ('fail' === error.response.data.status)) {
+          console.log('Seems we are trying to unfollow already not existing user, we will skip it.');
+          resolve(-1);
+          return;
+        }
+      }
+    }
     console.log(`Error making http request to unfollow ${username}, status - ${errorCode}`); //eslint-disable-line no-console
 
     if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
