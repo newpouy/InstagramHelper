@@ -277,6 +277,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
               firstLike: taken,
               fullName: fullName,
               url: url,
+              followed_by_viewer: result.data[i].node.followed_by_viewer,
+              requested_by_viewer: result.data[i].node.requested_by_viewer,
+              is_verified: result.data[i].node.is_verified,
               posts: [{
                 id: result.shortCode,
                 pic: result.url,
