@@ -116,7 +116,7 @@ followUser.unFollow = function (settings) {
     if (400 === errorCode) {
       if (error.response && error.response.data) {
         if (('' === error.response.data.message) && ('fail' === error.response.data.status)) {
-          console.log('Seems we are trying to unfollow already not existing user, we will skip it.');
+          console.log('Seems we are trying to unfollow already not existing user, we will skip it.'); //eslint-disable-line no-console
           resolve(-1);
           return;
         }

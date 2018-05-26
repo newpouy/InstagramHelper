@@ -35,6 +35,30 @@
           <v-flex>
             <v-text-field id="log_text_area" label="Log" multi-line v-model="log"></v-text-field>
           </v-flex>
+          <v-layout row wrap child-flex>
+            <v-flex v-if="!exportButtonDisabled" xs6>
+              <v-card :href="lessLikedPost.url" target="_blank">
+                <v-card-media :src="lessLikedPost.pic" height="200px" contain>
+                </v-card-media>
+                <v-card-title primary-title>
+                    <div>
+                      <h3 class="headline mb-0">Less Liked Post - {{lessLikedPost.likes}}</h3>
+                    </div>
+                  </v-card-title>
+                </v-card>
+            </v-flex>
+            <v-flex v-if="!exportButtonDisabled" xs6>
+              <v-card :href="mostLikedPost.url" target="_blank">
+                <v-card-media :src="mostLikedPost.pic" height="200px" contain>
+                </v-card-media>
+                <v-card-title primary-title>
+                  <div>
+                    <h3 class="headline mb-0">Most Liked Post - {{mostLikedPost.likes}}</h3>
+                  </div>
+                </v-card-title>
+              </v-card>
+            </v-flex>
+          </v-layout>
           <v-flex>
             <my-data-table></my-data-table>
           </v-flex>

@@ -133,8 +133,10 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     allPostsFetched: false, // when all posts from user's profile are fetched
 
     processedLikes: 0, //how much processed likes for current post
-    totalLikes: 0 //how much likes has the currently analyzed post
+    totalLikes: 0, //how much likes has the currently analyzed post
 
+    mostLikedPost: { },
+    lessLikedPost: { }
   },
   computed: {
     isCompleted: function () {
@@ -222,6 +224,26 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         likes.totalLikes = obj.node.edge_media_preview_like.count;
         likes.processedLikes = 0;
         likes.updateStatusDiv(`Post ${url} taken on ${taken} has ${likes.totalLikes} likes`);
+
+        //check if it is most liked post
+        if (likes.totalLikes > (likes.mostLikedPost.likes || 0)) {
+          likes.mostLikedPost = {
+            id: shortcode,
+            likes: likes.totalLikes,
+            pic: url,
+            url: `https://www.instagram.com/p/${shortcode}`
+          }
+        }
+
+        //check if it is less liked post
+        if (likes.totalLikes < (likes.lessLikedPost.likes || 999)) {
+          likes.lessLikedPost = {
+            id: shortcode,
+            likes: likes.totalLikes,
+            pic: url,
+            url: `https://www.instagram.com/p/${shortcode}`
+          }
+        }
 
         var instaLike = new GetLikes({
           shortCode: shortcode,
@@ -340,6 +362,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         likes.stop = false;
         likes.log = '';
         likes.allPostsFetched = false;
+
+        likes.lessLikedPost = {};
+        likes.mostLikedPost = {};
 
         likes.isInProgress = true;
 
