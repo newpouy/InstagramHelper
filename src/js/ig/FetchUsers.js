@@ -56,7 +56,9 @@ var FetchUsers = function (settings) {
       }
     }
 
-    htmlElements[obj.relType].asProgress('finish').asProgress('stop');
+    if (htmlElements[obj.relType]) {
+      htmlElements[obj.relType].asProgress('finish').asProgress('stop');
+    }
     if (obj.callBoth) {
       obj.end_cursor = null;
       obj.relType = obj.relType === 'follows' ? 'followed_by' : 'follows';
@@ -131,7 +133,9 @@ var FetchUsers = function (settings) {
 
   function updateProgressBar(obj, count) {
     var newValue = 0 + obj[obj.relType + '_processed'] + count;
-    htmlElements[obj.relType].asProgress('go', newValue);
+    if (htmlElements[obj.relType]) {
+      htmlElements[obj.relType].asProgress('go', newValue);
+    }
     obj[obj.relType + '_processed'] = newValue;
   }
 

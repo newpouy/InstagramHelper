@@ -98,6 +98,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     _gaq.push(['_trackPageview']);
 
     chrome.runtime.onMessage.addListener(function (request) {
+
       if (request.action === 'openLikesPage') {
 
         likes.delay = request.likeDelay;
@@ -109,6 +110,10 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
         likes.userToGetLikes = request.userName === instaDefOptions.you ? request.viewerUserName : request.userName;
 
+        // to support the adding followeres
+        likes.fetchDelay = request.delay;
+        likes.csrfToken = request.csrfToken;
+        likes.fetchPageSize = request.pageSize;
       }
     });
 
@@ -346,6 +351,60 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       saveAs(new Blob([exportUtils.s2ab(wbout)], { type: "application/octet-stream" }), fileName);
     },
     addFollowers: function () {
+
+      //I can have userid here
+      //todo: resolve profile, find followers
+
+      var fetchSettings = {
+        request: null,
+        userName: likes.userInfo.username,
+        pageSize: likes.fetchPageSize,
+        delay: likes.fetchDelay,
+        // followDelay: request.followDelay,
+        csrfToken: likes.csrfToken,
+        userId: likes.userInfo.id,
+        relType: 'followed_by',
+        callBoth: false,
+        checkDuplicates: true,
+        limit: 0,
+        // follows_count: request.follows_count,
+        followed_by_count: likes.userInfo.followed_by_count,
+        // follows_processed: 0,
+        followed_by_processed: 0,
+        startTime: new Date(),
+        // timerInterval: startTimer(document.querySelector('#timer'), new Date()),
+        receivedResponses: 0,	//received HTTP responses
+        processedUsers: 0, 	//processed users in get full info
+        followProcessedUsers: 0, //processed users for mass follow
+        // followedUsers: 0,
+        // requestedUsers: 0,
+        viewerUserId: likes.viewerUserId
+      };
+
+      console.log(fetchSettings);
+
+      likes.promiseFetchInstaUsers(fetchSettings).then(function (obj) {
+        debugger;
+        console.log('resolved', obj);
+      });
+
+      //todo: fetch all followers
+      //todo: progress bar
+      //todo: and add it
+    },
+    promiseFetchInstaUsers: function (obj) {
+      return new Promise(function (resolve) {
+
+        var f = new FetchUsers(Object.assign({}, {
+          obj: obj,
+          myData: __items,
+          htmlElements: {},
+          updateStatusDiv: message => console.log(message),
+          resolve: resolve
+        }));
+
+        f.fetchInstaUsers();
+      });
     },
     startButtonClick: function () {
       var instaPosts =
@@ -359,7 +418,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
           userId: likes.viewerUserName === likes.userToGetLikes ? likes.viewerUserId : ''
         });
 
-      instaPosts.resolveUserName().then(() => {
+      instaPosts.resolveUserName().then((obj) => {
+
+        likes.userInfo = obj;
 
         likes.data = new Map();
 

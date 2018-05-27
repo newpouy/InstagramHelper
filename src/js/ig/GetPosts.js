@@ -53,7 +53,7 @@ var GetPosts = function (settings) { //eslint-disable-line no-unused-vars
       if (('likeProfile' === mode) && ('' === userId)) {
         instaUserInfo.getUserProfile({ username: userName }).then(obj => {
           instaPosts.setUserId(obj.id);
-          resolve();
+          resolve(obj);
         }, () => reject());
       } else {
         resolve();
