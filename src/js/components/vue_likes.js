@@ -1,5 +1,5 @@
 /* globals Vue, chrome, _gaq, instaDefOptions */
-/* globals GetLikes, GetPosts, exportUtils, XLSX, saveAs */
+/* globals GetLikes, GetPosts, exportUtils, XLSX, saveAs, FetchUsers */
 
 var __items = [];
 
@@ -22,7 +22,7 @@ var myDataTable = {
       v-bind:search="search"
       v-bind:pagination.sync="pagination"
       v-bind:rows-per-page-items="[10,20,50,100,500,1000,{ text: 'All', value: -1 }]"
-      item-key="userName"
+      item-key="username"
     >
     <template slot="headerCell" slot-scope="props">
       <v-tooltip bottom>
@@ -38,14 +38,14 @@ var myDataTable = {
       <tr @click="props.expanded = !props.expanded">
       <td class="text-xs-center">{{ props.index + 1 }}</td>
       <td class="text-xs-right">
-        <a v-bind:href="'https://www.instagram.com/'+[props.item.userName][0]" target="_blank"><img v-bind:src="[props.item.url][0]"></img></a>
+        <a v-bind:href="'https://www.instagram.com/'+[props.item.username][0]" target="_blank"><img v-bind:src="[props.item.profile_pic_url][0]"></img></a>
       </td>
-      <td class="text-xs-right">{{ props.item.userName }}</td>
+      <td class="text-xs-right">{{ props.item.username }}</td>
       <td class="text-xs-right">{{ props.item.count }}</td>
       <td class="text-xs-right">{{ props.item.firstLike }}</td>
       <td class="text-xs-right">{{ props.item.lastLike }}</td>
       <td class="text-xs-right">{{ props.item.diff }}</td>
-      <td class="text-xs-right">{{ props.item.fullName }}</td>
+      <td class="text-xs-right">{{ props.item.full_name }}</td>
       </tr>
     </template>
     <template slot="expand" slot-scope="props">
@@ -73,12 +73,12 @@ var myDataTable = {
       headers: [
         { text: '#', value: '', sortable: false, tooltip: '#' },
         { text: 'Image', value: '', sortable: false, tooltip: 'Click the image to open the user profile on Instagram.com' },
-        { text: 'Username', value: 'userName', tooltip: 'User name' },
+        { text: 'Username', value: 'user_name', tooltip: 'User name' },
         { text: 'Count', value: 'count', tooltip: 'The total amount of likes' },
         { text: 'First', value: 'firstLike', tooltip: 'The date of first liked post' },
         { text: 'Last', value: 'lastLike', tooltip: 'The date of last liked post' },
         { text: 'Days', value: 'diff', tooltip: 'The amount of days between first and last liked posts' },
-        { text: 'Full Name', value: 'fullName', tooltip: 'User full name' }
+        { text: 'Full Name', value: 'full_name', tooltip: 'User full name' }
       ],
       items: __items
     };
@@ -283,12 +283,12 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       instaLike.getLikes().then(result => {
         likes.updateStatusDiv(`... fetched information about ${result.data.length} likes`);
         for (var i = 0; i < result.data.length; i++) {
-          var userId = result.data[i].node.id;
-          var userName = result.data[i].node.username;
-          var fullName = result.data[i].node.full_name;
-          var url = result.data[i].node.profile_pic_url;
-          if (this.data.has(userId)) { // already was
-            var obj = this.data.get(userId);
+          var id = result.data[i].node.id;
+          var username = result.data[i].node.username;
+          var full_name = result.data[i].node.full_name;
+          var profile_pic_url = result.data[i].node.profile_pic_url;
+          if (this.data.has(id)) { // already was
+            var obj = this.data.get(id);
             obj.count++;
             if (taken > obj.lastLike) {
               obj.lastLike = taken;
@@ -297,19 +297,19 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
             }
             obj.posts.push({
               id: result.shortCode,
-              pic: result.url,
+              pic: result.profile_pic_url,
               url: `https://www.instagram.com/p/${result.shortCode}`
             });
-            this.data.set(userId, obj);
+            this.data.set(id, obj);
           } else {
-            this.data.set(userId, {
-              userId: userId,
-              userName: userName,
+            this.data.set(id, {
+              id: id,
+              username: username,
               count: 1,
               lastLike: taken,
               firstLike: taken,
-              fullName: fullName,
-              url: url,
+              full_name: full_name,
+              profile_pic_url: profile_pic_url,
               followed_by_viewer: result.data[i].node.followed_by_viewer,
               requested_by_viewer: result.data[i].node.requested_by_viewer,
               is_verified: result.data[i].node.is_verified,
@@ -352,9 +352,6 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     },
     addFollowers: function () {
 
-      //I can have userid here
-      //todo: resolve profile, find followers
-
       var fetchSettings = {
         request: null,
         userName: likes.userInfo.username,
@@ -381,10 +378,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         viewerUserId: likes.viewerUserId
       };
 
-      console.log(fetchSettings);
-
       likes.promiseFetchInstaUsers(fetchSettings).then(function (obj) {
-        debugger;
         console.log('resolved', obj);
       });
 
