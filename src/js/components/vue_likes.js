@@ -297,7 +297,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
             }
             obj.posts.push({
               id: result.shortCode,
-              pic: result.profile_pic_url,
+              pic: result.url,
               url: `https://www.instagram.com/p/${result.shortCode}`
             });
             this.data.set(id, obj);
