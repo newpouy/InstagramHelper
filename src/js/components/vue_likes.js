@@ -49,6 +49,7 @@ var myDataTable = {
       </tr>
     </template>
     <template slot="expand" slot-scope="props">
+    <h3 class="headline mb-0">Liked posts</h3>
 <!--
       <ul>
         <li v-for="post in props.item.posts">{{post.url}}</li>
@@ -156,6 +157,11 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     exportButtonDisabled: function () {
       return this.isInProgress ||  //process is not running
         __items.length === 0; //no items to export
+    },
+    addFollowersButtonDisabled: function () {
+      return this.isInProgress ||  //process is not running
+        __items.length === 0; //no items to export
+        //TODO
     },
     binding() {
       const binding = {};
@@ -338,6 +344,8 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       wb.Sheets["GetLikesSheet"] = ws;
       var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
       saveAs(new Blob([exportUtils.s2ab(wbout)], { type: "application/octet-stream" }), fileName);
+    },
+    addFollowers: function () {
     },
     startButtonClick: function () {
       var instaPosts =

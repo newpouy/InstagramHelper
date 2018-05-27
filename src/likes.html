@@ -30,6 +30,10 @@
             <v-text-field label="Delay between requests, ms" type="number" min=100 step=100 v-model.number="delay"></v-text-field>
             <v-btn id="start" :disabled="startButtonDisabled" v-on:click="startButtonClick" color="primary">Calculate likes!</v-btn>
             <v-btn :disabled="!isInProgress" color="primary" v-on:click="stop=true">Stop it!</v-btn>
+            <v-tooltip bottom>
+              <v-btn slot="activator" :disabled="addFollowersButtonDisabled" color="primary" v-on:click="addFollowers">Add followers!</v-btn>
+              <span>Add followers information into the list: it is useful to identiy the followers who never liked a post.</span>
+            </v-tooltip>
             <v-btn :disabled="exportButtonDisabled" color="primary" v-on:click="exportToExcel">Export to Excel!</v-btn>
           </v-flex>
           <v-flex>
@@ -42,7 +46,7 @@
                 </v-card-media>
                 <v-card-title primary-title>
                     <div>
-                      <h3 class="headline mb-0">Less Liked Post - {{lessLikedPost.likes}}</h3>
+                      <h3 class="headline mb-0">Less Liked Post - {{lessLikedPost.likes}} likes.</h3>
                     </div>
                   </v-card-title>
                 </v-card>
@@ -53,7 +57,7 @@
                 </v-card-media>
                 <v-card-title primary-title>
                   <div>
-                    <h3 class="headline mb-0">Most Liked Post - {{mostLikedPost.likes}}</h3>
+                    <h3 class="headline mb-0">Most Liked Post - {{mostLikedPost.likes}} likes.</h3>
                   </div>
                 </v-card-title>
               </v-card>
