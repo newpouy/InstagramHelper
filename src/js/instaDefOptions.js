@@ -5,8 +5,8 @@ var instaDefOptions = (function () {
   return {
     you: '<<YOU>>',
     defDelay: 2000,
-    defFollowDelay: 30000,
-    defLikeDelay: 7000, // TODO: separate parameter for Get Likes
+    defFollowDelay: 35000,
+    defLikeDelay: 5000, // TODO: separate parameter for Get Likes
     defPageSize: 10, // reduced from 24 to avoid HTTP400 error
     maxPageSize: 50,
     defPageSizeForFeed: 10, // how many posts to be asked for getting the feed OR user profile

@@ -141,8 +141,8 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     processedLikes: 0, //how much processed likes for current post
     totalLikes: 0, //how much likes has the currently analyzed post
 
-    mostLikedPost: { },
-    lessLikedPost: { }
+    mostLikedPost: {},
+    lessLikedPost: {}
   },
   computed: {
     isCompleted: function () {
@@ -165,8 +165,8 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     },
     addFollowersButtonDisabled: function () {
       return this.isInProgress ||  //process is not running
-        __items.length === 0; //no items to export
-        //TODO
+        __items.length === 0 || //no items to export
+        this.followersAdded; //already added
     },
     binding() {
       const binding = {};
@@ -185,7 +185,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       this.statusColor = color || 'black';
       setTimeout(function () {
         var textarea = document.getElementById('log_text_area');
-        textarea.scrollTop = textarea.scrollHeight;
+        if (textarea) {
+          textarea.scrollTop = textarea.scrollHeight;
+        }
       }, 0);
     },
     getPosts: function (instaPosts, restart) {
@@ -344,7 +346,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       };
       wb.SheetNames.push("GetLikesSheet");
 
-      var ws = XLSX.utils.json_to_sheet(__items, {cellDates: true});
+      var ws = XLSX.utils.json_to_sheet(__items, { cellDates: true });
 
       wb.Sheets["GetLikesSheet"] = ws;
       var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
@@ -378,13 +380,10 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         viewerUserId: likes.viewerUserId
       };
 
-      likes.promiseFetchInstaUsers(fetchSettings).then(function (obj) {
+      likes.promiseFetchInstaUsers(fetchSettings).then((obj) => {
         console.log('resolved', obj);
+        this.followersAdded = true;
       });
-
-      //todo: fetch all followers
-      //todo: progress bar
-      //todo: and add it
     },
     promiseFetchInstaUsers: function (obj) {
       return new Promise(function (resolve) {
@@ -413,6 +412,8 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         });
 
       instaPosts.resolveUserName().then((obj) => {
+
+        likes.followersAdded = false;
 
         likes.userInfo = obj;
 
