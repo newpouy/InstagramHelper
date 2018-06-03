@@ -119,7 +119,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
   },
   data: {
-    isInProgress: false,
+    isGettingLikesInProgress: false,
+    isAddingFollowersInProgress: false,
+    followersAdded: false,
 
     delay: 0, //interval between sending the http requests
 
@@ -142,7 +144,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     totalLikes: 0, //how much likes has the currently analyzed post
 
     mostLikedPost: {},
-    lessLikedPost: {}
+    lessLikedPost: {},
+
+    progressValue: 0 // progress bar
   },
   computed: {
     isCompleted: function () {
@@ -156,17 +160,21 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       return false;
     },
     startButtonDisabled: function () {
-      return this.isInProgress ||  //process is not running
+      return this.isGettingLikesInProgress ||  //process is not running
         '' === this.userToGetLikes; //profile is specified
     },
     exportButtonDisabled: function () {
-      return this.isInProgress ||  //process is not running
+      return this.isGettingLikesInProgress ||  //process is not running
         __items.length === 0; //no items to export
     },
     addFollowersButtonDisabled: function () {
-      return this.isInProgress ||  //process is not running
+      return this.isGettingLikesInProgress ||  //process is not running
         __items.length === 0 || //no items to export
         this.followersAdded; //already added
+    },
+    isRunning: function() {
+      return this.isGettingLikesInProgress ||
+        this.isAddingFollowersInProgress;
     },
     binding() {
       const binding = {};
@@ -212,7 +220,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       likes.updateStatusDiv(`Started at ${likes.startDate}`);
       likes.updateStatusDiv(`Fetched ${likes.fetchedPosts} posts`);
 
-      likes.isInProgress = false;
+      likes.isGettingLikesInProgress = false;
       //likes.log = JSON.stringify([...data]);
 
       __items.length = 0;
@@ -329,6 +337,8 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         } else {
           instaLike = null;
           likes.processedPosts += 1;
+          //update progress bar
+          likes.progressValue = (likes.processedPosts / likes.totalPosts) * 100;
           setTimeout(() => this.getLikes(instaPosts, media, ++index), likes.delay);
         }
       });
@@ -352,7 +362,12 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
       saveAs(new Blob([exportUtils.s2ab(wbout)], { type: "application/octet-stream" }), fileName);
     },
-    addFollowers: function () {
+    addFollowers: async function () {
+
+      if (!likes.userInfo) {
+        //todo : it is viewer?
+        likes.userInfo = await instaUserInfo.getUserProfile({ username: likes.viewerUserName });
+      }
 
       var fetchSettings = {
         request: null,
@@ -380,9 +395,11 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         viewerUserId: likes.viewerUserId
       };
 
+      likes.isAddingFollowersInProgress = true;
       likes.promiseFetchInstaUsers(fetchSettings).then((obj) => {
-        console.log('resolved', obj);
+        likes.isAddingFollowersInProgress = false;
         this.followersAdded = true;
+        console.log('resolved', obj);
       });
     },
     promiseFetchInstaUsers: function (obj) {
@@ -392,7 +409,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
           obj: obj,
           myData: __items,
           htmlElements: {},
-          updateStatusDiv: message => console.log(message),
+          updateStatusDiv: likes.updateStatusDiv,
           resolve: resolve
         }));
 
@@ -430,7 +447,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         likes.lessLikedPost = {};
         likes.mostLikedPost = {};
 
-        likes.isInProgress = true;
+        likes.isGettingLikesInProgress = true;
 
         likes.updateStatusDiv(`The interval between the requests is ${likes.delay}ms`);
 
