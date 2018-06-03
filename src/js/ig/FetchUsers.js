@@ -11,7 +11,8 @@ var FetchUsers = function (settings) {
     myData,
     htmlElements,
     updateStatusDiv,
-    resolve
+    resolve,
+    funcUpdateProgressBar
   } = settings;
 
   function checkForDuplicates(obj, data, i) {
@@ -133,8 +134,13 @@ var FetchUsers = function (settings) {
 
   function updateProgressBar(obj, count) {
     var newValue = 0 + obj[obj.relType + '_processed'] + count;
-    if (htmlElements[obj.relType]) {
+    if (htmlElements[obj.relType]) { //comes from get insta users or common users
       htmlElements[obj.relType].asProgress('go', newValue);
+    } else { //comes from get likes - shame
+      // newValue is the amount of fetches contacts
+      if (typeof funcUpdateProgressBar === 'function') {
+        funcUpdateProgressBar(newValue);
+      }
     }
     obj[obj.relType + '_processed'] = newValue;
   }

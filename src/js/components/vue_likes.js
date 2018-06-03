@@ -1,5 +1,5 @@
 /* globals Vue, chrome, _gaq, instaDefOptions */
-/* globals GetLikes, GetPosts, exportUtils, XLSX, saveAs, FetchUsers */
+/* globals GetLikes, GetPosts, exportUtils, XLSX, saveAs, FetchUsers, instaUserInfo */
 
 var __items = [];
 
@@ -170,7 +170,8 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     addFollowersButtonDisabled: function () {
       return this.isGettingLikesInProgress ||  //process is not running
         __items.length === 0 || //no items to export
-        this.followersAdded; //already added
+        this.followersAdded || //already added
+        this.isAddingFollowersInProgress;
     },
     isRunning: function() {
       return this.isGettingLikesInProgress ||
@@ -373,7 +374,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         request: null,
         userName: likes.userInfo.username,
         pageSize: likes.fetchPageSize,
-        delay: likes.fetchDelay,
+        delay: likes.delay, // OR SHOULD IT BE likes.fetchDelay
         // followDelay: request.followDelay,
         csrfToken: likes.csrfToken,
         userId: likes.userInfo.id,
@@ -405,12 +406,17 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     promiseFetchInstaUsers: function (obj) {
       return new Promise(function (resolve) {
 
+        console.log('followed by count', obj.followed_by_count);
+
         var f = new FetchUsers(Object.assign({}, {
           obj: obj,
           myData: __items,
           htmlElements: {},
           updateStatusDiv: likes.updateStatusDiv,
-          resolve: resolve
+          resolve: resolve,
+          funcUpdateProgressBar: function(newValue) {
+            likes.progressValue = (newValue / obj.followed_by_count) * 100;
+          }
         }));
 
         f.fetchInstaUsers();
