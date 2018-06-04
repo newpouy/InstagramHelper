@@ -12,7 +12,8 @@ var FetchUsers = function (settings) {
     htmlElements,
     updateStatusDiv,
     resolve,
-    funcUpdateProgressBar
+    funcUpdateProgressBar,
+    vueStatus
   } = settings;
 
   function checkForDuplicates(obj, data, i) {
@@ -75,7 +76,13 @@ var FetchUsers = function (settings) {
     updateStatusDiv(message, 'red');
     instaTimeout.setTimeout(3000)
       .then(function () {
-        return instaCountdown.doCountdown('status', errorNumber, 'Users fetching', +(new Date()).getTime() + instaDefOptions.retryInterval);
+        return instaCountdown.doCountdown(
+          'status',
+          errorNumber,
+          'Users fetching',
+          +(new Date()).getTime() + instaDefOptions.retryInterval,
+          vueStatus
+        );
       })
       .then(() => {
         console.log('Continue execution after HTTP error', errorNumber, new Date()); //eslint-disable-line no-console
@@ -126,6 +133,12 @@ var FetchUsers = function (settings) {
   };
 
   function calculateTimeOut(obj) {
+
+    //if it is called from get likes
+    if (vueStatus && vueStatus.delay) {
+      console.log('returning', vueStatus.delay)
+      return vueStatus.delay;
+    }
     if (instaDefOptions.noDelayForInit && (obj.receivedResponses < instaDefOptions.requestsToSkipDelay)) {
       return 0;
     }

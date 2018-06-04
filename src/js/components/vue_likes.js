@@ -258,7 +258,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         }
 
         //check if it is less liked post
-        if (likes.totalLikes < (likes.lessLikedPost.likes || 999)) {
+        if (likes.totalLikes < (likes.lessLikedPost.likes || 999999)) {
           likes.lessLikedPost = {
             id: shortcode,
             likes: likes.totalLikes,
@@ -416,7 +416,8 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
           resolve: resolve,
           funcUpdateProgressBar: function(newValue) {
             likes.progressValue = (newValue / obj.followed_by_count) * 100;
-          }
+          },
+          vueStatus: likes
         }));
 
         f.fetchInstaUsers();
