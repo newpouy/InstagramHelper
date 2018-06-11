@@ -398,6 +398,18 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
       likes.isAddingFollowersInProgress = true;
       likes.promiseFetchInstaUsers(fetchSettings).then((obj) => {
+
+        let candidatesToUnFollow = 0;
+        for (let i in __items) {
+          candidatesToUnFollow = candidatesToUnFollow + (!__items[i].count);
+          __items[i].count = __items[i].count || 0;
+          __items[i].diff = __items[i].diff || 0;
+          delete __items[i].user_profile;
+          delete __items[i].user_follows;
+        }
+        this.updateStatusDiv('Accounts to be unfollowed - ' + candidatesToUnFollow);
+        // console.log('candidatesToUnFollow', candidatesToUnFollow);
+
         likes.isAddingFollowersInProgress = false;
         this.followersAdded = true;
         console.log('resolved', obj);

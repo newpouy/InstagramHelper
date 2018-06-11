@@ -136,7 +136,7 @@ var FetchUsers = function (settings) {
 
     //if it is called from get likes
     if (vueStatus && vueStatus.delay) {
-      console.log('returning', vueStatus.delay)
+      // console.log('returning', vueStatus.delay)
       return vueStatus.delay;
     }
     if (instaDefOptions.noDelayForInit && (obj.receivedResponses < instaDefOptions.requestsToSkipDelay)) {
