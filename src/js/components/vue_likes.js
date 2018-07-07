@@ -1,9 +1,10 @@
-/* globals Vue, chrome, _gaq, instaDefOptions */
+/* globals Vue, chrome, _gaq, instaDefOptions, followUser */
 /* globals GetLikes, GetPosts, exportUtils, XLSX, saveAs, FetchUsers, instaUserInfo */
 
 var __items = [];
 
 var myDataTable = {
+  props: ['csrfToken', 'updateStatusDiv'],
   template: `<v-card>
   <v-card-title>
     <h3 class="headline mb-0"> Likes </h3>
@@ -44,7 +45,14 @@ var myDataTable = {
       <td class="text-xs-right">{{ props.item.count }}</td>
       <td class="text-xs-right">{{ props.item.firstLike }}</td>
       <td class="text-xs-right">{{ props.item.lastLike }}</td>
-      <td class="text-xs-right">{{ props.item.diff }}</td>
+      <td class="text-xs-right">
+        <v-btn v-if="props.item.diff == 0 && props.item.followed_by_viewer" v-on:click.stop="unfollowButtonClick(props.item)" color="primary">
+          Unfollow!
+        </v-btn>
+        <span v-else>
+          {{ props.item.diff }}
+        </span>
+      </td>
       <td class="text-xs-right">{{ props.item.full_name }}</td>
       </tr>
     </template>
@@ -82,6 +90,19 @@ var myDataTable = {
       ],
       items: __items
     };
+  },
+  methods: {
+    unfollowButtonClick: function (item) {
+      followUser.unFollow(
+        {
+          username: item.username,
+          userId: item.id,
+          csrfToken: this.csrfToken,
+          updateStatusDiv: this.updateStatusDiv
+        }).then(function (result) {
+          Vue.set(item, 'followed_by_viewer', false)
+        });
+    }
   }
 };
 
@@ -402,12 +423,17 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         let candidatesToUnFollow = 0;
         for (let i in __items) {
           candidatesToUnFollow = candidatesToUnFollow + (!__items[i].count);
-          __items[i].count = __items[i].count || 0;
-          __items[i].diff = __items[i].diff || 0;
+
+          Vue.set(__items[i], 'count', __items[i].count || 0);
+          Vue.set(__items[i], 'diff', __items[i].diff || 0);
+
+          // __items[i].count = __items[i].count || 0;
+          // __items[i].diff = __items[i].diff || 0;
+
           delete __items[i].user_profile;
           delete __items[i].user_follows;
         }
-        this.updateStatusDiv('Accounts to be unfollowed - ' + candidatesToUnFollow);
+        this.updateStatusDiv('Potential candidates to be unfollowed - ' + candidatesToUnFollow);
         // console.log('candidatesToUnFollow', candidatesToUnFollow);
 
         likes.isAddingFollowersInProgress = false;
@@ -476,7 +502,6 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         alert('Specified user was not found');
         instaPosts = null;
       });
-
     }
   },
   components: {

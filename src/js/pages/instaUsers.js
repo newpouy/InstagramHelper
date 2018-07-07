@@ -59,7 +59,10 @@ $(function () {
     name: 'id',
     width: '80',
     align: 'center',
-    search: true
+    search: true,
+    searchoptions: {
+      sopt: ['bw', 'cn'],
+    }
   }, {
     label: 'Info',
     name: 'username',
@@ -270,7 +273,10 @@ $(function () {
     name: 'id',
     width: '80',
     align: 'center',
-    search: true
+    search: true,
+    searchoptions: {
+      sopt: ['bw', 'cn'],
+    }
   }, {
     label: 'Info',
     name: 'username',

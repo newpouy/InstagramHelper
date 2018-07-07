@@ -21,7 +21,7 @@
             <v-progress-linear v-model="progressValue"></v-progress-linear>
           </v-flex>
           <v-flex>
-            <div v-bind:style="{ color : statusColor}">
+            <div style="height: 3em;" v-bind:style="{ color : statusColor}">
               <strong>{{ status }}</strong>
             </div>
             <div>
@@ -68,7 +68,7 @@
             </v-flex>
           </v-layout>
           <v-flex v-if="!exportButtonDisabled">
-            <my-data-table></my-data-table>
+            <my-data-table v-bind:csrf-token="csrfToken" v-bind:update-status-div="updateStatusDiv"></my-data-table>
           </v-flex>
         </v-layout>
       </v-container>
@@ -88,6 +88,7 @@
   <script src="js/instaCountdown.js"></script>
   <script src="js/instaTimeout.js"></script>
   <script src="js/ig/FetchUsers.js"></script>
+  <script src="js/ig/followUser.js"></script>
 
   <script src="lib/xlsx.core.min.js"></script>
   <script src="lib/FileSaver.min.js"></script>
