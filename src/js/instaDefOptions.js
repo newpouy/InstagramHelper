@@ -30,7 +30,9 @@ var instaDefOptions = (function () {
       follows: '58712303d941c6855d4e888c5f0cd22f',
       feed: '485c25657308f08317c1e4b967356828',
       profile: '42323d64886122307be10013ad2dcc44',
-      likes: '1cb6ec562846122743b61e492c85999f'
+      likes: '1cb6ec562846122743b61e492c85999f',
+      comments: '33ba35852cb50da46f5b5e889df7d159'
+
     },
     httpErrorMap: {
       0: 'NOTCONNECTED',

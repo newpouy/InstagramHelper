@@ -22,6 +22,7 @@ var instaMessages = (function () {
     ERRGETTINGPOST: 'Error getting the ${0} post, status - ${1}.',
     ERRGETTINGFEED: 'Error getting your feed, status - ${0}.',
     ERRGETTINGLIKES: 'Error getting likes, status - ${0}.',
+    ERRGETTINGCOMMENTS: 'Error getting comments, status - ${0}.',
     ERRFOLLOWUSER: 'Error trying to (un)follow ${0} user, status - ${1}.',
     ERRLIKEMEDIA: 'Error liking the ${0} post, status - ${1}.',
     USERNAMEISREQ: 'Please provide the user name.',

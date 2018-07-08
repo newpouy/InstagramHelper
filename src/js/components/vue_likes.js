@@ -268,7 +268,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         likes.processedLikes = 0;
         likes.updateStatusDiv(`Post ${url} taken on ${taken} has ${likes.totalLikes} likes`);
 
-        //check if it is most liked post
+        //check if it is the most liked post
         if (likes.totalLikes > (likes.mostLikedPost.likes || 0)) {
           likes.mostLikedPost = {
             id: shortcode,
@@ -278,7 +278,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
           }
         }
 
-        //check if it is less liked post
+        //check if it is the less liked post
         if (likes.totalLikes < (likes.lessLikedPost.likes || 999999)) {
           likes.lessLikedPost = {
             id: shortcode,
@@ -298,6 +298,12 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         });
 
         this.getPostLikes(instaLike, instaPosts, media, index, obj.node.taken_at_timestamp);
+
+        //todo : check if comments should be processed
+        //todo : check if comments > 0
+        console.log ('comments count', obj.node.edge_media_to_comment.count);
+
+
 
       } else if (instaPosts.hasMore()) { //do we still have something to fetch
         likes.updateStatusDiv(`The more posts will be fetched now...${new Date()}`);
