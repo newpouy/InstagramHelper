@@ -299,6 +299,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
           url: url
         });
         this.getPostLikes(instaLike, instaPosts, media, index, obj.node.taken_at_timestamp);
+        instaLike = null;
 
         // Calculate comments
         console.log ('comments count', obj.node.edge_media_to_comment.count);
@@ -313,8 +314,15 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
               url: url
             });
             this.getPostComments(instaComment, instaPosts, media, index, obj.node.taken_at_timestamp);
+            instaComment = null;
           }
         }
+
+        likes.processedPosts += 1;
+        //update progress bar
+        likes.progressValue = (likes.processedPosts / likes.totalPosts) * 100;
+        setTimeout(() => this.getLikes(instaPosts, media, ++index), likes.delay);
+
       } else if (instaPosts.hasMore()) { //do we still have something to fetch
         likes.updateStatusDiv(`The more posts will be fetched now...${new Date()}`);
         setTimeout(() => this.getPosts(instaPosts, false), likes.delay);
@@ -368,13 +376,13 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         if (insta.hasMore()) {
           console.log('insta has more', likes.delay);
           setTimeout(() => this.getPostComments(insta, instaPosts, media, index, taken), likes.delay);
-        } else {
+        } /*else {
           insta = null;
           likes.processedPosts += 1;
           //update progress bar
           likes.progressValue = (likes.processedPosts / likes.totalPosts) * 100;
           setTimeout(() => this.getLikes(instaPosts, media, ++index), likes.delay);
-        }
+        }*/
       });
     },
     getPostLikes: function (instaLike, instaPosts, media, index, taken) {
@@ -427,13 +435,13 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         }
         if (instaLike.hasMore()) {
           setTimeout(() => this.getPostLikes(instaLike, instaPosts, media, index, taken), likes.delay);
-        } else {
+        } /* else {
           instaLike = null;
           likes.processedPosts += 1;
           //update progress bar
           likes.progressValue = (likes.processedPosts / likes.totalPosts) * 100;
           setTimeout(() => this.getLikes(instaPosts, media, ++index), likes.delay);
-        }
+        }*/
       });
     },
     exportToExcel: function () {
