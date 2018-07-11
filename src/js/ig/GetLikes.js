@@ -93,7 +93,7 @@ var GetLikes = function (settings) { //eslint-disable-line no-unused-vars
   }
 
   return {
-    getLikes: getLikes,
+    get: getLikes,
     hasMore: hasMore
   };
 

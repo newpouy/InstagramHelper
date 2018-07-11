@@ -1,5 +1,5 @@
 /* globals Vue, chrome, _gaq, instaDefOptions, followUser */
-/* globals GetLikes, GetPosts, exportUtils, XLSX, saveAs, FetchUsers, instaUserInfo */
+/* globals GetLikes, GetComments, GetPosts, exportUtils, XLSX, saveAs, FetchUsers, instaUserInfo */
 
 var __items = [];
 
@@ -167,7 +167,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     mostLikedPost: {},
     lessLikedPost: {},
 
-    progressValue: 0 // progress bar
+    progressValue: 0,  // progress bar
+
+    calcComments: true //when getting likes
   },
   computed: {
     isCompleted: function () {
@@ -296,15 +298,23 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
           vueStatus: likes,
           url: url
         });
-
         this.getPostLikes(instaLike, instaPosts, media, index, obj.node.taken_at_timestamp);
 
-        //todo : check if comments should be processed
-        //todo : check if comments > 0
+        // Calculate comments
         console.log ('comments count', obj.node.edge_media_to_comment.count);
-
-
-
+        if (this.calcComments) {
+          if (obj.node.edge_media_to_comment.count > 0) {
+            var instaComment = new GetComments({
+              shortCode: shortcode,
+              end_cursor: '',
+              updateStatusDiv: likes.updateStatusDiv,
+              pageSize: instaDefOptions.defPageSizeForLikes, //TODO: parametrize
+              vueStatus: likes,
+              url: url
+            });
+            this.getPostComments(instaComment, instaPosts, media, index, obj.node.taken_at_timestamp);
+          }
+        }
       } else if (instaPosts.hasMore()) { //do we still have something to fetch
         likes.updateStatusDiv(`The more posts will be fetched now...${new Date()}`);
         setTimeout(() => this.getPosts(instaPosts, false), likes.delay);
@@ -313,12 +323,66 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         setTimeout(() => this.getLikes(instaPosts, media, ++index), 0);
       }
     },
+    getPostComments: function (insta, instaPosts, media, index, taken) {
+      if (likes.isCompleted) {
+        return this.whenCompleted();
+      }
+
+      insta.get().then(result => {
+        likes.updateStatusDiv(`... fetched information about ${result.data.length} comments`);
+        for (var i = 0; i < result.data.length; i++) {
+          var id = result.data[i].node.id;
+          var username = result.data[i].node.username;
+          var full_name = result.data[i].node.full_name;
+          var profile_pic_url = result.data[i].node.profile_pic_url;
+          if (this.data.has(id)) { // already was
+            var obj = this.data.get(id);
+            obj.comments = obj.comments + 1 || 1;
+            obj.commentedPosts.push({
+              id: result.shortCode,
+              pic: result.url,
+              url: `https://www.instagram.com/p/${result.shortCode}`
+            });
+            this.data.set(id, obj);
+          } else {
+            this.data.set(id, {
+              id: id,
+              username: username,
+              count: 0,
+              comments: 1,
+              full_name: full_name,
+              profile_pic_url: profile_pic_url,
+              followed_by_viewer: result.data[i].node.followed_by_viewer,
+              requested_by_viewer: result.data[i].node.requested_by_viewer,
+              is_verified: result.data[i].node.is_verified,
+              posts: [],
+              commentedPosts: [{
+                id: result.shortCode,
+                pic: result.url,
+                url: `https://www.instagram.com/p/${result.shortCode}`
+              }]
+            });
+          }
+          likes.processedComments += 1;
+        }
+        if (insta.hasMore()) {
+          console.log('insta has more', likes.delay);
+          setTimeout(() => this.getPostComments(insta, instaPosts, media, index, taken), likes.delay);
+        } else {
+          insta = null;
+          likes.processedPosts += 1;
+          //update progress bar
+          likes.progressValue = (likes.processedPosts / likes.totalPosts) * 100;
+          setTimeout(() => this.getLikes(instaPosts, media, ++index), likes.delay);
+        }
+      });
+    },
     getPostLikes: function (instaLike, instaPosts, media, index, taken) {
       if (likes.isCompleted) {
         return this.whenCompleted();
       }
 
-      instaLike.getLikes().then(result => {
+      instaLike.get().then(result => {
         likes.updateStatusDiv(`... fetched information about ${result.data.length} likes`);
         for (var i = 0; i < result.data.length; i++) {
           var id = result.data[i].node.id;
@@ -355,7 +419,8 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
                 id: result.shortCode,
                 pic: result.url,
                 url: `https://www.instagram.com/p/${result.shortCode}`
-              }]
+              }],
+              commentedPosts: []
             });
           }
           likes.processedLikes += 1;
