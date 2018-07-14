@@ -57,6 +57,7 @@ var myDataTable = {
       </tr>
     </template>
     <template slot="expand" slot-scope="props" v-if="props.item.posts.length > 0 || props.item.commentedPosts.length > 0">
+    <div v-if="props.item.posts.length > 0">
       <h3 class="headline mb-0">Liked posts</h3>
       <v-layout row wrap child-flex>
         <v-flex v-for="post in props.item.posts" :key="post.id" xs12 sm3>
@@ -66,6 +67,8 @@ var myDataTable = {
             </v-card>
         </v-flex>
       </v-layout>
+    </div>
+    <div v-if="props.item.commentedPosts.length > 0">
       <h3 class="headline mb-0">Commented posts</h3>
       <v-layout row wrap child-flex>
         <v-flex v-for="post in props.item.commentedPosts" :key="post.id" xs12 sm3>
@@ -75,6 +78,7 @@ var myDataTable = {
             </v-card>
         </v-flex>
       </v-layout>
+    </div>
     </template>
   </v-data-table>
 </v-card>`,
@@ -328,10 +332,10 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       const result = await insta.get();
       likes.updateStatusDiv(`... fetched information about ${result.data.length} comments`);
       for (var i = 0; i < result.data.length; i++) {
-        var id = result.data[i].node.id;
-        var username = result.data[i].node.username;
-        var full_name = result.data[i].node.full_name;
-        var profile_pic_url = result.data[i].node.profile_pic_url;
+        var id = result.data[i].node.owner.id;
+        var username = result.data[i].node.owner.username;
+        //var full_name = result.data[i].node.full_name;
+        var profile_pic_url = result.data[i].node.owner.profile_pic_url;
         if (this.data.has(id)) { // already was
           var obj = this.data.get(id);
           obj.comments = obj.comments + 1 || 1;
@@ -347,11 +351,11 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
             username: username,
             count: 0,
             comments: 1,
-            full_name: full_name,
+            //full_name: full_name,
             profile_pic_url: profile_pic_url,
-            followed_by_viewer: result.data[i].node.followed_by_viewer,
-            requested_by_viewer: result.data[i].node.requested_by_viewer,
-            is_verified: result.data[i].node.is_verified,
+            //followed_by_viewer: result.data[i].node.followed_by_viewer,
+            //requested_by_viewer: result.data[i].node.requested_by_viewer,
+            //is_verified: result.data[i].node.is_verified,
             posts: [],
             commentedPosts: [{
               id: result.shortCode,
@@ -384,6 +388,13 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
           } else if (taken < obj.firstLike) {
             obj.firstLike = taken;
           }
+
+          //just in case it was added from comments flow
+          obj.full_name = full_name;
+          obj.followed_by_viewer = result.data[i].node.followed_by_viewer,
+          obj.requested_by_viewer = result.data[i].node.requested_by_viewer,
+          obj.is_verified = result.data[i].node.is_verified,
+
           obj.posts.push({
             id: result.shortCode,
             pic: result.url,
