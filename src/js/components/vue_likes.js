@@ -167,8 +167,6 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
     userToGetLikes: '',
 
-    allPostsFetched: false, // when all posts from user's profile are fetched
-
     processedLikes: 0, //how much processed likes for current post
     totalLikes: 0, //how much likes has the currently analyzed post
 
@@ -180,16 +178,13 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     calcComments: true //when getting likes
   },
   computed: {
-/*    isCompleted: function () {
+    isCompleted: function () {
       if (this.stop) {
         this.updateStatusDiv(`${new Date().toLocaleString()}/The process will be stopped now because you clicked the Stop button`);
         return true;
-      } else if (this.allPostsFetched) {
-        this.updateStatusDiv(`${new Date().toLocaleString()}/The process will be stopped because no more posts in the user's profile`);
-        return true;
       }
       return false;
-    },*/
+    },
     startButtonDisabled: function () {
       return this.isGettingLikesInProgress ||  //process is not running
         '' === this.userToGetLikes; //profile is specified
@@ -234,6 +229,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       return new Promise(res => setTimeout(res, ms))
     },
     getPosts: async function (instaPosts, restart) {
+      if (this.isCompleted) {
+        return his.whenCompleted();
+      }
       const media = await instaPosts.getPosts(restart)
       likes.fetchedPosts += media.length;
       likes.totalPosts = instaPosts.getTotal();
@@ -262,6 +260,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       });
     },
     getPostLikesAndComments: async function (instaPosts, media, index) {
+      if (this.isCompleted) {
+        return this.whenCompleted();
+      }
       if (media.length > index) { //we still have something to get
         var obj = media[index];
         var url = obj.node.display_url;
@@ -329,6 +330,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       }
     },
     getPostComments: async function (insta, instaPosts, media, index, taken) {
+      if (this.isCompleted) {
+        return this.whenCompleted();
+      }
       const result = await insta.get();
       likes.updateStatusDiv(`... fetched information about ${result.data.length} comments`);
       for (var i = 0; i < result.data.length; i++) {
@@ -373,6 +377,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       }
     },
     getPostLikes: async function (instaLike, instaPosts, media, index, taken) {
+      if (this.isCompleted) {
+        return this.whenCompleted();
+      }
       const result = await instaLike.get();
       likes.updateStatusDiv(`... fetched information about ${result.data.length} likes`);
       for (var i = 0; i < result.data.length; i++) {
@@ -392,14 +399,14 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
           //just in case it was added from comments flow
           obj.full_name = full_name;
           obj.followed_by_viewer = result.data[i].node.followed_by_viewer,
-          obj.requested_by_viewer = result.data[i].node.requested_by_viewer,
-          obj.is_verified = result.data[i].node.is_verified,
+            obj.requested_by_viewer = result.data[i].node.requested_by_viewer,
+            obj.is_verified = result.data[i].node.is_verified,
 
-          obj.posts.push({
-            id: result.shortCode,
-            pic: result.url,
-            url: `https://www.instagram.com/p/${result.shortCode}`
-          });
+            obj.posts.push({
+              id: result.shortCode,
+              pic: result.url,
+              url: `https://www.instagram.com/p/${result.shortCode}`
+            });
           this.data.set(id, obj);
         } else {
           this.data.set(id, {
@@ -550,7 +557,6 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         likes.totalPosts = 0;
         likes.stop = false;
         likes.log = '';
-        likes.allPostsFetched = false;
 
         likes.lessLikedPost = {};
         likes.mostLikedPost = {};
