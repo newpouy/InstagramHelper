@@ -175,7 +175,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
     progressValue: 0,  // progress bar
 
-    calcComments: true //when getting likes
+    calcComments: true, //when getting likes
+
+    init: true
   },
   computed: {
     isCompleted: function () {
@@ -186,18 +188,17 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       return false;
     },
     startButtonDisabled: function () {
-      return this.isGettingLikesInProgress ||  //process is not running
+      return this.isGettingLikesInProgress ||  //process is running
         '' === this.userToGetLikes; //profile is specified
     },
-    exportButtonDisabled: function () {
-      return this.isGettingLikesInProgress ||  //process is not running
-        __items.length === 0; //no items to export
-    },
     addFollowersButtonDisabled: function () {
-      return this.isGettingLikesInProgress ||  //process is not running
+      return this.isRunning ||  //process is running
         __items.length === 0 || //no items to export
-        this.followersAdded || //already added
-        this.isAddingFollowersInProgress;
+        this.followersAdded; //already added
+    },
+    exportButtonDisabled: function () {
+      return this.isGettingLikesInProgress ||  //process is running
+        __items.length === 0; //no items to export
     },
     isRunning: function () {
       return this.isGettingLikesInProgress ||
@@ -544,8 +545,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         });
 
       instaPosts.resolveUserName().then((obj) => {
-
+        likes.init = false;
         likes.followersAdded = false;
+        likes.isGettingLikesInProgress = true;
 
         likes.userInfo = obj;
 
@@ -560,8 +562,6 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
         likes.lessLikedPost = {};
         likes.mostLikedPost = {};
-
-        likes.isGettingLikesInProgress = true;
 
         likes.updateStatusDiv(`The interval between the requests is ${likes.delay}ms`);
 

@@ -19,19 +19,17 @@
           <v-flex v-show="isRunning">
             <v-progress-linear v-model="progressValue"></v-progress-linear>
           </v-flex>
-          <v-flex>
+          <v-flex v-show="!init">
             <div style="height: 3em;" v-bind:style="{ color : statusColor}">
               <strong>{{ status }}</strong>
             </div>
-            <div>
-              <strong>Started at {{startDate}}/Fetched {{fetchedPosts}} posts/Processed {{processedPosts}} of {{totalPosts}} posts/Likes
-                {{processedLikes}} of {{totalLikes}}</strong>
-            </div>
+            <strong>Started at {{startDate}}/Fetched {{fetchedPosts}} posts/Processed {{processedPosts}} of {{totalPosts}} posts/Likes
+              {{processedLikes}} of {{totalLikes}}</strong>
           </v-flex>
           <v-flex>
             <v-text-field :disabled="isGettingLikesInProgress" label="Username to analyze" v-model="userToGetLikes"></v-text-field>
             <v-text-field label="Delay between requests, ms" type="number" min=100 step=100 v-model.number="delay"></v-text-field>
-            <v-checkbox label="Get comments" v-model="calcComments"></v-checkbox>
+            <v-checkbox :disabled="!init" label="Get comments" v-model="calcComments"></v-checkbox>
             <v-btn id="start" :disabled="startButtonDisabled" v-on:click="startButtonClick" color="primary">Calculate likes!</v-btn>
             <v-btn :disabled="!isGettingLikesInProgress" color="primary" v-on:click="stop=true">Stop it!</v-btn>
             <v-tooltip bottom>
@@ -43,8 +41,8 @@
           <v-flex>
             <v-text-field v-show="isRunning" id="log_text_area" label="Log" multi-line v-model="log"></v-text-field>
           </v-flex>
-          <v-layout row wrap child-flex>
-            <v-flex v-if="!exportButtonDisabled" xs6>
+          <v-layout v-show="!exportButtonDisabled" row wrap child-flex>
+            <v-flex xs6>
               <v-card :href="lessLikedPost.url" target="_blank">
                 <v-card-media :src="lessLikedPost.pic" height="200px" contain>
                 </v-card-media>
@@ -55,7 +53,7 @@
                 </v-card-title>
               </v-card>
             </v-flex>
-            <v-flex v-if="!exportButtonDisabled" xs6>
+            <v-flex xs6>
               <v-card :href="mostLikedPost.url" target="_blank">
                 <v-card-media :src="mostLikedPost.pic" height="200px" contain>
                 </v-card-media>
