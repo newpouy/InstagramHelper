@@ -4,7 +4,7 @@
 var __items = [];
 
 var myDataTable = {
-  props: ['csrfToken', 'updateStatusDiv'],
+  props: ['csrfToken', 'updateStatusDiv', 'calcComments'],
   template: `<v-card>
   <v-card-title>
     <h3 class="headline mb-0"> Likes </h3>
@@ -44,16 +44,16 @@ var myDataTable = {
       <td class="text-xs-right">{{ props.item.username }}</td>
       <td class="text-xs-right">{{ props.item.count }}</td>
       <td class="text-xs-right">{{ props.item.firstLike }}</td>
-      <td class="text-xs-right">{{ props.item.lastLike }}</td>
       <td class="text-xs-right">
-        <v-btn v-if="props.item.diff == 0 && props.item.followed_by_viewer" v-on:click.stop="unfollowButtonClick(props.item)" color="primary">
-          Unfollow!
+        <v-btn small v-if="props.item.count == 0 && props.item.followed_by_viewer" v-on:click.stop="unfollowButtonClick(props.item)" color="primary">
+          Unfollow
         </v-btn>
         <span v-else>
-          {{ props.item.diff }}
+          {{ props.item.lastLike }}
         </span>
       </td>
       <td class="text-xs-right">{{ props.item.full_name }}</td>
+      <td class="text-xs-right">{{ props.item.comments }}</td>
       </tr>
     </template>
     <template slot="expand" slot-scope="props" v-if="props.item.posts.length > 0 || props.item.commentedPosts.length > 0">
@@ -90,11 +90,11 @@ var myDataTable = {
         { text: '#', value: '', sortable: false, tooltip: '#' },
         { text: 'Image', value: '', sortable: false, tooltip: 'Click the image to open the user profile on Instagram.com' },
         { text: 'Username', value: 'user_name', tooltip: 'User name' },
-        { text: 'Count', value: 'count', tooltip: 'The total amount of likes' },
+        { text: 'Likes', value: 'count', tooltip: 'The total amount of likes' },
         { text: 'First', value: 'firstLike', tooltip: 'The date of first liked post' },
         { text: 'Last', value: 'lastLike', tooltip: 'The date of last liked post' },
-        { text: 'Days', value: 'diff', tooltip: 'The amount of days between first and last liked posts' },
-        { text: 'Full Name', value: 'full_name', tooltip: 'User full name' }
+        { text: 'Full Name', value: 'full_name', tooltip: 'User full name' },
+        { text: 'Comments', value: 'comments', tooltip: 'The total amount of comments' }
       ],
       items: __items
     };
@@ -110,6 +110,15 @@ var myDataTable = {
         }).then(function (result) {
           Vue.set(item, 'followed_by_viewer', false)
         });
+    }
+  },
+  created() {
+    console.log('v-data-table created');
+  },
+  mounted() {
+    console.log('v-data-table mounted');
+    if (!this.calcComments) { //remove comments
+      this.headers.pop();
     }
   }
 };
@@ -546,6 +555,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
       instaPosts.resolveUserName().then((obj) => {
         likes.init = false;
+
         likes.followersAdded = false;
         likes.isGettingLikesInProgress = true;
 

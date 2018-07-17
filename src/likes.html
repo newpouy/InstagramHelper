@@ -66,7 +66,11 @@
             </v-flex>
           </v-layout>
           <v-flex v-if="!exportButtonDisabled">
-            <my-data-table v-bind:csrf-token="csrfToken" v-bind:update-status-div="updateStatusDiv"></my-data-table>
+            <my-data-table
+              v-bind:calc-comments="calcComments"
+              v-bind:csrf-token="csrfToken"
+              v-bind:update-status-div="updateStatusDiv">
+            </my-data-table>
           </v-flex>
         </v-layout>
       </v-container>
