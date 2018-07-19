@@ -52,12 +52,21 @@ var myDataTable = {
           {{ props.item.lastLike }}
         </span>
       </td>
-      <td class="text-xs-right">{{ props.item.full_name }}</td>
+      <td class="hidden-sm-and-down hidden-sm-and-up">
+        {{ props.item.full_name }}
+      </td>
       <td class="text-xs-right">{{ props.item.comments }}</td>
       </tr>
     </template>
-    <template slot="expand" slot-scope="props" v-if="props.item.posts.length > 0 || props.item.commentedPosts.length > 0">
-    <div v-if="props.item.posts.length > 0">
+    <template slot="expand" slot-scope="props">
+      <v-card>
+        <v-card-title>
+          <h2 class="headline mb-0">
+            {{ props.item.full_name }}
+          </h2>
+        </v-card-title>
+      </v-card>
+    <div v-if="props.item.posts.length > 0" style="padding: 15px;">
       <h3 class="headline mb-0">Liked posts</h3>
       <v-layout row wrap child-flex>
         <v-flex v-for="post in props.item.posts" :key="post.id" xs12 sm3>
@@ -68,7 +77,7 @@ var myDataTable = {
         </v-flex>
       </v-layout>
     </div>
-    <div v-if="props.item.commentedPosts.length > 0">
+    <div v-if="props.item.commentedPosts.length > 0" style="padding: 15px;">
       <h3 class="headline mb-0">Commented posts</h3>
       <v-layout row wrap child-flex>
         <v-flex v-for="post in props.item.commentedPosts" :key="post.id" xs12 sm3>
@@ -89,11 +98,15 @@ var myDataTable = {
       headers: [
         { text: '#', value: '', sortable: false, tooltip: '#' },
         { text: 'Image', value: '', sortable: false, tooltip: 'Click the image to open the user profile on Instagram.com' },
-        { text: 'Username', value: 'user_name', tooltip: 'User name' },
+        { text: 'Username', value: 'username', tooltip: 'User name' },
         { text: 'Likes', value: 'count', tooltip: 'The total amount of likes' },
         { text: 'First', value: 'firstLike', tooltip: 'The date of first liked post' },
         { text: 'Last', value: 'lastLike', tooltip: 'The date of last liked post' },
-        { text: 'Full Name', value: 'full_name', tooltip: 'User full name' },
+        {
+          text: "Full Name",
+          value: "full_name",
+          class: "hidden-sm-and-down hidden-sm-and-up"
+        },
         { text: 'Comments', value: 'comments', tooltip: 'The total amount of comments' }
       ],
       items: __items
@@ -263,9 +276,11 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       __items.length = 0;
       Array.from(this.data.values()).forEach(e => {
         //convert dates
-        e.diff = Math.round((e.lastLike - e.firstLike) / 60 / 60 / 24);
-        e.lastLike = this.formatDate(new Date(e.lastLike * 1000));
-        e.firstLike = this.formatDate(new Date(e.firstLike * 1000));
+        if (e.lastLike) { // to skip the users who just commented
+          e.diff = Math.round((e.lastLike - e.firstLike) / 60 / 60 / 24);
+          e.lastLike = this.formatDate(new Date(e.lastLike * 1000));
+          e.firstLike = this.formatDate(new Date(e.firstLike * 1000));
+        }
         __items.push(e);
       });
     },
@@ -397,9 +412,11 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         var username = result.data[i].node.username;
         var full_name = result.data[i].node.full_name;
         var profile_pic_url = result.data[i].node.profile_pic_url;
-        if (this.data.has(id)) { // already was
+        if (this.data.has(id)) { // already was, but maybe from comments
           var obj = this.data.get(id);
           obj.count++;
+          obj.lastLike = obj.lastLike || taken; //if an user added from comments
+          obj.firstLike = obj.firstLike || taken; //if an user added from comments
           if (taken > obj.lastLike) {
             obj.lastLike = taken;
           } else if (taken < obj.firstLike) {
