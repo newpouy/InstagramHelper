@@ -67,7 +67,7 @@ var myDataTable = {
         </v-card-title>
       </v-card>
     <div v-if="props.item.posts.length > 0" style="padding: 15px;">
-      <h3 class="headline mb-0">Liked posts</h3>
+      <h3 class="headline mb-0">Liked posts - {{ props.item.count }}</h3>
       <v-layout row wrap child-flex>
         <v-flex v-for="post in props.item.posts" :key="post.id" xs12 sm3>
             <v-card :href="post.url" target="_blank">
@@ -78,7 +78,7 @@ var myDataTable = {
       </v-layout>
     </div>
     <div v-if="props.item.commentedPosts.length > 0" style="padding: 15px;">
-      <h3 class="headline mb-0">Commented posts</h3>
+      <h3 class="headline mb-0">Commented posts - {{ props.item.comments }} comments / {{ props.item.commentedPosts.length }} posts</h3>
       <v-layout row wrap child-flex>
         <v-flex v-for="post in props.item.commentedPosts" :key="post.id" xs12 sm3>
             <v-card :href="post.url" target="_blank">
