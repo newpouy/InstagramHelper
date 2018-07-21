@@ -67,7 +67,7 @@ var myDataTable = {
         </v-card-title>
       </v-card>
     <div v-if="props.item.posts.length > 0" style="padding: 15px;">
-      <h3 class="headline mb-0">Liked posts - {{ props.item.count }}</h3>
+      <h3 class="headline mb-0">Liked posts - {{ props.item.count }} posts</h3>
       <v-layout row wrap child-flex>
         <v-flex v-for="post in props.item.posts" :key="post.id" xs12 sm3>
             <v-card :href="post.url" target="_blank">
@@ -170,6 +170,10 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
   },
   data: {
+    valid: false, //valid form
+    rules: {
+      required: (value) => !!value || 'Required.'
+    },
     isGettingLikesInProgress: false,
     isAddingFollowersInProgress: false,
     followersAdded: false,
@@ -237,6 +241,13 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     }
   },
   methods: {
+    checkDelay: function() {
+      if ((!this.delay) || (this.delay < 100)) {
+        this.$nextTick(() => {
+          this.delay = 100;
+        })
+      }
+    },
     updateStatusDiv: function (message, color) {
       this.log += message + '\n';
       this.status = message;
@@ -368,11 +379,15 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         if (this.data.has(id)) { // already was
           var obj = this.data.get(id);
           obj.comments = obj.comments + 1 || 1;
-          obj.commentedPosts.push({
-            id: result.shortCode,
-            pic: result.url,
-            url: `https://www.instagram.com/p/${result.shortCode}`
-          });
+
+          //check if the same user is not commented yet
+          if (!obj.commentedPosts.some(obj => (obj.id === result.shortCode))) {
+            obj.commentedPosts.push({
+              id: result.shortCode,
+              pic: result.url,
+              url: `https://www.instagram.com/p/${result.shortCode}`
+            });
+          }
           this.data.set(id, obj);
         } else {
           this.data.set(id, {

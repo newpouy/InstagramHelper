@@ -27,8 +27,18 @@
               {{processedLikes}} of {{totalLikes}}</strong>
           </v-flex>
           <v-flex>
-            <v-text-field :disabled="isGettingLikesInProgress" label="Username to analyze" v-model="userToGetLikes"></v-text-field>
-            <v-text-field label="Delay between requests, ms" type="number" min=100 step=100 v-model.number="delay"></v-text-field>
+            <v-form v-model="valid">
+              <v-text-field :rules="[rules.required]" :disabled="isGettingLikesInProgress" label="Username to analyze" v-model="userToGetLikes"></v-text-field>
+              <v-text-field
+                :rules="[rules.required]"
+                @input="checkDelay"
+                label="Delay between requests, ms"
+                type="number"
+                min=100
+                step=100
+                v-model.number="delay"
+              ></v-text-field>
+            </v-form>
             <v-checkbox :disabled="!init" label="Get comments" v-model="calcComments"></v-checkbox>
             <v-btn id="start" :disabled="startButtonDisabled" v-on:click="startButtonClick" color="primary">Calculate likes!</v-btn>
             <v-btn :disabled="!isGettingLikesInProgress" color="primary" v-on:click="stop=true">Stop it!</v-btn>
