@@ -170,7 +170,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
   },
   data: {
-    valid: false, //valid form
+    valid: false, //is form valid
     rules: {
       required: (value) => !!value || 'Required.'
     },
@@ -278,7 +278,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       return '' + y + '-' + (m <= 9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
     },
     whenCompleted: function () {
-      likes.updateStatusDiv(`Started at ${likes.startDate}`);
+      // likes.updateStatusDiv(`Started at ${likes.startDate}`);
       likes.updateStatusDiv(`Fetched ${likes.fetchedPosts} posts`);
 
       likes.isGettingLikesInProgress = false;

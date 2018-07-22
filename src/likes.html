@@ -29,15 +29,8 @@
           <v-flex>
             <v-form v-model="valid">
               <v-text-field :rules="[rules.required]" :disabled="isGettingLikesInProgress" label="Username to analyze" v-model="userToGetLikes"></v-text-field>
-              <v-text-field
-                :rules="[rules.required]"
-                @input="checkDelay"
-                label="Delay between requests, ms"
-                type="number"
-                min=100
-                step=100
-                v-model.number="delay"
-              ></v-text-field>
+              <v-text-field :rules="[rules.required]" @input="checkDelay" label="Delay between requests, ms" type="number" min=100 step=100
+                v-model.number="delay"></v-text-field>
             </v-form>
             <v-checkbox :disabled="!init" label="Get comments" v-model="calcComments"></v-checkbox>
             <v-btn id="start" :disabled="startButtonDisabled" v-on:click="startButtonClick" color="primary">Calculate likes!</v-btn>
@@ -51,35 +44,42 @@
           <v-flex>
             <v-text-field v-show="isRunning" id="log_text_area" label="Log" multi-line v-model="log"></v-text-field>
           </v-flex>
-          <v-layout v-show="!exportButtonDisabled" row wrap child-flex>
-            <v-flex xs6>
-              <v-card :href="lessLikedPost.url" target="_blank">
-                <v-card-media :src="lessLikedPost.pic" height="200px" contain>
-                </v-card-media>
-                <v-card-title primary-title>
-                  <div>
-                    <h3 class="headline mb-0">Less Liked Post - {{lessLikedPost.likes}} likes.</h3>
-                  </div>
-                </v-card-title>
-              </v-card>
-            </v-flex>
-            <v-flex xs6>
-              <v-card :href="mostLikedPost.url" target="_blank">
-                <v-card-media :src="mostLikedPost.pic" height="200px" contain>
-                </v-card-media>
-                <v-card-title primary-title>
-                  <div>
-                    <h3 class="headline mb-0">Most Liked Post - {{mostLikedPost.likes}} likes.</h3>
-                  </div>
-                </v-card-title>
-              </v-card>
-            </v-flex>
-          </v-layout>
+
+          <v-expansion-panel v-show="!exportButtonDisabled" >
+            <v-expansion-panel-content>
+              <h1 slot="header">Less liked post / Most liked post</h1>
+              <v-layout row wrap child-flex>
+                <v-flex xs6>
+                  <v-card :href="lessLikedPost.url" target="_blank">
+                    <v-card-media :src="lessLikedPost.pic" height="200px" contain>
+                    </v-card-media>
+                    <v-card-title primary-title>
+                      <div>
+                        <h3 class="headline mb-0">Less Liked Post - {{lessLikedPost.likes}} likes.</h3>
+                      </div>
+                    </v-card-title>
+                  </v-card>
+                </v-flex>
+                <v-flex xs6>
+                  <v-card :href="mostLikedPost.url" target="_blank">
+                    <v-card-media :src="mostLikedPost.pic" height="200px" contain>
+                    </v-card-media>
+                    <v-card-title primary-title>
+                      <div>
+                        <h3 class="headline mb-0">Most Liked Post - {{mostLikedPost.likes}} likes.</h3>
+                      </div>
+                    </v-card-title>
+                  </v-card>
+                </v-flex>
+              </v-layout>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+
           <v-flex v-if="!exportButtonDisabled">
             <my-data-table
-              v-bind:calc-comments="calcComments"
-              v-bind:csrf-token="csrfToken"
-              v-bind:update-status-div="updateStatusDiv">
+            v-bind:calc-comments="calcComments"
+            v-bind:csrf-token="csrfToken"
+            v-bind:update-status-div="updateStatusDiv">
             </my-data-table>
           </v-flex>
         </v-layout>
