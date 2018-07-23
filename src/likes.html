@@ -23,8 +23,10 @@
             <div style="height: 3em;" v-bind:style="{ color : statusColor}">
               <strong>{{ status }}</strong>
             </div>
-            <strong>Started at {{startDate}}/Fetched {{fetchedPosts}} posts/Processed {{processedPosts}} of {{totalPosts}} posts/Likes
-              {{processedLikes}} of {{totalLikes}}</strong>
+            <div v-show="isRunning">
+              <strong>Started at {{startDate}}/Fetched {{fetchedPosts}} posts/Processed {{processedPosts}} of {{totalPosts}} posts/{{postEntity}}:
+                {{postProcessedEntity}} of {{postTotalEntity}}</strong>
+            </div>
           </v-flex>
           <v-flex>
             <v-form v-model="valid">
@@ -45,7 +47,7 @@
             <v-text-field v-show="isRunning" id="log_text_area" label="Log" multi-line v-model="log"></v-text-field>
           </v-flex>
 
-          <v-expansion-panel v-show="!exportButtonDisabled" >
+          <v-expansion-panel v-show="!exportButtonDisabled">
             <v-expansion-panel-content>
               <h1 slot="header">Less liked post / Most liked post</h1>
               <v-layout row wrap child-flex>
@@ -76,10 +78,7 @@
           </v-expansion-panel>
 
           <v-flex v-if="!exportButtonDisabled">
-            <my-data-table
-            v-bind:calc-comments="calcComments"
-            v-bind:csrf-token="csrfToken"
-            v-bind:update-status-div="updateStatusDiv">
+            <my-data-table v-bind:calc-comments="calcComments" v-bind:csrf-token="csrfToken" v-bind:update-status-div="updateStatusDiv">
             </my-data-table>
           </v-flex>
         </v-layout>
