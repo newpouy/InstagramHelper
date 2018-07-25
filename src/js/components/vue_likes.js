@@ -200,6 +200,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     postProcessedEntity: 0,
     postTotalEntity: 0,
 
+    commentedPosts: [],
     mostLikedPost: {},
     lessLikedPost: {},
 
@@ -245,7 +246,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     }
   },
   methods: {
-    checkDelay: function() {
+    checkDelay: function () {
       if ((!this.delay) || (this.delay < 100)) {
         this.$nextTick(() => {
           this.delay = 100;
@@ -282,6 +283,19 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       return '' + y + '-' + (m <= 9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
     },
     whenCompleted: function () {
+
+      //TODO: second criterion is taken date?
+      if (likes.commentedPosts.length > 1) {
+        likes.commentedPosts.sort((a, b) => {
+          if (a.comments < b.comments) {
+            return 1;
+          } else if (a.comments > b.comments) {
+            return -1;
+          }
+          return 0;
+        });
+      }
+
       // likes.updateStatusDiv(`Started at ${likes.startDate}`);
       likes.updateStatusDiv(`Processed ${likes.processedPosts} posts/${likes.processedLikes} likes/${likes.processedComments} comments`);
 
@@ -351,7 +365,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
             likes.postEntity = 'Comments';
             likes.postProcessedEntity = 0;
             likes.postTotalEntity = obj.node.edge_media_to_comment.count;
-            await this.getPostComments(new GetComments({
+            let commentsCount = await this.getPostComments(new GetComments({
               shortCode: shortcode,
               end_cursor: '',
               updateStatusDiv: likes.updateStatusDiv,
@@ -359,6 +373,15 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
               vueStatus: likes,
               url: url
             }), instaPosts, media, index, obj.node.taken_at_timestamp);
+            console.log('comments count - ', commentsCount);
+            if (commentsCount > 0) {
+              likes.commentedPosts.push({
+                id: shortcode,
+                pic: url,
+                url: `https://www.instagram.com/p/${shortcode}`,
+                comments: Number(commentsCount)
+              });
+            }
           }
         }
 
@@ -424,7 +447,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       if (insta.hasMore()) {
         console.log('insta has more', likes.delay);
         await this.timeout(likes.delay);
-        await this.getPostComments(insta, instaPosts, media, index, taken);
+        return await this.getPostComments(insta, instaPosts, media, index, taken);
+      } else {
+        return likes.postProcessedEntity;
       }
     },
     getPostLikes: async function (instaLike, instaPosts, media, index, taken) {
@@ -616,6 +641,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         likes.processedLikes = 0;
         likes.processedComments = 0;
 
+        likes.commentedPosts = [];
         likes.lessLikedPost = {};
         likes.mostLikedPost = {};
 

@@ -22,7 +22,6 @@ var GetComments = function (settings) { //eslint-disable-line no-unused-vars
   }
 
   function successGetComments(data, resolve) {
-    console.log(data); //TEMP
     has_next_page = data.data.data.shortcode_media.edge_media_to_comment.page_info.has_next_page;
     end_cursor = data.data.data.shortcode_media.edge_media_to_comment.page_info.end_cursor;
     resolve({
