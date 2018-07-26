@@ -47,41 +47,44 @@
             <v-text-field v-show="isRunning" id="log_text_area" label="Log" multi-line v-model="log"></v-text-field>
           </v-flex>
 
-          <v-expansion-panel v-show="!exportButtonDisabled">
-            <v-expansion-panel-content>
-              <h1 slot="header">Less liked post / Most liked post</h1>
-              <v-layout row wrap child-flex>
-                <v-flex xs6>
-                  <v-card :href="lessLikedPost.url" target="_blank">
-                    <v-card-media :src="lessLikedPost.pic" height="200px" contain>
-                    </v-card-media>
-                    <v-card-title primary-title>
-                      <div>
-                        <h3 class="headline mb-0">Less Liked Post - {{lessLikedPost.likes}} likes.</h3>
-                      </div>
-                    </v-card-title>
-                  </v-card>
-                </v-flex>
-                <v-flex xs6>
-                  <v-card :href="mostLikedPost.url" target="_blank">
-                    <v-card-media :src="mostLikedPost.pic" height="200px" contain>
-                    </v-card-media>
-                    <v-card-title primary-title>
-                      <div>
-                        <h3 class="headline mb-0">Most Liked Post - {{mostLikedPost.likes}} likes.</h3>
-                      </div>
-                    </v-card-title>
-                  </v-card>
-                </v-flex>
-              </v-layout>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
+          <v-flex mt-1>
+            <v-expansion-panel v-show="!exportButtonDisabled">
+              <v-expansion-panel-content>
+                <h1 slot="header">Less liked post / Most liked post</h1>
+                <v-layout row wrap child-flex>
+                  <v-flex xs6>
+                    <v-card :href="lessLikedPost.url" target="_blank">
+                      <v-card-media :src="lessLikedPost.pic" height="200px" contain>
+                      </v-card-media>
+                      <v-card-title primary-title>
+                        <div>
+                          <h3 class="headline mb-0">Less Liked Post - {{lessLikedPost.likes}} likes.</h3>
+                        </div>
+                      </v-card-title>
+                    </v-card>
+                  </v-flex>
+                  <v-flex xs6>
+                    <v-card :href="mostLikedPost.url" target="_blank">
+                      <v-card-media :src="mostLikedPost.pic" height="200px" contain>
+                      </v-card-media>
+                      <v-card-title primary-title>
+                        <div>
+                          <h3 class="headline mb-0">Most Liked Post - {{mostLikedPost.likes}} likes.</h3>
+                        </div>
+                      </v-card-title>
+                    </v-card>
+                  </v-flex>
+                </v-layout>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-flex>
 
-          <v-expansion-panel v-show="!exportButtonDisabled && calcComments">
-            <v-expansion-panel-content>
-              <h1 slot="header">Commented posts</h1>
-              <v-layout row wrap child-flex>
-                <!--
+          <v-flex mt-1>
+            <v-expansion-panel v-show="!exportButtonDisabled && calcComments">
+              <v-expansion-panel-content>
+                <h1 slot="header">Commented posts</h1>
+                <v-layout row wrap child-flex>
+                  <!--
                 <v-flex xs3 v-for="post in commentedPosts" :key="post.id">
                   <v-card :href="post.url" target="_blank">
                     <v-card-media :src="post.pic" height="200px" contain>
@@ -89,18 +92,21 @@
                   </v-card>
                 </v-flex>
                 -->
-                <template v-for="post in commentedPosts" :key="post.id">
-                <div class="imgcontainer">
-                  <a :href="post.url" target="_blank">
-                    <img :src="post.pic" height="200px">
-                    </img>
-                    <div class="centered"><h1>{{post.comments}}</h1></div>
-                  </a>
-                </div>
-                </template>
+                  <template v-for="post in commentedPosts" :key="post.id">
+                    <div class="imgcontainer">
+                      <a :href="post.url" target="_blank">
+                        <img :src="post.pic" height="200px">
+                        </img>
+                        <div class="centered">
+                          <h1>{{post.comments}}</h1>
+                        </div>
+                      </a>
+                    </div>
+                  </template>
                 </v-layout>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-flex>
 
           <v-flex v-if="!exportButtonDisabled">
             <my-data-table v-bind:calc-comments="calcComments" v-bind:csrf-token="csrfToken" v-bind:update-status-div="updateStatusDiv">
