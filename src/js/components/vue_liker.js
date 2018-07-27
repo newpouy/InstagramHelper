@@ -10,7 +10,7 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
     this.startDate = null; // timestamp when process was started
   },
   mounted: () => {
-    console.log('liker mounted...'); // eslint-disable-line no-console
+    // console.log('liker mounted...'); // eslint-disable-line no-console
     _gaq.push(['_trackPageview']);
 
     chrome.runtime.onMessage.addListener((request) => {

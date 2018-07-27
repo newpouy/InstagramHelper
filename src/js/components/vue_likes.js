@@ -126,10 +126,10 @@ var myDataTable = {
     }
   },
   created() {
-    console.log('v-data-table created');
+  //  console.log('v-data-table created');
   },
   mounted() {
-    console.log('v-data-table mounted');
+   // console.log('v-data-table mounted');
     if (!this.calcComments) { //remove comments
       this.headers.pop();
     }
@@ -145,7 +145,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     this.startDate = null; //timestamp when process was started
   },
   mounted: () => {
-    console.log('likes mounted...'); // eslint-disable-line no-console
+   // console.log('likes mounted...'); // eslint-disable-line no-console
     _gaq.push(['_trackPageview']);
 
     chrome.runtime.onMessage.addListener(function (request) {
@@ -268,9 +268,6 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       return new Promise(res => setTimeout(res, ms))
     },
     getPosts: async function (instaPosts, restart) {
-      if (this.isCompleted) {
-        return this.whenCompleted();
-      }
       const media = await instaPosts.getPosts(restart)
       likes.fetchedPosts += media.length;
       likes.totalPosts = instaPosts.getTotal();
@@ -283,6 +280,8 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       return '' + y + '-' + (m <= 9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
     },
     whenCompleted: function () {
+
+      console.log('when completed entered.....')
 
       //TODO: second criterion is taken date?
       if (likes.commentedPosts.length > 1) {
@@ -312,12 +311,14 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         }
         __items.push(e);
       });
+      // console.log(__items);
     },
     getPostLikesAndComments: async function (instaPosts, media, index) {
-      if (this.isCompleted) {
-        return this.whenCompleted();
-      }
+
       if (media.length > index) { //we still have something to get
+        if (this.isCompleted) {
+          return;
+        }
         var obj = media[index];
         var url = obj.node.display_url;
         var taken = new Date(obj.node.taken_at_timestamp * 1000).toLocaleString();
@@ -373,7 +374,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
               vueStatus: likes,
               url: url
             }), instaPosts, media, index, obj.node.taken_at_timestamp);
-            console.log('comments count - ', commentsCount);
+           // console.log('comments count - ', commentsCount);
             if (commentsCount > 0) {
               likes.commentedPosts.push({
                 id: shortcode,
@@ -394,13 +395,11 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         likes.updateStatusDiv(`The more posts will be fetched now...${new Date()}`);
         await this.timeout(likes.delay);
         await this.getPosts(instaPosts, false);
-      } else {
-        return this.whenCompleted();
       }
     },
     getPostComments: async function (insta, instaPosts, media, index, taken) {
       if (this.isCompleted) {
-        return this.whenCompleted();
+        return;
       }
       const result = await insta.get();
       likes.updateStatusDiv(`... fetched information about ${result.data.length} comments`);
@@ -445,7 +444,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         likes.processedComments += 1;
       }
       if (insta.hasMore()) {
-        console.log('insta has more', likes.delay);
+        //console.log('insta has more', likes.delay);
         await this.timeout(likes.delay);
         return await this.getPostComments(insta, instaPosts, media, index, taken);
       } else {
@@ -454,7 +453,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     },
     getPostLikes: async function (instaLike, instaPosts, media, index, taken) {
       if (this.isCompleted) {
-        return this.whenCompleted();
+        return;
       }
       const result = await instaLike.get();
       likes.updateStatusDiv(`... fetched information about ${result.data.length} likes`);
@@ -587,13 +586,13 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
         likes.isAddingFollowersInProgress = false;
         this.followersAdded = true;
-        console.log('resolved', obj);
+        //console.log('resolved', obj);
       });
     },
     promiseFetchInstaUsers: function (obj) {
       return new Promise(function (resolve) {
 
-        console.log('followed by count', obj.followed_by_count);
+        //console.log('followed by count', obj.followed_by_count);
 
         var f = new FetchUsers(Object.assign({}, {
           obj: obj,
@@ -622,7 +621,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
           userId: likes.viewerUserName === likes.userToGetLikes ? likes.viewerUserId : ''
         });
 
-      instaPosts.resolveUserName().then((obj) => {
+      instaPosts.resolveUserName().then(async (obj) => {
         likes.init = false;
 
         likes.followersAdded = false;
@@ -647,7 +646,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
         likes.updateStatusDiv(`The interval between the requests is ${likes.delay}ms`);
 
-        this.getPosts(instaPosts, true);
+        await this.getPosts(instaPosts, true);
+
+        this.whenCompleted();
 
       }, () => {
         alert('Specified user was not found');
