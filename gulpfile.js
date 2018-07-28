@@ -41,6 +41,7 @@ gulp.task('build', ['clean'], () => {
     }))))
     .pipe($.if(isProductionMode, $.if('*like*.html', $.replace('vue.js', 'vue.min.js'))))
     .pipe($.if(isProductionMode, $.if('*follow*.html', $.replace('vue.js', 'vue.min.js'))))
+    .pipe($.if(isProductionMode, $.if('*block*.html', $.replace('vue.js', 'vue.min.js'))))
     .pipe(gulp.dest('./build/'));
 });
 
