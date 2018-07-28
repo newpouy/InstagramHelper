@@ -11,7 +11,7 @@ instaUserInfo.getUserProfile = function (settings) {
   'use strict';
 
   var {
-    username, userId, updateStatusDiv
+    username, userId, updateStatusDiv, silient, vueStatus
   } = settings;
 
 
@@ -138,7 +138,7 @@ instaUserInfo.getUserProfile = function (settings) {
     updateStatusDiv(message, 'red');
     instaTimeout.setTimeout(3000)
       .then(function () {
-        return instaCountdown.doCountdown('status', errorNumber, 'Getting users profiles', +(new Date()).getTime() + instaDefOptions.retryInterval);
+        return instaCountdown.doCountdown('status', errorNumber, 'Getting users profiles', +(new Date()).getTime() + instaDefOptions.retryInterval, vueStatus);
       })
       .then(() => {
         console.log('Continue execution after HTTP error', errorNumber, new Date()); //eslint-disable-line no-console
@@ -165,7 +165,9 @@ instaUserInfo.getUserProfile = function (settings) {
           alert('The error trying to find a new username for - ' + userId);
         });
       } else {
-        alert('404 error trying to retrieve user profile, userid is not specified, check if username is correct');
+        if (!silient) {
+          alert('404 error trying to retrieve user profile, userid is not specified, check if username is correct');
+        }
         reject();
       }
     } else if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {

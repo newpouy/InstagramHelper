@@ -23,7 +23,7 @@
             </div>
           </v-flex>
           <v-flex>
-            <v-text-field label="Delay between requests, ms" type="number" min=1000 step=500 v-model.number="delay"></v-text-field>
+            <v-text-field :rules="[rules.required]" @input="checkDelay" label="Delay between requests, ms" type="number" min=10000 step=100 v-model.number="delay"></v-text-field>
             <v-btn id="startBlock" :disabled="startButtonDisabled" v-on:click="startButtonClick" color="primary">Start Blocking!</v-btn>
           </v-flex>
           <v-flex>

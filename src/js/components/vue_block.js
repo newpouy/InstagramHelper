@@ -28,6 +28,9 @@ var block = new Vue({ // eslint-disable-line no-unused-vars
 
   },
   data: {
+    rules: {
+      required: (value) => !!value || 'Required.'
+    },
     isInProgress: false,
 
     delay: 0, //interval between sending the http requests
@@ -56,6 +59,13 @@ var block = new Vue({ // eslint-disable-line no-unused-vars
     }
   },
   methods: {
+    checkDelay: function () {
+      if ((!this.delay) || (this.delay < 10000)) {
+        this.$nextTick(() => {
+          this.delay = 100;
+        })
+      }
+    },
     timeout: function (ms) {
       return new Promise(res => setTimeout(res, ms))
     },
@@ -92,7 +102,9 @@ var block = new Vue({ // eslint-disable-line no-unused-vars
             console.log('resolving username to userid', userId);
 
             try {
-              var obj = await instaUserInfo.getUserProfile({ username: userId, updateStatusDiv: this.updateStatusDiv, silient: true });
+              var obj = await instaUserInfo.getUserProfile({
+                username: userId, updateStatusDiv: this.updateStatusDiv, silient: true, vueStatus: this
+              });
             } catch (e) {
               this.updateStatusDiv(`${userId} error 404 resolving the username`);
               console.log('error resolving username to userid', userId);
@@ -102,6 +114,9 @@ var block = new Vue({ // eslint-disable-line no-unused-vars
             console.log(obj);
             userId = obj.id;
             console.log(obj.id);
+            this.updateStatusDiv(`username resolved to ${userId}`);
+            console.log('resolved username to userid', userId);
+            await this.timeout(this.delay);
 
           }
 
