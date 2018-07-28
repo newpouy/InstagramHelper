@@ -18,6 +18,9 @@ var block = new Vue({ // eslint-disable-line no-unused-vars
         console.log(request);
 
         block.delay = request.followDelay; //FIXME
+        if (block.delay < 10000) { //TEMP
+          block.delay = 10000;
+        }
 
         block.viewerUserName = request.viewerUserName;
         block.viewerUserId = request.viewerUserId;
