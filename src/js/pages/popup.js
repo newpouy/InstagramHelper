@@ -46,6 +46,17 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  document.getElementById('massblock').addEventListener("click", function () {
+    promiseChrome.promiseQuery({
+      active: true,
+      currentWindow: true
+    }).then(function (tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, {
+        action: 'openMassBlockPage',
+        page: 'block.html'
+      });
+    });
+  });
 
   document.getElementById('instaUsers').addEventListener("click", function () {
 

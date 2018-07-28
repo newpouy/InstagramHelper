@@ -47,6 +47,7 @@
       ('get_common_users' === request.action) ||
       ('openLikerPage' === request.action) ||
       ('openMassFollowPage' === request.action) ||
+      ('openMassBlockPage' === request.action) ||
       ('openLikesPage' === request.action)) {
       (new PromiseChrome()).promiseGetStorage({
         pageSize: instaDefOptions.defPageSize,

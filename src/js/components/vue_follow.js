@@ -20,7 +20,6 @@ var follow = new Vue({ // eslint-disable-line no-unused-vars
 
     log: '', //the text displayed in log area
     ids: ''
-
   },
   computed: {
     startButtonDisabled: function () {

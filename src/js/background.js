@@ -30,7 +30,8 @@
       ('get_common_users' === request.action) ||
       ('openLikerPage' === request.action) ||
       ('openLikesPage' === request.action) ||
-      ('openMassFollowPage' === request.action)
+      ('openMassFollowPage' === request.action) ||
+      ('openMassBlockPage' === request.action)
     ) {
       url = chrome.extension.getURL(request.page);
       promiseChrome.promiseCreateTab({

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Mass Block</title>
+  <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' />
+  <link rel="stylesheet" type="text/css" href="lib/vue/css/vuetify.min.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="css/liker.css" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+
+  <div id="app">
+    <v-app>
+
+      <v-container grid-list-xl>
+        <v-layout v-bind="binding">
+          <v-flex v-if="isInProgress">
+            <div v-bind:style="{ color : statusColor}">
+              <strong>{{ status }}</strong>
+            </div>
+          </v-flex>
+          <v-flex>
+            <v-text-field label="Delay between requests, ms" type="number" min=1000 step=500 v-model.number="delay"></v-text-field>
+            <v-btn id="startBlock" :disabled="startButtonDisabled" v-on:click="startButtonClick" color="primary">Start Blocking!</v-btn>
+          </v-flex>
+          <v-flex>
+            <v-text-field id="ids" label="Users to be blocked (ID or Username)" multi-line v-model="ids" :readonly="startButtonDisabled"
+              placeholder="Specify the users you want to block."></v-text-field>
+          </v-flex>
+          <v-flex>
+            <v-text-field id="log_text_area" label="Log" multi-line v-model="log"></v-text-field>
+          </v-flex>
+        </v-layout>
+      </v-container>
+
+    </v-app>
+  </div>
+
+  <script src="lib/axios.min.js"></script>
+
+  <script src="js/ig/blockUser.js"></script>
+
+  <script src="js/instaDefOptions.js"></script>
+  <script src="js/instaMessages.js"></script>
+  <script src="js/instaCountdown.js"></script>
+  <script src="js/instaTimeout.js"></script>
+
+  <script src="lib/vue/vue.js"></script>
+  <script src="lib/vue/vuetify.min.js"></script>
+
+  <script src="js/pages/ga.js"></script>
+  <script src="js/components/vue_block.js"></script>
+
+</body>
+
+</html>
