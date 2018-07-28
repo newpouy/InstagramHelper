@@ -62,7 +62,7 @@ var block = new Vue({ // eslint-disable-line no-unused-vars
     checkDelay: function () {
       if ((!this.delay) || (this.delay < 10000)) {
         this.$nextTick(() => {
-          this.delay = 100;
+          this.delay = 10000;
         })
       }
     },

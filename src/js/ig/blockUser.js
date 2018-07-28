@@ -32,7 +32,7 @@ blockUser.block = function (settings) {
       })
       .then(() => {
         console.log('Continue execution after HTTP error', errorNumber, new Date()); //eslint-disable-line no-console
-        follow(userId, csrfToken, resolve, reject);
+        block(userId, csrfToken, resolve, reject);
       });
 
   }
@@ -46,7 +46,7 @@ blockUser.block = function (settings) {
     console.log(`Error making http request to block ${username}, status - ${errorCode}`); //eslint-disable-line no-console
 
     if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
-      console.log(`HTTP${errorCode} error trying to follow the user.`, new Date()); //eslint-disable-line no-console
+      console.log(`HTTP${errorCode} error trying to block the user.`, new Date()); //eslint-disable-line no-console
       var message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], errorCode, +instaDefOptions.retryInterval / 60000);
       retryError(message, errorCode, resolve, reject);
       return;
