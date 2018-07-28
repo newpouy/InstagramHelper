@@ -78,15 +78,31 @@ var block = new Vue({ // eslint-disable-line no-unused-vars
       this.processUsers = value.replace(/[\n\r]/g, ',').split(',');
       this.blockedUsers = 0;
       this.processedUsers = 0;
+      this.errorsResolvingUserId = 0;
 
       for (var i = 0; i < this.processUsers.length; i++) {
         if (this.processUsers[i] != '') {
           this.updateStatusDiv(`Mass blocking users: ${this.processUsers[i]}/${i + 1} of ${this.processUsers.length}`);
 
           var userId = this.processUsers[i];
+          this.processedUsers++;
+
           if (!/^\d+$/.test(userId)) {
             this.updateStatusDiv(`${userId} does not look as user id, maybe username, try to convert username to userid`);
             console.log('resolving username to userid', userId);
+
+            try {
+              var obj = await instaUserInfo.getUserProfile({ username: userId, updateStatusDiv: this.updateStatusDiv, silient: true });
+            } catch (e) {
+              this.updateStatusDiv(`${userId} error 404 resolving the username`);
+              console.log('error resolving username to userid', userId);
+              this.errorsResolvingUserId++;
+              continue;
+            }
+            console.log(obj);
+            userId = obj.id;
+            console.log(obj.id);
+
           }
 
           var result = await blockUser.block(
@@ -97,7 +113,6 @@ var block = new Vue({ // eslint-disable-line no-unused-vars
               updateStatusDiv: this.updateStatusDiv,
               vueStatus: this
             });
-          this.processedUsers++;
           console.log(result);
           if ('ok' === result) {
             this.blockedUsers++;
@@ -114,6 +129,7 @@ var block = new Vue({ // eslint-disable-line no-unused-vars
       this.updateStatusDiv(
         `Completed!
           Processed: ${this.processedUsers}
+          Errors resolving username: ${this.errorsResolvingUserId}
           Blocked: ${this.blockedUsers}`);
     }
   }
