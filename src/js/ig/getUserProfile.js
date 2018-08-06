@@ -122,6 +122,7 @@ instaUserInfo.getUserProfile = function (settings) {
       console.log(`returned data in getUserProfile is not JSON - ${userId}/${link}`); // eslint-disable-line no-console
       console.log(data); // eslint-disable-line no-console
       resolve({ //such user should be removed from result list?
+        username: instaDefOptions.you,
         full_name: 'NA',
         biography: 'The detailed user info was not returned by instagram',
         is_private: true,
