@@ -1,5 +1,4 @@
 /* exported exportUtils */
-/* globals instaDefOptions */
 
 var exportUtils = (function () {
 

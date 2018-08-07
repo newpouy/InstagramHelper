@@ -1,4 +1,4 @@
-/* globals Vue, , _gaq */
+/* globals Vue, , _gaq, chrome, instaUserInfo, blockUser */
 
 var block = new Vue({ // eslint-disable-line no-unused-vars
   el: '#app',
@@ -15,10 +15,8 @@ var block = new Vue({ // eslint-disable-line no-unused-vars
 
       if (request.action === 'openMassBlockPage') {
 
-        console.log(request);
-
         block.delay = request.followDelay; //FIXME
-        if (block.delay < 10000) { //TEMP
+        if (block.delay < 10000) { //TEMP FIXME
           block.delay = 10000;
         }
 
