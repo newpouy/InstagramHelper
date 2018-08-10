@@ -4,6 +4,18 @@
 
   'use strict';
 
+  /*
+  chrome.runtime.onInstalled.addListener(function (details) {
+
+    if (details.reason === 'install') {
+      var url = chrome.extension.getURL('install.html');
+      promiseChrome.promiseCreateTab({
+        'url': url,
+        'selected': true
+      });
+    }
+  }); */
+
   chrome.runtime.onMessage.addListener(function (request) {
 
     let promiseChrome = new PromiseChrome();
@@ -21,7 +33,7 @@
         url: 'https://www.instagram.com/*'
       }).then(function (tabs) {
         for (var i = 0; i < tabs.length; i++) {
-          chrome.pageAction.setTitle({tabId: tabs[i].id, title :"Helper Tools for Instagram.com - " + chrome.app.getDetails().version});
+          chrome.pageAction.setTitle({ tabId: tabs[i].id, title: "Helper Tools for Instagram.com - " + chrome.app.getDetails().version });
           chrome.pageAction.show(tabs[i].id);
         }
       });
