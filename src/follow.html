@@ -23,13 +23,22 @@
             </div>
           </v-flex>
           <v-flex>
-            <v-text-field :rules="[rules.required]" @input="checkDelay" label="Delay between requests, ms" type="number" min=1000 step=500 v-model.number="delay"></v-text-field>
+            <v-layout row wrap>
+              <v-flex md6>
+                <v-text-field @input="checkDelay()" label="Delay between requests, ms" type="number" min=1000 step=100 v-model.number="delay"></v-text-field>
+              </v-flex>
+              <v-flex md6>
+                <v-tooltip bottom>
+                  <v-text-field slot="activator" @input="checkRndDelay()" label="Random Delay, %" type="number" min=0 step=1 max=100 v-model.number="rndDelay"></v-text-field>
+                  <span>Adds random part to the specified delay, max value to be added to the specified delay - {{Math.floor(rndDelay/100*delay)}}ms</span>
+                </v-tooltip>
+              </v-flex>
+            </v-layout>
             <v-btn id="startUnFollow" :disabled="startButtonDisabled" v-on:click="unFollowButtonClick" color="primary">Start UnFollow!</v-btn>
             <v-btn id="startFollow" :disabled="startButtonDisabled" v-on:click="followButtonClick" color="primary">Start Follow!</v-btn>
           </v-flex>
           <v-flex>
-            <v-text-field id="ids" label="Input of User Ids" multi-line v-model="ids" :readonly="startButtonDisabled"
-              placeholder="Specify the id of users you want to follow/unfollow. Put each id on separate line. Please pay attention that it should be id (numeric value), not username."></v-text-field>
+            <v-text-field id="ids" label="Input of User Ids" multi-line v-model="ids" :readonly="startButtonDisabled" placeholder="Specify the id of users you want to follow/unfollow. Put each id on separate line. Please pay attention that it should be id (numeric value), not username."></v-text-field>
           </v-flex>
           <v-flex>
             <v-text-field id="log_text_area" label="Log" multi-line v-model="log"></v-text-field>
@@ -43,6 +52,7 @@
   <script src="lib/axios.min.js"></script>
 
   <script src="js/ig/followUser.js"></script>
+  <script src="js/ig/getUserProfile.js"></script>
 
   <script src="js/instaDefOptions.js"></script>
   <script src="js/instaMessages.js"></script>

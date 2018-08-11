@@ -23,11 +23,21 @@
             </div>
           </v-flex>
           <v-flex>
-            <v-text-field :rules="[rules.required]" @input="checkDelay" label="Delay between requests, ms" type="number" min=10000 step=100 v-model.number="delay"></v-text-field>
-            <v-btn id="startBlock" :disabled="startButtonDisabled" v-on:click="startButtonClick" color="primary">Start Blocking!</v-btn>
+            <v-layout row wrap>
+              <v-flex md6>
+                <v-text-field @input="checkDelay()" label="Delay between requests, ms" type="number" min=10000 step=100 v-model.number="delay"></v-text-field>
+              </v-flex>
+              <v-flex md6>
+                <v-tooltip bottom>
+                  <v-text-field slot="activator" @input="checkRndDelay()" label="Random Delay, %" type="number" min=0 step=1 max=100 v-model.number="rndDelay"></v-text-field>
+                  <span>Adds random part to the specified delay, max value to be added to the specified delay - {{Math.floor(rndDelay/100*delay)}}ms</span>
+                </v-tooltip>
+              </v-flex>
+              <v-btn id="startBlock" :disabled="startButtonDisabled" v-on:click="startButtonClick" color="primary">Start Blocking!</v-btn>
+            </v-layout>
           </v-flex>
           <v-flex>
-            <v-text-field id="ids" label="Users to be blocked (ID or Username)" multi-line v-model="ids" :readonly="startButtonDisabled"
+            <v-text-field id="ids" label="Users to be blocked (ID or Username, each on a separate line)" multi-line v-model="ids" :readonly="startButtonDisabled"
               placeholder="Specify the users you want to block."></v-text-field>
           </v-flex>
           <v-flex>

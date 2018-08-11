@@ -29,12 +29,10 @@ var block = new Vue({ // eslint-disable-line no-unused-vars
 
   },
   data: {
-    rules: {
-      required: (value) => !!value || 'Required.'
-    },
     isInProgress: false,
 
     delay: 0, //interval between sending the http requests
+    rndDelay: 30,
 
     stop: false, //if user requested the proceess to be stopped by clicking the button
 
@@ -60,10 +58,22 @@ var block = new Vue({ // eslint-disable-line no-unused-vars
     }
   },
   methods: {
+    calcDelay: function() {
+      var val = + Math.floor(Math.random() * this.delay * this.rndDelay/100) + + this.delay;
+      this.updateStatusDiv(`Calculated delay ${val}`);
+      return val;
+    },
     checkDelay: function () {
-      if ((!this.delay) || (this.delay < 10000)) {
+      if (!this.delay || (this.delay < 10000)) {
         this.$nextTick(() => {
           this.delay = 10000;
+        })
+      }
+    },
+    checkRndDelay: function () {
+      if (!this.rndDelay || (this.rndDelay < 0)) {
+        this.$nextTick(() => {
+          this.rndDelay = 0;
         })
       }
     },
@@ -100,8 +110,6 @@ var block = new Vue({ // eslint-disable-line no-unused-vars
 
           if (!/^\d+$/.test(userId)) {
             this.updateStatusDiv(`${userId} does not look as user id, maybe username, try to convert username to userid`);
-            console.log('resolving username to userid', userId);
-
             try {
               var obj = await instaUserInfo.getUserProfile({
                 username: userId, updateStatusDiv: this.updateStatusDiv, silient: true, vueStatus: this
@@ -112,13 +120,9 @@ var block = new Vue({ // eslint-disable-line no-unused-vars
               this.errorsResolvingUserId++;
               continue;
             }
-            console.log(obj);
             userId = obj.id;
-            console.log(obj.id);
             this.updateStatusDiv(`username resolved to ${userId}`);
-            console.log('resolved username to userid', userId);
-            await this.timeout(this.delay);
-
+            await this.timeout(this.calcDelay());
           }
 
           var result = await blockUser.block(
@@ -136,7 +140,7 @@ var block = new Vue({ // eslint-disable-line no-unused-vars
             console.log('Not recognized result - ' + result); // eslint-disable-line no-console
           }
 
-          await this.timeout(this.delay);
+          await this.timeout(this.calcDelay());
         }
       }
 

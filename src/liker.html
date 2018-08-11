@@ -58,7 +58,18 @@
             <!--
             <v-text-field rows="5" label="Do not like the posts of the following users (specify IDs, each on the separate line)" multi-line v-model="ids"></v-text-field>
             -->
-            <v-text-field label="Delay between requests, ms" type="number" min=100 step=100 v-model.number="delay"></v-text-field>
+            <v-layout row wrap>
+              <v-flex md6>
+                <v-text-field @input="checkDelay()" label="Delay between requests, ms" type="number" min=100 step=100 v-model.number="delay"></v-text-field>
+              </v-flex>
+              <v-flex md6>
+                <v-tooltip bottom>
+                  <v-text-field slot="activator" @input="checkRndDelay()" label="Random Delay, %" type="number" min=0 step=1 max=100 v-model.number="rndDelay"></v-text-field>
+                  <span>Adds random part to the specified delay, max value to be added to the specified delay - {{Math.floor(rndDelay/100*delay)}}ms</span>
+                </v-tooltip>
+              </v-flex>
+            </v-layout>
+
             <v-btn id="start" :disabled="startButtonDisabled" color="primary" v-on:click="startButtonClick">Like the posts!</v-btn>
             <v-btn :disabled="!isInProgress" color="primary" v-on:click="stop=true">Stop it!</v-btn>
             <v-text-field id="log_text_area" rows="10" label="Log" multi-line v-model="log"></v-text-field>

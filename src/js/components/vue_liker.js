@@ -30,6 +30,7 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
     amountToLike: 100, //how many should be liked
     stopCriterion: 'amountPosts', //stop criterion assigned to radio button
     delay: 0, //interval between sending the http requests
+    rndDelay: 10,
 
     liked: 0, //how many liked during execution
     alreadyLiked: 0, //how many found already liked
@@ -80,6 +81,25 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
     }
   },
   methods: {
+    calcDelay: function() {
+      var val = + Math.floor(Math.random() * this.delay * this.rndDelay/100) + + this.delay;
+      this.updateStatusDiv(`Calculated delay ${val}`);
+      return val;
+    },
+    checkDelay: function () {
+      if (!this.delay || (this.delay < 10000)) {
+        this.$nextTick(() => {
+          this.delay = 10000;
+        })
+      }
+    },
+    checkRndDelay: function () {
+      if (!this.rndDelay || (this.rndDelay < 0)) {
+        this.$nextTick(() => {
+          this.rndDelay = 0;
+        })
+      }
+    },
     updateStatusDiv: function (message, color) {
       this.log += message + '\n';
       this.status = message;
@@ -167,7 +187,7 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
                     //TODO: indicate at the end of processing how many "missing media" errors
                     liker.updateStatusDiv('...missing media, proceeding to the next post!');
                   }
-                  liker.scheduleNextRun (instaPosts, media, ++index, liker.delay);
+                  liker.scheduleNextRun (instaPosts, media, ++index, liker.calcDelay());
                 });
             } else {
               this.updateStatusDiv('...and it is already liked by you!');
@@ -180,11 +200,11 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
         }
       } else if (instaPosts.hasMore()) { //do we still have something to fetch
         this.updateStatusDiv(`The more posts will be fetched now...${new Date()}`);
-        setTimeout(() => this.getPosts(instaPosts, false), this.delay);
+        setTimeout(() => this.getPosts(instaPosts, false), this.calcDelay());
       } else if ('likeFeed' === this.whatToLike) { // nothing more in feed > restart
         this.updateStatusDiv(`IG has returned no more posts, restart ...${new Date()}`);
         this.restarted++;
-        setTimeout(() => this.getPosts(instaPosts, true), this.delay);
+        setTimeout(() => this.getPosts(instaPosts, true), this.calcDelay());
       } else { // nothing more found in profile >> no restart
         this.allPostsFetched = true;
         this.scheduleNextRun (instaPosts, media, ++index, 0);

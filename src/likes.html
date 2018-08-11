@@ -20,7 +20,7 @@
             <v-progress-linear v-model="progressValue"></v-progress-linear>
           </v-flex>
           <v-flex v-show="!init">
-            <div style="height: 3em;" v-bind:style="{ color : statusColor}">
+            <div style="height: 3em;" v-bind:style="{color: statusColor}">
               <strong>{{ status }}</strong>
             </div>
             <div v-show="isRunning">
@@ -34,11 +34,13 @@
                 <v-text-field :rules="[rules.required]" :disabled="isGettingLikesInProgress" label="Username to analyze" v-model="userToGetLikes"></v-text-field>
               </v-flex>
               <v-flex md6>
-                <v-text-field :rules="[rules.required]" @input="checkDelay" label="Delay between requests, ms" type="number" min=100 step=100
-                  v-model.number="delay"></v-text-field>
+                <v-text-field @input="checkDelay()" label="Delay between requests, ms" type="number" min=100 step=100 v-model.number="delay"></v-text-field>
               </v-flex>
               <v-flex md6>
-                <v-text-field label="Random Delay, ms" type="number" min=0 step=1 max=100 v-model.number="rndDelay"></v-text-field>
+                <v-tooltip bottom>
+                  <v-text-field slot="activator" @input="checkRndDelay()" label="Random Delay, %" type="number" min=0 step=1 max=100 v-model.number="rndDelay"></v-text-field>
+                  <span>Adds random part to the specified delay, max value to be added to the specified delay - {{Math.floor(rndDelay/100*delay)}}ms</span>
+                </v-tooltip>
               </v-flex>
             </v-layout>
             <v-checkbox :disabled="!init" label="Get comments" v-model="calcComments"></v-checkbox>

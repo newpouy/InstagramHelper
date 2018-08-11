@@ -211,9 +211,6 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     init: true
   },
   computed: {
-    calcDelay: function() {
-      return this.delay;
-    },
     isCompleted: function () {
       if (this.stop) {
         this.updateStatusDiv(`${new Date().toLocaleString()}/The process will be stopped now because you clicked the Stop button`);
@@ -249,10 +246,22 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     }
   },
   methods: {
+    calcDelay: function() {
+      var val = + Math.floor(Math.random() * this.delay * this.rndDelay/100) + + this.delay;
+      this.updateStatusDiv(`Calculated delay ${val}`);
+      return val;
+    },
     checkDelay: function () {
-      if ((!this.delay) || (this.delay < 100)) {
+      if (!this.delay || (this.delay < 100)) {
         this.$nextTick(() => {
           this.delay = 100;
+        })
+      }
+    },
+    checkRndDelay: function () {
+      if (!this.rndDelay || (this.rndDelay < 0)) {
+        this.$nextTick(() => {
+          this.rndDelay = 0;
         })
       }
     },
@@ -392,11 +401,11 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         likes.processedPosts += 1;
         //update progress bar
         likes.progressValue = (likes.processedPosts / likes.totalPosts) * 100;
-        await this.timeout(likes.calcDelay);
+        await this.timeout(likes.calcDelay());
         await this.getPostLikesAndComments(instaPosts, media, ++index);
       } else if (instaPosts.hasMore()) { //do we still have something to fetch
         likes.updateStatusDiv(`The more posts will be fetched now...${new Date()}`);
-        await this.timeout(likes.calcDelay);
+        await this.timeout(likes.calcDelay());
         await this.getPosts(instaPosts, false);
       }
     },
@@ -447,7 +456,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         likes.processedComments += 1;
       }
       if (insta.hasMore()) {
-        await this.timeout(likes.calcDelay);
+        await this.timeout(likes.calcDelay());
         return await this.getPostComments(insta, instaPosts, media, index, taken);
       } else {
         return likes.postProcessedEntity;
@@ -511,7 +520,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         likes.processedLikes += 1;
       }
       if (instaLike.hasMore()) {
-        await this.timeout(likes.calcDelay);
+        await this.timeout(likes.calcDelay());
         await this.getPostLikes(instaLike, instaPosts, media, index, taken);
       }
     },
