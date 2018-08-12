@@ -10,9 +10,28 @@
 
     if (details.reason === 'install') {
       var url = chrome.extension.getURL('readme.html');
-      promiseChrome.promiseCreateTab({
-        'url': url,
-        'selected': true
+      //promiseChrome.promiseCreateTab({
+      //  'url': url,
+      //  'selected': true
+      //});
+
+      //inject scripts and activate icons
+      promiseChrome.promiseQuery({
+        url: 'https://www.instagram.com/*'
+      }).then(function (tabs) {
+        for (var i = 0; i < tabs.length; i++) {
+          var id = tabs[i].id;
+          chrome.tabs.executeScript(id, { file: 'js/instaDefOptions.js' }, () => {
+            chrome.tabs.executeScript(id, { file: 'js/PromiseChrome.js' }, () => {
+              chrome.tabs.executeScript(id, { file: 'js/instaMessages.js' }, () => {
+                chrome.tabs.executeScript(id, { file: 'js/instagramHelper.js' }, () => {
+                  chrome.pageAction.setTitle({ tabId: id, title: "Helper Tools for Instagram.com - " + chrome.app.getDetails().version });
+                  chrome.pageAction.show(id);
+                });
+              });
+            });
+          });
+        }
       });
     }
   });
