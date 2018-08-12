@@ -4,21 +4,21 @@
 
   'use strict';
 
-  /*
+  let promiseChrome = new PromiseChrome();
+
   chrome.runtime.onInstalled.addListener(function (details) {
 
     if (details.reason === 'install') {
-      var url = chrome.extension.getURL('install.html');
+      var url = chrome.extension.getURL('readme.html');
       promiseChrome.promiseCreateTab({
         'url': url,
         'selected': true
       });
     }
-  }); */
+  });
 
   chrome.runtime.onMessage.addListener(function (request) {
 
-    let promiseChrome = new PromiseChrome();
     let url;
 
     function sendModifyResultPage(tabId, changeInfo, tab) {

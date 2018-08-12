@@ -16,7 +16,7 @@ gulp.task('zip', () => {
     .pipe(gulp.dest('./'))
 });
 
-gulp.task('build', ['clean'], () => {
+gulp.task('build', ['clean', 'convert'], () => {
 
   log(`gulp build started at ${new Date()}`);
 
@@ -54,15 +54,24 @@ gulp.task('clean', (cb) => {
 
 });
 
-gulp.task('vet', () => {
+gulp.task('convert', (cb) => {
+  log('Convert task is started...');
 
-  return gulp
-    .src('./src/js/**/*.js')
-    .pipe($.if(args.verbose, $.print()))
-    .pipe($.jscs())
-    .pipe($.jshint())
-    .pipe($.jshint.reporter('jshint-stylish', { verbose: true }))
-    .pipe($.jshint.reporter('fail'));
+  var showdown = require('showdown');
+  var fs = require('fs');
+
+  var converter = new showdown.Converter();
+  fs.readFile(__dirname + '/README.md', 'utf-8', function (err, data) {
+    if (err) throw err;
+    var html = converter.makeHtml(data);
+    fs.writeFile("./src/readme.html", html, function (err) {
+      if (err) {
+        return console.log(err);
+      }
+      log("The file was saved!");
+      cb();
+    });
+  });
 });
 
 function log(msg) {
