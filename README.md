@@ -1,5 +1,10 @@
-# [InstagramHelper](https://github.com/OllegK/InstagramHelper)
+# ![Extension's Icon](./src/img/icon32.png) [InstagramHelper](https://github.com/OllegK/InstagramHelper)
 Free Chrome Extension [Helper Tools for Instagram.com](https://github.com/OllegK/InstagramHelper).
+
+## How to start
+When you are on Instagram.com, the extension icon is active is enabled in Chrome's toolbar - ![Extension's Icon](./src/img/icon19.png)
+
+Click on it, and extension's popup applet appears.  
 
 ## What the Extension Does
 1. Create a list of people following/followers your own or another user's account. If you want to create a list for another user's account, this account should be public, or you should follow it. **You will not be able to create a list for the private account you do not follow.** The created list could be exported to Excel. [Read more here](#create-a-List).
@@ -12,11 +17,15 @@ Free Chrome Extension [Helper Tools for Instagram.com](https://github.com/OllegK
 8. Mass block the list of user IDs/usernames.
 
 ## Create a List
-1. Click the extension's icon.
+1. 
+
+### How to Make the Process Faster
+1. Increase the page size
+2. Decrease the value of delay interval
 
 ## Donations
 This extension is free, however if you would like to donate:   
-BTC: 1LtKe6AKDvJ1nhZjPwRBnJe4QovqxhLRjN  
-BCH: 1NgX5ywvuAPTvz6y6tU3kfTvv7NHH8YoKp  
-LTC: LW55k6MD8WBuV8NUxEXBBXeRv3vzzF3tfN  
-ETH: 0x2EB4DB0cA8100E749BDB2D52844A96c86863Ae92  
+* BTC: 1LtKe6AKDvJ1nhZjPwRBnJe4QovqxhLRjN  
+* BCH: 1NgX5ywvuAPTvz6y6tU3kfTvv7NHH8YoKp  
+* LTC: LW55k6MD8WBuV8NUxEXBBXeRv3vzzF3tfN  
+* ETH: 0x2EB4DB0cA8100E749BDB2D52844A96c86863Ae92  
