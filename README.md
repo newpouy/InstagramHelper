@@ -17,7 +17,9 @@ Click on it, and extension's popup applet appears.
 8. Mass block the list of user IDs/usernames.
 
 ## Create a List
-1. 
+1. When you are on Instagram.com, click the extension's icon. The extension's popup applet is displayed.
+
+![Extension's Popup Applet](./src/img/extPopupApplet.png)
 
 ### How to Make the Process Faster
 1. Increase the page size

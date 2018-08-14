@@ -10,10 +10,10 @@
 
     if (details.reason === 'install') {
       var url = chrome.extension.getURL('readme.html');
-      //promiseChrome.promiseCreateTab({
-      //  'url': url,
-      //  'selected': true
-      //});
+      promiseChrome.promiseCreateTab({
+        'url': url,
+        'selected': true
+      });
 
       //inject scripts and activate icons
       promiseChrome.promiseQuery({

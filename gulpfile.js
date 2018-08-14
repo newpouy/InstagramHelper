@@ -60,10 +60,13 @@ gulp.task('convert', (cb) => {
   var showdown = require('showdown');
   var fs = require('fs');
 
-  var converter = new showdown.Converter();
+  var converter = new showdown.Converter({
+    completeHTMLDocument: true,
+    openLinksInNewWindow: true
+  });
   fs.readFile(__dirname + '/README.md', 'utf-8', function (err, data) {
     if (err) throw err;
-    var html = converter.makeHtml(data);
+    var html = converter.makeHtml(data).replace(/.\/src\/img\//g, './img/');
     fs.writeFile("./src/readme.html", html, function (err) {
       if (err) {
         return console.log(err);
