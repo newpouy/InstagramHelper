@@ -25,6 +25,11 @@ Click on it, and extension's popup applet appears.
 1. Increase the page size
 2. Decrease the value of delay interval
 
+## Links
+* [Github](https://github.com/OllegK/InstagramHelper)
+* [Web page](https://instascraper.weebly.com/)
+* [Extension on Chrome Web Store](https://chrome.google.com/webstore/detail/helper-tools-for-instagra/hcdbfckhdcpepllecbkaaojfgipnpbpb)
+
 ## Donations
 This extension is free, however if you would like to donate:   
 * BTC: 1LtKe6AKDvJ1nhZjPwRBnJe4QovqxhLRjN  
