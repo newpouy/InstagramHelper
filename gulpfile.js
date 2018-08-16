@@ -62,7 +62,8 @@ gulp.task('convert', (cb) => {
 
   var converter = new showdown.Converter({
     completeHTMLDocument: true,
-    openLinksInNewWindow: true
+    openLinksInNewWindow: true,
+    simplifiedAutoLink: true
   });
   fs.readFile(__dirname + '/README.md', 'utf-8', function (err, data) {
     if (err) throw err;
