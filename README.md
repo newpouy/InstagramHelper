@@ -3,7 +3,7 @@ Free Chrome Extension [Helper Tools for Instagram.com](https://github.com/OllegK
 
 ## What the Extension Does
 1. Create a list of people following/followers your own or another user's account. If you want to create a list for another user's account, this account should be public, or you should follow it. **You will not be able to create a list for the private account you do not follow.** The created list could be exported to Excel. [Read more here](#create-a-List-of-Following/Followers).
-  * When you generated a list of somebody's else followers/following, you can follow all people from the list. Some of them will follow you back. [Read more here](#create-a-List-of-Following/Followers).
+  * When you generated a list of somebody's else followers/following, you can follow all people from the list. Some of them will follow you back. [Read more here](#follow-the-users-from-generated-list).
   * When you generated a list of your followers/following, you can also unfollow all people who don't follow you. There is a way to keep some people - this option is not very comfortable now, and probably it will be improved in future versions. For now, you need to put the IDs of people who should be kept followed in the textarea control; pay attention that it should be precisely numeric ID (not username, as the user can easily change the username, however, ID is not changeable), and each ID should be put on the separate line.  
 2. Find the common users between two Instagram accounts.
 3. Like the posts in your feed, or in someone's else profile. 
@@ -29,7 +29,7 @@ Click on it, and extension's popup applet appears.
 ### Export the Generate List into Excel
 If you have a long list with more than 100k+ accounts, the export could take significant time. During this time the tab is not responsive, and you could assume that the process hangs. Please be patient and just wait, it will be finished successfully. One time I tried the export of 100k+ users, and it took about 30 minutes.
 
-### 
+### Follow the Users From Generated List
 
 ### How to Make the Process Faster
 Change the extension's options. Right click on the extension's icon in Chrome's toolbar, the context menu will be displayed. 
