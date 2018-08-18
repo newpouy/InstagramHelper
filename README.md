@@ -2,7 +2,7 @@
 Free Chrome Extension [Helper Tools for Instagram.com](https://github.com/OllegK/InstagramHelper).
 
 ## What the Extension Does
-1. Create a list of people following/followers your own or another user's account. If you want to create a list for another user's account, this account should be public, or you should follow it. **You will not be able to create a list for the private account you do not follow.** The created list could be [exported to Excel](#create-a-List-of-Following/Followers).
+1. Create a list of people following/followers your own or another user's account. If you want to create a list for another user's account, this account should be public, or you should follow it. **You will not be able to create a list for the private account you do not follow, so you need to be a follower of the private account if you want to generate a list for it.** The created list could be [exported to Excel](#create-a-List-of-Following/Followers).
   * When you generated a list of somebody's else followers/following, you can [follow the people from the generated list](#follow-the-users-from-the-generated-list). Some of them will follow you back.
   * When you generated a list of your followers/following, you can also [unfollow the people](#unfollow-the-users-from-the-generated-list) who don't follow you. There is a way to keep some people - this option is not very comfortable now, and probably it will be improved in future versions. For now, you need to put the IDs of people who should be kept followed in the textarea control; pay attention that it should be precisely numeric ID (not username, as the user can easily change the username, however, ID is not changeable), and each ID should be put on the separate line.  
 2. Find the common users between two Instagram accounts.
@@ -19,12 +19,14 @@ Click on it, and extension's popup applet appears.
 ## Create a List of Following/Followers
 1. When you are on Instagram.com, click the extension's icon. The extension's popup applet is displayed.
 
-![Extension's Popup Applet](./src/img/extPopupApplet.png)
+![Extension's Popup Applet](https://raw.githubusercontent.com/OllegK/InstagramHelper/master/img/extPopupApplet.png)
  
 2. The extension tries to guess the username from the context, if the username cannot be found, it sets <<YOU>> as username. It means it will generate the list of your followers/following. You can keep it, or you can another username to generate the list of its followers/following. Please remember that **you will not be able to create a list for the private account you do not follow.**  
 3. You can also change the scope of the list to be generated. The default value "All" means that the generated list includes followers and following. You can select followers of following only. Also the extension allows to limit the amount of fetched users to Nth first returned users. From my observation, the latest followers/following users are returned in the beginning, therefore limiting the output could be useful to get the latest relationships only. If the value is 0 (default value), the limit is not applied. The limit is applied independently to both relationships: followers and following, it means if limit is 1000, the extension fetches 1000 followers and 1000 following persons when requested relationship is All (followers and following). Therefore the length of created list could be about 2000 users, depending on how much followers and following intersect. Also the setting limit to 1000, doesn't mean that exactly 1000 users will be returned in the output, the total amount of returned users could be a little bit higher depending on the amount of users returned by 1 requests.
 
 4. Click the "Get Insta Users" button. The process starts, just wait for the process to be completed. Please read [below](#How-to-Make-the-Process-Faster) how to make the process faster. The first results are displayed just when all users are fetched from Instagram.com. However these first results are not detailed enough, they only display the username, the small picture of the profile, and several other attributes. The getting the detailed info continues in background, and when it completes, the list with detailed info is displayed.  
+ 
+If not detailed info is enough for you, you can cancel getting the detailed info by clicking "Cancel getting the detailed info" button. 
 
 ### Export the Generate List into Excel
 If you have a long list with more than 100k+ accounts, the export could take significant time. During this time the tab is not responsive, and you could assume that the process hangs. Please be patient and just wait, it will be finished successfully. One time I tried the export of 100k+ users, and it took about 30 minutes.
@@ -32,17 +34,17 @@ If you have a long list with more than 100k+ accounts, the export could take sig
 ### How to Make the Process Faster
 Change the extension's options. Right click on the extension's icon in Chrome's toolbar, the context menu will be displayed. 
 
-![Extension's Context Menu](./src/img/ContextMenu.png)
+![Extension's Context Menu](https://raw.githubusercontent.com/OllegK/InstagramHelper/master/img/ContextMenu.png)
 
 Select the Options item and the Options dialog appears.
 
-![Extension's Options Dialog](./src/img/OptionsDialog.png)
+![Extension's Options Dialog](https://raw.githubusercontent.com/OllegK/InstagramHelper/master/img/OptionsDialog.png)
 
 The picture above displays the default values, if you have never changed the options, you will have the same values as on this picture.
 
 There are two options that could improve the performance of the process, but adjust them wisely:
 1. "Page size for fetching users (insta and common users):". The default value is 10, and the maximum allowed value is 
-50. 50 works for me, however some users reported the constant HTTP400 error when the value is increased. Try to increase the value and start the process. If you have the constant HTTP400 error, try to decrease the value and restart the process. 
+50. 50 works for me, however some users reported the constant HTTP400 error when the value is increased. Try to increase the value and start the process. If you have the constant HTTP400 error, try to decrease the value and restart the process. Read also [Constant HTTP400 error](https://instascraper.weebly.com/blog/constant-http400-error).
 2. "Interval between fetching users requests (insta and common), ms:". If the value of delay is too small, the Instagram.com can return HTTP429 error (too many requests, try several minutes later). 
 
 The changes will be effective when a new process will start.
@@ -51,12 +53,40 @@ Also try to keep the tab active when the process is running, as the Chrome slowe
 
 
 ### Follow the Users From the Generated List
+When the list of following/followers is displayed, you can apply some filter conditions using the comboboxes and inputs contols in the columns' titles. Click the "Follow all not followed/not requested DISPLAYED users" button. It will display confirmation dialog. 
+
+![Follow Confirmation Dialog](https://raw.githubusercontent.com/OllegK/InstagramHelper/master/img/FollowConfirmation.png)
+
+When you click the OK button, the process starts. 
 
 ### Unfollow the Users From the Generated List
+When the list of following/followers is displayed, you can apply some filter conditions using the comboboxes and inputs contols in the columns' titles. Click the "Unfollow ALL DISPLAYED users" button. It will display the text area where you can specify the users to be kept following. 
 
+![Unfollow Text Area](https://raw.githubusercontent.com/OllegK/InstagramHelper/master/img/UnfollowTextAra.png)
+
+Read also [Unfollow users who do not follow you](https://instascraper.weebly.com/blog/unfollow-users-who-do-not-follow-you).
+
+
+About follow/unfollow read also [here](https://instascraper.weebly.com/blog/mass-followunfollow)
+
+## Find the Common Users Between Two Instagram Accounts
+
+## Liker 
+
+## Get Likes
+
+## Mass follow/unfollow
+
+About follow/unfollow read also [here](https://instascraper.weebly.com/blog/mass-followunfollow)
+
+Read also the blog about possible following issues ["If you cannot follow more accounts"]  (https://instascraper.weebly.com/blog/if-you-cannot-follow-more-accounts).
+
+## Mass block
 
 ## Possible HTTP Erros
 The extension is built to handle the different HTTP errors and retry with interval of three minutes. Sometimes one retry is not enough, the error repeats, and the countdown begins again. Please be patient and wait, in the most cases it  disappears sooner or later.
+
+//TODO: HTTP400
 
 ## Links
 * [Github](https://github.com/OllegK/InstagramHelper)
