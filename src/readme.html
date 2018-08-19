@@ -8,18 +8,18 @@
 <p>Free Chrome Extension <a href="https://github.com/OllegK/InstagramHelper" target="_blank">Helper Tools for Instagram.com</a>.</p>
 <h2 id="what-the-extension-does">What the Extension Does</h2>
 <ol>
-<li>Create a list of people following/followers your own or another user's account. If you want to create a list for another user's account, this account should be public, or you should follow it. <strong>You will not be able to create a list for the private account you do not follow, so you need to be a follower of the private account if you want to generate a list for it.</strong> The created list could be <a href="#create-a-List-of-Following/Followers">exported to Excel</a>.</li>
+<li>Create a list of people following/followers your own or another user's account. If you want to create a list for another user's account, this account should be public, or you should follow it. <strong>You will not be able to create a list for the private account you do not follow, so you need to be a follower of the private account if you want to generate a list for it.</strong> The <a href="#create-a-list-of-followingfollowers">created list</a> could be exported to Excel.</li>
 </ol>
 <ul>
 <li>When you generated a list of somebody's else followers/following, you can <a href="#follow-the-users-from-the-generated-list">follow the people from the generated list</a>. Some of them will follow you back.</li>
-<li>When you generated a list of your followers/following, you can also <a href="#unfollow-the-users-from-the-generated-list">unfollow the people</a> who don't follow you. There is a way to keep some people - this option is not very comfortable now, and probably it will be improved in future versions. For now, you need to put the IDs of people who should be kept followed in the textarea control; pay attention that it should be precisely numeric ID (not username, as the user can easily change the username, however, ID is not changeable), and each ID should be put on the separate line.  </li>
+<li>When you generated a list of your followers/following, you can also <a href="#unfollow-the-users-from-the-generated-list">unfollow some people</a>, e.g. who don't follow you. There is a way to keep some people - this option is not very comfortable now, and probably it will be improved in future versions. For now, you need to put the IDs of people who should be kept followed in the textarea control; pay attention that it should be precisely numeric ID (not username, as the user can easily change the username, however, ID is not changeable), and each ID should be put on the separate line.  </li>
 </ul>
 <ol>
-<li>Find the common users between two Instagram accounts.</li>
-<li>Like the posts in your feed, or in someone's else profile. </li>
-<li>Calculate the total amounts of likes in your of someone's else profile, and group them by likers. Try that on your girlfriend's or boyfriend's profile to find her/his secret admirers.</li>
-<li>Mass follow/unfollow the list of user IDs/usernames.</li>
-<li>Mass block the list of user IDs/usernames.</li>
+<li>Find <a href="#find-the-common-users-between-two-instagram-accounts">the common users</a> between two Instagram accounts.</li>
+<li><a href="#liker">Like the posts</a> in your feed, or in someone's else profile. </li>
+<li>Calculate <a href="#get-likes">the total amounts of likes</a> in your of someone's else profile, and group them by likers. Try that on your girlfriend's or boyfriend's profile to find her/his secret admirers.</li>
+<li><a href="#mass-followunfollow">Mass follow/unfollow</a> the list of user IDs/usernames.</li>
+<li><a href="#mass-block">Mass block</a> the list of user IDs/usernames.</li>
 </ol>
 <h2 id="how-to-start">How to start</h2>
 <p>When you are on Instagram.com, the extension icon is active is enabled in Chrome's toolbar - <img src="./img/icon19.png" alt="Extension's Icon" /></p>
@@ -31,8 +31,8 @@
 <p><img src="https://raw.githubusercontent.com/OllegK/InstagramHelper/master/img/extPopupApplet.png" alt="Extension's Popup Applet" /></p>
 <ol start="2">
 <li><p>The extension tries to guess the username from the context, if the username cannot be found, it sets <<YOU>&gt; as username. It means it will generate the list of your followers/following. You can keep it, or you can another username to generate the list of its followers/following. Please remember that <strong>you will not be able to create a list for the private account you do not follow.</strong>  </p></li>
-<li><p>You can also change the scope of the list to be generated. The default value "All" means that the generated list includes followers and following. You can select followers of following only. Also the extension allows to limit the amount of fetched users to Nth first returned users. From my observation, the latest followers/following users are returned in the beginning, therefore limiting the output could be useful to get the latest relationships only. If the value is 0 (default value), the limit is not applied. The limit is applied independently to both relationships: followers and following, it means if limit is 1000, the extension fetches 1000 followers and 1000 following persons when requested relationship is All (followers and following). Therefore the length of created list could be about 2000 users, depending on how much followers and following intersect. Also the setting limit to 1000, doesn't mean that exactly 1000 users will be returned in the output, the total amount of returned users could be a little bit higher depending on the amount of users returned by 1 requests.</p></li>
-<li><p>Click the "Get Insta Users" button. The process starts, just wait for the process to be completed. Please read <a href="#How-to-Make-the-Process-Faster">below</a> how to make the process faster. The first results are displayed just when all users are fetched from Instagram.com. However these first results are not detailed enough, they only display the username, the small picture of the profile, and several other attributes. The getting the detailed info continues in background, and when it completes, the list with detailed info is displayed.  </p></li>
+<li><p>You can also change the scope of the list to be generated. The default value "All" means that the generated list includes followers and following. You can select followers of following only. Also, the extension allows limiting the amount of fetched users to Nth first returned users. From my observation, the latest followers/following users are returned in the beginning, therefore limiting the output could be useful to get the latest relationships only. If the value is 0 (default value), the limit is not applied. The limit is applied independently to both relationships: followers and following, it means if the limit is 1000, the extension fetches 1000 followers and 1000 following persons when requested relationship is All (followers and following). Therefore the length of the created list could be about 2000 users, depending on how much followers and following intersect. Also, the setting limit to 1000, doesn't mean that exactly 1000 users will be returned in the output, the total amount of returned users could be a little bit higher depending on the amount of users returned by 1 requests.</p></li>
+<li><p>Click the "Get Insta Users" button. The process starts, just wait for the process to be completed. Please read <a href="#How-to-Make-the-Process-Faster">below</a> how to make the process faster. The first results are displayed just when all users are fetched from Instagram.com. However these first results are not detailed enough, they only display the username, the small picture of the profile, and several other attributes. The getting the detailed info continues in the background, and when it completes, the list with detailed info is displayed.  </p></li>
 </ol>
 <p>If not detailed info is enough for you, you can cancel getting the detailed info by clicking "Cancel getting the detailed info" button. </p>
 <h3 id="export-the-generate-list-into-excel">Export the Generate List into Excel</h3>
@@ -43,33 +43,71 @@
 <p>Select the Options item and the Options dialog appears.</p>
 <p><img src="https://raw.githubusercontent.com/OllegK/InstagramHelper/master/img/OptionsDialog.png" alt="Extension's Options Dialog" /></p>
 <p>The picture above displays the default values, if you have never changed the options, you will have the same values as on this picture.</p>
-<p>There are two options that could improve the performance of the process, but adjust them wisely:</p>
+<p>Two options that could improve the performance of the process, but adjust them wisely:</p>
 <ol>
 <li>"Page size for fetching users (insta and common users):". The default value is 10, and the maximum allowed value is </li>
 <li>50 works for me, however some users reported the constant HTTP400 error when the value is increased. Try to increase the value and start the process. If you have the constant HTTP400 error, try to decrease the value and restart the process. Read also <a href="https://instascraper.weebly.com/blog/constant-http400-error" target="_blank">Constant HTTP400 error</a>.</li>
 <li>"Interval between fetching users requests (insta and common), ms:". If the value of delay is too small, the Instagram.com can return HTTP429 error (too many requests, try several minutes later). </li>
 </ol>
 <p>The changes will be effective when a new process will start.</p>
-<p>Also try to keep the tab active when the process is running, as the Chrome slowes down the JavaScript execution for background tabs.</p>
+<p>Also try to keep the tab active when the process is running, as the Chrome slows down the JavaScript execution for background tabs.</p>
 <h3 id="follow-the-users-from-the-generated-list">Follow the Users From the Generated List</h3>
-<p>When the list of following/followers is displayed, you can apply some filter conditions using the comboboxes and inputs contols in the columns' titles. Click the "Follow all not followed/not requested DISPLAYED users" button. It will display confirmation dialog. </p>
+<p>When the list of following/followers is displayed, you can apply some filter conditions using the comboboxes and inputs controls in the columns' titles. Click the "Follow all not followed/not requested DISPLAYED users" button. It will display the confirmation dialog. </p>
 <p><img src="https://raw.githubusercontent.com/OllegK/InstagramHelper/master/img/FollowConfirmation.png" alt="Follow Confirmation Dialog" /></p>
 <p>When you click the OK button, the process starts. </p>
 <h3 id="unfollow-the-users-from-the-generated-list">Unfollow the Users From the Generated List</h3>
-<p>When the list of following/followers is displayed, you can apply some filter conditions using the comboboxes and inputs contols in the columns' titles. Click the "Unfollow ALL DISPLAYED users" button. It will display the text area where you can specify the users to be kept following. </p>
+<p>When the list of following/followers is displayed, you can apply some filter conditions using the comboboxes and inputs controls in the columns' titles. Click the "Unfollow ALL DISPLAYED users" button. It will display the text area where you can specify the users to be kept following. </p>
 <p><img src="https://raw.githubusercontent.com/OllegK/InstagramHelper/master/img/UnfollowTextAra.png" alt="Unfollow Text Area" /></p>
-<p>Read also <a href="https://instascraper.weebly.com/blog/unfollow-users-who-do-not-follow-you" target="_blank">Unfollow users who do not follow you</a>.</p>
+<p>If you want to keep following some accounts, you can put the IDs of these accounts into the text area control. Please pay attention that it should be the user id, not username. Each user id should be put on the separate line. Click the "Start Unfollowing" button, confirm, and the process starts.</p>
 <p>About follow/unfollow read also <a href="https://instascraper.weebly.com/blog/mass-followunfollow" target="_blank">here</a></p>
+<p>Read also <a href="https://instascraper.weebly.com/blog/unfollow-users-who-do-not-follow-you" target="_blank">Unfollow users who do not follow you</a>.</p>
 <h2 id="find-the-common-users-between-two-instagram-accounts">Find the Common Users Between Two Instagram Accounts</h2>
+<p>On the extension's popup applet specify the usernames to be compared in the following input boxes:</p>
+<ul>
+<li>Username 1</li>
+<li>Username 2
+Both users should be either public accounts, or the private accounts you follow. Click the "Find Common Users" button, and wait for the process to be finished.</li>
+</ul>
+<p>The generated list could be exported <a href="#export-the-generate-list-into-excel">into Excel</a>.</p>
+<p>Read also about <a href="#how-to-make-the-process-faster">options to make the process faster</a>.</p>
 <h2 id="liker">Liker</h2>
+<p>On the extension's popup applet, click the "Like the posts!" button.</p>
+<p>A new tab is opened.</p>
+<p><img src="https://raw.githubusercontent.com/OllegK/InstagramHelper/master/img/Liker.png" alt="Liker" /></p>
+<p>Before starting the process, you can change the execution options:</p>
+<ul>
+<li>You can like the posts in your feed or the posts in someone's else profile. The default option is liking the posts in your feed (I want to like… The posts in my feed).</li>
+<li>Skip the video posts (default option)</li>
+<li>Skip your own posts (default option)</li>
+<li>Like the post only if it already has the certain amount of likes. Default option is 2. The intention is to avoid liking the racist or discrimination posts. You can set it 0 to disable this option.   </li>
+</ul>
+<p>Set the stop criterion:</p>
+<ul>
+<li>when a certain amount of posts is liked. Default option and default amount to be liked is 100.</li>
+<li>when an already liked post met</li>
+</ul>
+<p>To start the process, click the "LIKE THE POSTS!" button.</p>
+<h3 id="randomization-of-delay-interval">Randomization of Delay Interval</h3>
+<p>If you change the value of delay, the change is effective immediately.</p>
+<p>There is an option to randomize the delay between requests, when you provide the value for the random delay. </p>
 <h2 id="get-likes">Get Likes</h2>
+<p>On the extension's popup applet, click the "Get likes" button.</p>
+<p>A new tab is opened.</p>
+<p><img src="https://raw.githubusercontent.com/OllegK/InstagramHelper/master/img/Likes.png" alt="Likes" /></p>
+<p>To start the process, click the "CALCULATE LIKES!" button.</p>
+<p>The <a href="#randomization-of-delay-interval">same delays' randomization rules</a> as for Liker are effective.</p>
 <h2 id="mass-followunfollow">Mass follow/unfollow</h2>
+<p>On the extension's popup applet, click the "Follow/Unfollow!" button.</p>
+<p>The <a href="#randomization-of-delay-interval">same delays' randomization rules</a> as for Liker are effective.</p>
 <p>About follow/unfollow read also <a href="https://instascraper.weebly.com/blog/mass-followunfollow" target="_blank">here</a></p>
 <p>Read also the blog about possible following issues <a href="https://instascraper.weebly.com/blog/if-you-cannot-follow-more-accounts" target="_blank">"If you cannot follow more accounts"</a>.</p>
 <h2 id="mass-block">Mass block</h2>
-<h2 id="possible-http-erros">Possible HTTP Erros</h2>
-<p>The extension is built to handle the different HTTP errors and retry with interval of three minutes. Sometimes one retry is not enough, the error repeats, and the countdown begins again. Please be patient and wait, in the most cases it  disappears sooner or later.</p>
-<p>//TODO: HTTP400</p>
+<p>On the extension's popup applet, click the "Block users!" button.</p>
+<p>The functionality and behavior is very similar to <a href="#mass-follow/unfollow">Mass follow/unfollow</a>.</p>
+<p>The <a href="#randomization-of-delay-interval">same delays' randomization rules</a> as for Liker are effective.</p>
+<h2 id="possible-http-errors">Possible HTTP Errors</h2>
+<p>The extension is built to handle the different HTTP errors and retry with the interval of three minutes. Sometimes one retry is not enough, the error repeats, and the countdown begins again. Please be patient and wait, in the most cases it disappears sooner or later.</p>
+<p>If you are facing the constant HTTP400 error, please read <a href="https://instascraper.weebly.com/blog/constant-http400-error" target="_blank">Constant HTTP400 error</a>. </p>
 <h2 id="links">Links</h2>
 <ul>
 <li><a href="https://github.com/OllegK/InstagramHelper" target="_blank">Github</a></li>
