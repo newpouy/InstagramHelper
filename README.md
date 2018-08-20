@@ -2,25 +2,25 @@
 Free Chrome Extension [Helper Tools for Instagram.com](https://github.com/OllegK/InstagramHelper).
 
 ## What the Extension Does
-1. Create a list of people following/followers your own or another user's account. If you want to create a list for another user's account, this account should be public, or you should follow it. **You will not be able to create a list for the private account you do not follow, so you need to be a follower of the private account if you want to generate a list for it.** The [created list](#create-a-list-of-followingfollowers) could be exported to Excel.
+1. Create a list of people following/followers your own or another user's account. If you want to create a list for another user's account, this account should be public, or you should follow it. **You will not be able to create a list for the private account you do not follow, so you need to be a follower of the private account if you want to generate a list for it.** The [created list](#create-a-list-of-followingfollowers) could be exported to Excel. Invoked by clicking the "Get Insta Users" on extension's popup applet.
   * When you generated a list of somebody's else followers/following, you can [follow the people from the generated list](#follow-the-users-from-the-generated-list). Some of them will follow you back.
   * When you generated a list of your followers/following, you can also [unfollow some people](#unfollow-the-users-from-the-generated-list), e.g. who don't follow you. There is a way to keep some people - this option is not very comfortable now, and probably it will be improved in future versions. For now, you need to put the IDs of people who should be kept followed in the textarea control; pay attention that it should be precisely numeric ID (not username, as the user can easily change the username, however, ID is not changeable), and each ID should be put on the separate line.  
-2. Find [the common users](#find-the-common-users-between-two-instagram-accounts) between two Instagram accounts.
-3. [Like the posts](#liker) in your feed, or in someone's else profile. 
-4. Calculate [the total amounts of likes](#get-likes) in your of someone's else profile, and group them by likers. Try that on your girlfriend's or boyfriend's profile to find her/his secret admirers.
-5. [Mass follow/unfollow](#mass-followunfollow) the list of user IDs/usernames.
-6. [Mass block](#mass-block) the list of user IDs/usernames.
+2. Find [the common users](#find-the-common-users-between-two-instagram-accounts) between two Instagram accounts. Invoked by clicking the "Find Common Users" on extension's popup applet.
+3. [Like the posts](#liker) in your feed, or in someone's else profile. Invoked by clicking the "Like the posts!" button.  
+4. Calculate [the total amounts of likes](#calculate-likes-and-comments-for-profile) in your of someone's else profile, and group them by likers. Try that on your girlfriend's or boyfriend's profile to find her/his secret admirers. Invoked by clicking the "Calculate Likes/Comments for Profile" button.
+5. [Mass follow/unfollow](#mass-followunfollow) the list of user IDs/usernames. Invoked by clicking the "Follow/Unfollow!" button.
+6. [Mass block](#mass-block) the list of user IDs/usernames. Invoked by clicking the "Block users!" button.
 
 ## How to start
-When you are on Instagram.com, the extension icon is active is enabled in Chrome's toolbar - ![Extension's Icon](./src/img/icon19.png)
+When you are on Instagram.com, the extension icon is active is enabled in Chrome's toolbar - ![Extension's Icon](./src/img/icon19.png).
+You should be logged in Instagram.com for the extension to work correctly.
 
 Click on it, and extension's popup applet appears.  
 
-## Create a List of Following/Followers
-1. When you are on Instagram.com, click the extension's icon. The extension's popup applet is displayed.
-
 ![Extension's Popup Applet](https://raw.githubusercontent.com/OllegK/InstagramHelper/master/img/extPopupApplet.png)
- 
+
+## Create a List of Following/Followers
+1. When you are on Instagram.com, click the extension's icon. The extension's popup applet is displayed. 
 2. The extension tries to guess the username from the context, if the username cannot be found, it sets <<YOU>> as username. It means it will generate the list of your followers/following. You can keep it, or you can another username to generate the list of its followers/following. Please remember that **you will not be able to create a list for the private account you do not follow.**  
 3. You can also change the scope of the list to be generated. The default value "All" means that the generated list includes followers and following. You can select followers of following only. Also, the extension allows limiting the amount of fetched users to Nth first returned users. From my observation, the latest followers/following users are returned in the beginning, therefore limiting the output could be useful to get the latest relationships only. If the value is 0 (default value), the limit is not applied. The limit is applied independently to both relationships: followers and following, it means if the limit is 1000, the extension fetches 1000 followers and 1000 following persons when requested relationship is All (followers and following). Therefore the length of the created list could be about 2000 users, depending on how much followers and following intersect. Also, the setting limit to 1000, doesn't mean that exactly 1000 users will be returned in the output, the total amount of returned users could be a little bit higher depending on the amount of users returned by 1 requests.
 
@@ -73,6 +73,7 @@ Read also [Unfollow users who do not follow you](https://instascraper.weebly.com
 On the extension's popup applet specify the usernames to be compared in the following input boxes:
 * Username 1
 * Username 2
+
 Both users should be either public accounts, or the private accounts you follow. Click the "Find Common Users" button, and wait for the process to be finished.
 
 The generated list could be exported [into Excel](#export-the-generate-list-into-excel).
@@ -103,14 +104,16 @@ If you change the value of delay, the change is effective immediately.
 
 There is an option to randomize the delay between requests, when you provide the value for the random delay. 
 
-## Get Likes
-On the extension's popup applet, click the "Get likes" button.
+## Calculate Likes and Comments for Profile
+On the extension's popup applet, click the "Calculate Likes/Comments for Profile" button.
 
 A new tab is opened.
 
 ![Likes](https://raw.githubusercontent.com/OllegK/InstagramHelper/master/img/Likes.png)
 
 To start the process, click the "CALCULATE LIKES!" button.
+
+When it is completed, it displays all users who liked (also optionally commented if the "Get comments" checkbox was checked) the posts on this profile. The row in the table could be expanded by clicking on to display the liked and commented posts by this user. If you are calculating the likes on your profile, it makes sense to click the "ADD FOLLOWERS!" button to find the followers who never liked your post. The created list could be exported into Excel.
 
 The [same delays' randomization rules](#randomization-of-delay-interval) as for Liker are effective.
 
