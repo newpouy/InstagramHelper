@@ -64,7 +64,8 @@ gulp.task('convert', (cb) => {
     completeHTMLDocument: true,
     openLinksInNewWindow: true,
     simplifiedAutoLink: true,
-    ghCompatibleHeaderId: true
+    ghCompatibleHeaderId: true,
+    tables: true
   });
   fs.readFile(__dirname + '/README.md', 'utf-8', function (err, data) {
     if (err) throw err;
