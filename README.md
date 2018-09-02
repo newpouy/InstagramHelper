@@ -242,9 +242,9 @@ When a tab is not active for a long time, the Chrome could refresh it when
 Please try to keep the tab active, it is also described [here](https://superuser.com/questions/1048029/disable-auto-refresh-tabs-in-chrome-desktop#comment1467739_1048029) how to disable this behavior.
 
 # Links
-* [Github](https://github.com/OllegK/InstagramHelper)
-* [Web page](https://instascraper.weebly.com/)
-* [Extension on Chrome Web Store](https://chrome.google.com/webstore/detail/helper-tools-for-instagra/hcdbfckhdcpepllecbkaaojfgipnpbpb)
+* [Github](https://github.com/OllegK/InstagramHelper). The best place to report defects and request the new features. 
+* [Web page](https://instascraper.weebly.com/). It has some useful blog's articles, however, when the blog's updates get a comment, Weebly doesn't send an email me so that I can overlook a comment. 
+* [Extension on Chrome Web Store](https://chrome.google.com/webstore/detail/helper-tools-for-instagra/hcdbfckhdcpepllecbkaaojfgipnpbpb). Unfortunately, Google does not send an email me when the extension gets a comment or a problem description; therefore it could take several hours or even more before I notice the issue.  
 
 # Donations
 This extension is free, however if you would like to donate:   
