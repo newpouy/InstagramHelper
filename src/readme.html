@@ -67,7 +67,7 @@ You should be logged in Instagram.com for the extension to work correctly.</p>
 <p>The collected information displayed in two steps:</p>
 <ol>
 <li>Short List. This list is displayed first when all followers/following of the requested account were fetched. However these first results are not detailed enough, they only display the username, the small picture of the profile, and several other attributes. </li>
-<li>Detailed Info List. The creation of this list start immediately when the generation of a short list is completed unless you didn't uncheck the "Start detailed info collection when a short list is generated" checkbox. The getting the detailed info continues in the background, and when it completes, the detailed info list replaces the short list. You can stop the detailed info list generation by clicking the "Cancel getting the detailed info" button. To collect the detailed info, the separate HTTP request should be sent for each account on the list, therefore this process could be really time consuming when you have a lot of accounts on your list. </li>
+<li>Detailed Info List. The generation of this list starts immediately when the generation of a short list is completed unless you didn't uncheck the "Start detailed info collection when a short list is generated" checkbox. The getting the detailed info continues in the background, and when it completes, the detailed info list replaces the short list. You can stop the detailed info list generation by clicking the "Cancel getting the detailed info" button. The separate HTTP request should be sent for each account on the list to collect the detailed info; therefore, this process could be really time-consuming when you have a lot of accounts on your list. </li>
 </ol>
 <p>The table below explains the information displayed in the short list and in the detailed list.</p>
 <table>
@@ -244,11 +244,11 @@ You should be logged in Instagram.com for the extension to work correctly.</p>
 <p><strong>Note!</strong> Please take into account that you can accidentally or intentionally unblock the user if you put it (user id or username) into a list for the mass-follow functionality. </p>
 <h1 id="some-usage-tips">Some Usage Tips</h1>
 <ol>
-<li>Try to keep the extension's tab foreground as Chrome slows down the JavaScript for background tabs. Chrome also can <a href="#refresh-the-inactive-tab">refresh</a> a tab if it the tab is in backround for a long time; in case of the refresh, the progress and the results will be lost. </li>
-<li>Also try to have less tabs open when the process is running, as the process could be stopped if there is not enough memory.   </li>
+<li>Try to keep the extension's tab foreground as Chrome slows down the JavaScript for background tabs. Chrome also can <a href="#refresh-the-inactive-tab">refresh</a> a tab if it the tab is in background for a long time; in case of the refresh, the progress and the results will be lost. </li>
+<li>Also try to have fewer tabs open when the process is running, as the process could be stopped if there is not enough memory.   </li>
 <li>Try to use the longer intervals between requests, and also the delays' randomization feature (available for liker, likes' calculation, mass follow/unfollow, mass block).</li>
 <li>Respect Instagram action daily limits, and try to have less daily actions in order do not exceed them, they are subject to change, but now it seems about 600 follow actions and 1000 likes per day. </li>
-<li>The limits are applicable to the account, and you can use the extension simultaneously for two different accounts using in non-incognito mode and incognito mode. <em>You need to enable the extension for incognito mode</em>. In addition, you can install the Chromium browser alongside the Chrome browser, and use the extension also with it.</li>
+<li>The limits apply to the account, and you can use the extension simultaneously for two different accounts using in non-incognito mode and incognito mode. <em>You need to enable the extension for incognito mode</em>. In addition, you can install the Chromium browser alongside the Chrome browser, and use the extension also with it.</li>
 </ol>
 <h1 id="known-issues">Known Issues</h1>
 <h2 id="possible-http-errors">Possible HTTP Errors</h2>
@@ -256,17 +256,17 @@ You should be logged in Instagram.com for the extension to work correctly.</p>
 <h3 id="constant-http400-error">Constant HTTP400 error</h3>
 <p>If you are facing the constant HTTP400 error that doesn't disappear after several retries, please read <a href="https://instascraper.weebly.com/blog/constant-http400-error" target="_blank">Constant HTTP400 error</a>. </p>
 <h3 id="constant-http502-error">Constant HTTP502 error</h3>
-<p>Sometimes fetching the user profile, e.g. when calculating likes and comments, you can meet the repeated HTTP502 error.</p>
+<p>Sometimes fetching the user profile, e.g., when calculating likes and comments, you can meet the repeated HTTP502 error.</p>
 <p>Some extension's user reported that constant HTTP502 error could also happen when fetching followers/following.</p>
-<p>If you meet constant HTTP502 error that doesn't disappear and you cannot also fetch in your web browser, you can do nothing about that. Sooner or later the issue disappears and you will be able to fetch all information, however it could make up to several days.</p>
+<p>If you meet constant HTTP502 error that doesn't disappear and you cannot also fetch in your web browser, you can do nothing about that. Sooner or later the issue disappears, and you will be able to fetch all information. However sometime the issue persists for several days.</p>
 <h2 id="refresh-the-inactive-tab">Refresh the inactive tab</h2>
 <p>When a tab is not active for a long time, the Chrome could refresh it when </p>
 <p>Please try to keep the tab active, it is also described <a href="https://superuser.com/questions/1048029/disable-auto-refresh-tabs-in-chrome-desktop#comment1467739_1048029" target="_blank">here</a> how to disable this behavior.</p>
 <h1 id="links">Links</h1>
 <ul>
-<li><a href="https://github.com/OllegK/InstagramHelper" target="_blank">Github</a></li>
-<li><a href="https://instascraper.weebly.com/" target="_blank">Web page</a></li>
-<li><a href="https://chrome.google.com/webstore/detail/helper-tools-for-instagra/hcdbfckhdcpepllecbkaaojfgipnpbpb" target="_blank">Extension on Chrome Web Store</a></li>
+<li><a href="https://github.com/OllegK/InstagramHelper" target="_blank">Github</a>. The best place to report defects and request the new features. </li>
+<li><a href="https://instascraper.weebly.com/" target="_blank">Web page</a>. It has some useful blog's articles, however, when the blog's updates get a comment, Weebly doesn't send an email me so that I can overlook a comment. </li>
+<li><a href="https://chrome.google.com/webstore/detail/helper-tools-for-instagra/hcdbfckhdcpepllecbkaaojfgipnpbpb" target="_blank">Extension on Chrome Web Store</a>. Unfortunately, Google does not send an email me when the extension gets a comment or a problem description; therefore it could take several hours or even more before I notice the issue.  </li>
 </ul>
 <h1 id="donations">Donations</h1>
 <p>This extension is free, however if you would like to donate:   </p>

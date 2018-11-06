@@ -119,7 +119,8 @@ var myDataTable = {
           username: item.username,
           userId: item.id,
           csrfToken: this.csrfToken,
-          updateStatusDiv: this.updateStatusDiv
+          updateStatusDiv: this.updateStatusDiv,
+          vueStatus: likes
         }).then(function (result) {
           Vue.set(item, 'followed_by_viewer', false)
         });
@@ -585,6 +586,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
           Vue.set(__items[i], 'count', __items[i].count || 0);
           Vue.set(__items[i], 'diff', __items[i].diff || 0);
+          Vue.set(__items[i], 'posts', __items[i].count || []);
+          Vue.set(__items[i], 'commentedPosts', __items[i].commentedPosts || []);
+
 
           // __items[i].count = __items[i].count || 0;
           // __items[i].diff = __items[i].diff || 0;
