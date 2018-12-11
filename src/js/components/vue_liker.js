@@ -124,17 +124,18 @@ var liker = new Vue({ // eslint-disable-line no-unused-vars
       });
     },
     toLike: function (obj) {
+      if (!obj.node.owner) {
+        this.skippedSuggestedUsers++;
+        this.updateStatusDiv('...Post skipped as there is no owner, maybe suggested users...');
+        // "__typename": "GraphSuggestedUserFeedUnit",
+        return false;
+      }
+
       var url = obj.node.display_url;
       var taken = new Date(obj.node.taken_at_timestamp * 1000).toLocaleString();
       var userName = 'likeProfile' === this.whatToLike ? this.userToLike : obj.node.owner.username;
       var likesCount = obj.node.edge_media_preview_like.count;
       this.updateStatusDiv(`${obj.node.is_video === true ? 'Video' : 'Post'} ${url} taken on ${taken} by ${userName} has ${likesCount} likes`);
-      if (!obj.node.owner) {
-        this.skippedSuggestedUsers++;
-        this.updateStatusDiv('...Post skipped as there are no owner, maybe suggested users...');
-        // "__typename": "GraphSuggestedUserFeedUnit",
-        return false;
-      }
       if (obj.node.is_video && obj.node.is_video === this.skipVideo) {
         this.skippedVideo++;
         this.updateStatusDiv('...Post skipped as it is video and video should be skipped...');
