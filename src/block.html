@@ -33,12 +33,13 @@
                   <span>Adds random part to the specified delay, max value to be added to the specified delay - {{Math.floor(rndDelay/100*delay)}}ms</span>
                 </v-tooltip>
               </v-flex>
-              <v-btn id="startBlock" :disabled="startButtonDisabled" v-on:click="startButtonClick" color="primary">Start Blocking!</v-btn>
+              <v-btn id="startBlock" :disabled="startButtonDisabled" v-on:click="blockButtonClick('block')" color="primary">Start Blocking!</v-btn>
+              <v-btn id="startUnBlock" :disabled="startButtonDisabled" v-on:click="blockButtonClick('unblock')" color="primary">Start UnBlocking!</v-btn>
             </v-layout>
           </v-flex>
           <v-flex>
-            <v-text-field id="ids" label="Users to be blocked (ID or Username, each on a separate line)" multi-line v-model="ids" :readonly="startButtonDisabled"
-              placeholder="Specify the users you want to block."></v-text-field>
+            <v-text-field id="ids" label="Users to be (un)blocked (ID or Username, each on a separate line)" multi-line v-model="ids" :readonly="startButtonDisabled"
+              placeholder="Specify the users you want to (un)block."></v-text-field>
           </v-flex>
           <v-flex>
             <v-text-field id="log_text_area" label="Log" multi-line v-model="log"></v-text-field>

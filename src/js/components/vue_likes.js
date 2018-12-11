@@ -584,11 +584,11 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         for (let i in __items) {
           candidatesToUnFollow = candidatesToUnFollow + (!__items[i].count);
 
+          // to provide default values if a follower who never liked/commented was added
           Vue.set(__items[i], 'count', __items[i].count || 0);
           Vue.set(__items[i], 'diff', __items[i].diff || 0);
-          Vue.set(__items[i], 'posts', __items[i].count || []);
+          Vue.set(__items[i], 'posts', __items[i].posts || []);
           Vue.set(__items[i], 'commentedPosts', __items[i].commentedPosts || []);
-
 
           // __items[i].count = __items[i].count || 0;
           // __items[i].diff = __items[i].diff || 0;

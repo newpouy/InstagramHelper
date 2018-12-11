@@ -1,22 +1,20 @@
 /* globals Vue, , _gaq, chrome, instaUserInfo, blockUser */
 
-var block = new Vue({ // eslint-disable-line no-unused-vars
+const block = new Vue({ // eslint-disable-line no-unused-vars
   el: '#app',
   created() {
     this.viewerUserId = '';
     this.viewerUserName = '';
 
-    this.startDate = null; //timestamp when process was started
+    this.startDate = null; // timestamp when process was started
   },
   mounted: () => {
     _gaq.push(['_trackPageview']);
 
-    chrome.runtime.onMessage.addListener(function (request) {
-
+    chrome.runtime.onMessage.addListener((request) => {
       if (request.action === 'openMassBlockPage') {
-
-        block.delay = request.followDelay; //FIXME
-        if (block.delay < 10000) { //TEMP FIXME
+        block.delay = request.followDelay; // FIXME
+        if (block.delay < 10000) { // FIXME
           block.delay = 10000;
         }
 
@@ -26,26 +24,25 @@ var block = new Vue({ // eslint-disable-line no-unused-vars
         block.csrfToken = request.csrfToken;
       }
     });
-
   },
   data: {
     isInProgress: false,
 
-    delay: 0, //interval between sending the http requests
+    delay: 0, // interval between sending the http requests
     rndDelay: 30,
 
-    stop: false, //if user requested the proceess to be stopped by clicking the button
+    stop: false, // if user requested the proceess to be stopped by clicking the button
 
-    status: '', //the message displayed in status div
+    status: '', // the message displayed in status div
     statusColor: '',
 
-    log: '', //the text displayed in log area
-    ids: ''
+    log: '', // the text displayed in log area
+    ids: '',
 
   },
   computed: {
-    startButtonDisabled: function () {
-      return this.isInProgress
+    startButtonDisabled() {
+      return this.isInProgress;
     },
     binding() {
       const binding = {};
@@ -55,89 +52,89 @@ var block = new Vue({ // eslint-disable-line no-unused-vars
       }
 
       return binding;
-    }
+    },
   },
   methods: {
-    calcDelay: function() {
-      var val = + Math.floor(Math.random() * this.delay * this.rndDelay/100) + + this.delay;
+    calcDelay() {
+      const val = +Math.floor(Math.random() * this.delay * this.rndDelay / 100) + +this.delay;
       this.updateStatusDiv(`Calculated delay ${val}`);
       return val;
     },
-    checkDelay: function () {
+    checkDelay() {
       if (!this.delay || (this.delay < 10000)) {
         this.$nextTick(() => {
           this.delay = 10000;
-        })
+        });
       }
     },
-    checkRndDelay: function () {
+    checkRndDelay() {
       if (!this.rndDelay || (this.rndDelay < 0)) {
         this.$nextTick(() => {
           this.rndDelay = 0;
-        })
+        });
       }
     },
-    timeout: function (ms) {
-      return new Promise(res => setTimeout(res, ms))
+    timeout(ms) {
+      return new Promise(res => setTimeout(res, ms));
     },
-    updateStatusDiv: function (message, color) {
-      this.log += message + '\n';
+    updateStatusDiv(message, color) {
+      this.log += `${message}\n`;
       this.status = message;
       this.statusColor = color || 'black';
-      setTimeout(function () {
-        var textarea = document.getElementById('log_text_area');
+      setTimeout(() => {
+        const textarea = document.getElementById('log_text_area');
         textarea.scrollTop = textarea.scrollHeight;
       }, 0);
     },
-    startButtonClick: async function () {
-
-      console.log(this.ids);
-
+    async blockButtonClick(mode) {
+      console.log('block button click', mode);
       this.isInProgress = true;
 
-      var value = document.getElementById('ids').value;
+      const value = document.getElementById('ids').value;
       this.processUsers = value.replace(/[\n\r]/g, ',').split(',');
       this.blockedUsers = 0;
       this.processedUsers = 0;
       this.errorsResolvingUserId = 0;
 
-      for (var i = 0; i < this.processUsers.length; i++) {
+      for (let i = 0; i < this.processUsers.length; i += 1) {
         if (this.processUsers[i] != '') {
-          this.updateStatusDiv(`Mass blocking users: ${this.processUsers[i]}/${i + 1} of ${this.processUsers.length}`);
+          this.updateStatusDiv(`Mass ${mode}ing users: ${this.processUsers[i]}/${i + 1} of ${this.processUsers.length}`);
 
-          var userId = this.processUsers[i];
+          let userId = this.processUsers[i];
           this.processedUsers++;
 
           if (!/^\d+$/.test(userId)) {
-            this.updateStatusDiv(`${userId} does not look as user id, maybe username, try to convert username to userid`);
+            this.updateStatusDiv(`${userId} does not look as user id, maybe username, resolve username to userid`);
             try {
-              var obj = await instaUserInfo.getUserProfile({
-                username: userId, updateStatusDiv: this.updateStatusDiv, silient: true, vueStatus: this
+              const obj = await instaUserInfo.getUserProfile({
+                username: userId, updateStatusDiv: this.updateStatusDiv, silient: true, vueStatus: this,
               });
+              userId = obj.id;
             } catch (e) {
               this.updateStatusDiv(`${userId} error 404 resolving the username`);
               console.log('error resolving username to userid', userId);
-              this.errorsResolvingUserId++;
+              this.errorsResolvingUserId += 1;
               continue;
             }
-            userId = obj.id;
             this.updateStatusDiv(`username resolved to ${userId}`);
             await this.timeout(this.calcDelay());
           }
 
-          var result = await blockUser.block(
+          const result = await blockUser.block(
             {
               username: this.processUsers[i],
-              userId: userId,
+              userId,
               csrfToken: this.csrfToken,
               updateStatusDiv: this.updateStatusDiv,
-              vueStatus: this
-            });
+              vueStatus: this,
+              mode,
+            },
+          );
           console.log(result);
           if ('ok' === result) {
-            this.blockedUsers++;
+            this.blockedUsers += 1;
           } else {
-            console.log('Not recognized result - ' + result); // eslint-disable-line no-console
+            console.log(`Not recognized result - ${result}`); // eslint-disable-line no-console
           }
 
           await this.timeout(this.calcDelay());
@@ -147,10 +144,11 @@ var block = new Vue({ // eslint-disable-line no-unused-vars
       this.isInProgress = false;
 
       this.updateStatusDiv(
-        `Completed!
+        `Completed mass ${mode}!
           Processed: ${this.processedUsers}
           Errors resolving username: ${this.errorsResolvingUserId}
-          Blocked: ${this.blockedUsers}`);
-    }
-  }
+          ${mode.charAt(0).toUpperCase() + mode.slice(1)}ed: ${this.blockedUsers}`,
+      );
+    },
+  },
 });
