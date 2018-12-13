@@ -21,22 +21,21 @@
     }
   }
 
-  document.getElementById("pageSizeForFeed").onkeyup = onKeyUpFunc;
-  document.getElementById("pageSize").onkeyup = onKeyUpFunc;
-
+  document.getElementById('pageSizeForFeed').onkeyup = onKeyUpFunc;
+  document.getElementById('pageSize').onkeyup = onKeyUpFunc;
 
   function saveOptions() {
-    var pageSize = document.getElementById('pageSize').value;
-    var delay = document.getElementById('delay').value;
-    var followDelay = document.getElementById('followDelay').value;
-    var likeDelay = document.getElementById('likeDelay').value;
-    var pageSizeForFeed = document.getElementById('pageSizeForFeed').value;
+    const pageSize = document.getElementById('pageSize').value;
+    const delay = document.getElementById('delay').value;
+    const followDelay = document.getElementById('followDelay').value;
+    const likeDelay = document.getElementById('likeDelay').value;
+    const pageSizeForFeed = document.getElementById('pageSizeForFeed').value;
     chrome.storage.sync.set({
-      pageSize: pageSize,
-      delay: delay,
-      followDelay: followDelay,
-      likeDelay: likeDelay,
-      pageSizeForFeed: pageSizeForFeed
+      pageSize,
+      delay,
+      followDelay,
+      likeDelay,
+      pageSizeForFeed
     }, function () {
       // Update status to let user know that the options were saved.
       var status = document.getElementById('status');
