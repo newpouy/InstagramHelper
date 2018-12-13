@@ -87,7 +87,6 @@ const block = new Vue({ // eslint-disable-line no-unused-vars
       }, 0);
     },
     async blockButtonClick(mode) {
-      console.log('block button click', mode);
       this.isInProgress = true;
 
       const value = document.getElementById('ids').value;
