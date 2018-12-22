@@ -24,31 +24,47 @@
               <strong>{{ status }}</strong>
             </div>
             <div v-show="isRunning">
-              <strong>Started at {{startDate}}/Fetched {{fetchedPosts}} posts/Processed {{processedPosts}} of {{totalPosts}} posts/{{postEntity}}:
+              <strong>Started at {{startDate}}/Fetched {{fetchedPosts}} posts/Processed {{processedPosts}} of
+                {{totalPosts}} posts/{{postEntity}}:
                 {{postProcessedEntity}} of {{postTotalEntity}}</strong>
             </div>
           </v-flex>
           <v-flex>
             <v-layout row wrap>
               <v-flex md12>
-                <v-text-field :rules="[rules.required]" :disabled="isGettingLikesInProgress" label="Username to analyze" v-model="userToGetLikes"></v-text-field>
+                <v-text-field :rules="[rules.required]" :disabled="isGettingLikesInProgress" label="Username to analyze"
+                  v-model="userToGetLikes"></v-text-field>
               </v-flex>
               <v-flex md6>
-                <v-text-field @input="checkDelay()" label="Delay between requests, ms" type="number" min=100 step=100 v-model.number="delay"></v-text-field>
+                <v-text-field @input="checkDelay()" label="Delay between requests, ms" type="number" min=100 step=100
+                  v-model.number="delay"></v-text-field>
               </v-flex>
               <v-flex md6>
                 <v-tooltip bottom>
-                  <v-text-field slot="activator" @input="checkRndDelay()" label="Random Delay, %" type="number" min=0 step=1 max=100 v-model.number="rndDelay"></v-text-field>
-                  <span>Adds random part to the specified delay, max value to be added to the specified delay - {{Math.floor(rndDelay/100*delay)}}ms</span>
+                  <v-text-field slot="activator" @input="checkRndDelay()" label="Random Delay, %" type="number" min=0
+                    step=1 max=100 v-model.number="rndDelay"></v-text-field>
+                  <span>Adds random part to the specified delay, max value to be added to the specified delay -
+                    {{Math.floor(rndDelay/100*delay)}}ms</span>
                 </v-tooltip>
               </v-flex>
+              <v-flex md6>
+                <v-checkbox :disabled="!init" label="Get comments" v-model="calcComments"></v-checkbox>
+              </v-flex>
+              <v-flex md6>
+                <v-radio-group label="The Excel export format..." v-model="outType" style="padding-top: 0px">
+                  <v-radio :key="1" label="xlsx" value="xlsx"></v-radio>
+                  <v-radio :key="2" label="csv" value="csv"></v-radio>
+                </v-radio-group>
+              </v-flex>
             </v-layout>
-            <v-checkbox :disabled="!init" label="Get comments" v-model="calcComments"></v-checkbox>
-            <v-btn id="start" :disabled="startButtonDisabled" v-on:click="startButtonClick" color="primary">Calculate likes!</v-btn>
+            <v-btn id="start" :disabled="startButtonDisabled" v-on:click="startButtonClick" color="primary">Calculate
+              likes!</v-btn>
             <v-btn :disabled="!isGettingLikesInProgress" color="primary" v-on:click="stop=true">Stop it!</v-btn>
             <v-tooltip bottom>
-              <v-btn slot="activator" :disabled="addFollowersButtonDisabled" color="primary" v-on:click="addFollowers">Add followers!</v-btn>
-              <span>Add followers information into the list: it is useful to identiy the followers who never liked a post.</span>
+              <v-btn slot="activator" :disabled="addFollowersButtonDisabled" color="primary" v-on:click="addFollowers">Add
+                followers!</v-btn>
+              <span>Add followers information into the list: it is useful to identiy the followers who never liked a
+                post.</span>
             </v-tooltip>
             <v-btn :disabled="exportButtonDisabled" color="primary" v-on:click="exportToExcel">Export to Excel!</v-btn>
           </v-flex>

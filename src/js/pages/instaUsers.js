@@ -553,7 +553,17 @@ $(() => {
     $('#exportDiv').show();
 
     $('#export_XLSX').on('click', () => {
-      const fileName = `${obj.requestRelType}_users_${obj.userName}${obj.limit > 0 ? `_limit_${obj.limit}` : ''}_${exportUtils.formatDate(new Date())}.xlsx`;
+      // find the bookType
+      let bookType = 'xlsx';
+      const radios = document.getElementsByName('outType');
+      for (let i = 0; i < radios.length; i += 1) {
+        if (radios[i].checked) {
+          bookType = radios[i].value;
+          break;
+        }
+      }
+
+      const fileName = `${obj.requestRelType}_users_${obj.userName}${obj.limit > 0 ? `_limit_${obj.limit}` : ''}_${exportUtils.formatDate(new Date())}.${bookType}`;
       let arr = [];
       if (lastSelected) {
         console.log('Have filtered list', lastSelected.length); // eslint-disable-line no-console
@@ -609,7 +619,7 @@ $(() => {
       }
 
       wb.Sheets.UsersSheet = ws;
-      const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+      const wbout = XLSX.write(wb, { bookType, type: 'binary' });
       saveAs(new Blob([exportUtils.s2ab(wbout)], { type: 'application/octet-stream' }), fileName);
     });
 
@@ -841,13 +851,13 @@ $(() => {
       del: false,
       refresh: true,
     }, {}, {}, {}, {
-      multipleSearch: true,
-      closeAfterSearch: true,
-      closeOnEscape: true,
-      searchOnEnter: true,
-      showQuery: true,
-    },
-    {})
+        multipleSearch: true,
+        closeAfterSearch: true,
+        closeOnEscape: true,
+        searchOnEnter: true,
+        showQuery: true,
+      },
+      {})
       .jqGrid('setGridWidth', $('#jqGrid').width() - 20); // TODO: why autowidth doesn't work? what is taken into account
 
     // https://stackoverflow.com/questions/9775115/get-all-rows-not-filtered-from-jqgrid
