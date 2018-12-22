@@ -11,12 +11,12 @@ blockUser.block = function (settings) {
     csrfToken,
     updateStatusDiv,
     vueStatus,
-    mode
+    mode,
   } = settings;
 
-  return new Promise(function (resolve, reject) {
+  return new Promise(((resolve, reject) => {
     block(userId, csrfToken, resolve, reject, mode);
-  });
+  }));
 
   function successBlock(data, resolve, mode) {
     updateStatusDiv(`The request to ${mode} ${username} was successful with response - ${data.status}`);
@@ -39,15 +39,13 @@ blockUser.block = function (settings) {
   function retryError(message, errorNumber, resolve, reject, mode) {
     updateStatusDiv(message, 'red');
     instaTimeout.setTimeout(3000)
-      .then( () => {
-        return instaCountdown.doCountdown(
-          'status',
-          errorNumber,
-          mode.charAt(0).toUpperCase() + mode.slice(1) + 'ing',
-          +(new Date()).getTime() + instaDefOptions.retryInterval,
-          vueStatus
-        );
-      })
+      .then(() => instaCountdown.doCountdown(
+        'status',
+        errorNumber,
+        `${mode.charAt(0).toUpperCase() + mode.slice(1)}ing`,
+        +(new Date()).getTime() + instaDefOptions.retryInterval,
+        vueStatus,
+      ))
       .then(() => {
         console.log('Continue execution after HTTP error', errorNumber, new Date()); // eslint-disable-line no-console
         block(userId, csrfToken, resolve, reject, mode);

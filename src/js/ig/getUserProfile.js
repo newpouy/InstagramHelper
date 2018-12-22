@@ -1,36 +1,34 @@
 /* globals alert, axios, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
 /* jshint -W106 */
 
-var igUserProfileRegularExpression = /window._sharedData = (.*);<\/script>/i;
+const igUserProfileRegularExpression = /window._sharedData = (.*);<\/script>/i;
 
-var instaUserInfo = function () {
+const instaUserInfo = function () {
 };
 
 instaUserInfo.getUserProfile = function (settings) {
-
   'use strict';
 
-  var {
-    username, userId, updateStatusDiv, silient, vueStatus
+  const {
+    username, userId, updateStatusDiv, silient, vueStatus,
   } = settings;
 
-
-  return new Promise(function (resolve, reject) {
+  return new Promise(((resolve, reject) => {
     getUserProfile(username, resolve, reject);
-  });
+  }));
 
   function promiseGetUsernameById(userId) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(((resolve, reject) => {
       getUsernameById(userId, resolve, reject);
-    });
+    }));
   }
 
   function getUsernameById(userId, resolve, reject) {
-    var link = `https://www.instagram.com/web/friendships/${userId}/follow/`;
-    axios.get(link, {}, {}).
-      then(
-        response => {
-          var arr = response.data.match(instaDefOptions.regFindUser);
+    const link = `https://www.instagram.com/web/friendships/${userId}/follow/`;
+    axios.get(link, {}, {})
+      .then(
+        (response) => {
+          const arr = response.data.match(instaDefOptions.regFindUser);
           if ((arr || []).length > 0) {
             resolve(arr[1]);
           } else {
@@ -38,16 +36,16 @@ instaUserInfo.getUserProfile = function (settings) {
           }
         },
         error => function (error) {
-          console.log(error); //eslint-disable-line no-console
-          var errorCode = error.response ? error.response.status : 0;
+          console.log(error); // eslint-disable-line no-console
+          const errorCode = error.response ? error.response.status : 0;
 
           if (errorCode > 0) {
-            console.log(`error response data - ${error.response.data}/${errorCode}`); //eslint-disable-line no-console
+            console.log(`error response data - ${error.response.data}/${errorCode}`); // eslint-disable-line no-console
           }
-          console.log(`Error making http request to get ${userId} profile, status - ${errorCode}`); //eslint-disable-line no-console
-          console.log(arguments); //eslint-disable-line no-console
+          console.log(`Error making http request to get ${userId} profile, status - ${errorCode}`); // eslint-disable-line no-console
+          console.log(arguments); // eslint-disable-line no-console
           reject();
-        }
+        },
       );
   }
 
@@ -62,10 +60,10 @@ instaUserInfo.getUserProfile = function (settings) {
 
   function successGetUserProfile(data, link, resolve) {
     // handle the content is temporary not available
-    var json = JSON.parse(igUserProfileRegularExpression.exec(data)[1]);
-    if ((json.entry_data.ProfilePage) &&(isJson(json.entry_data.ProfilePage[0].graphql.user))) {
+    const json = JSON.parse(igUserProfileRegularExpression.exec(data)[1]);
+    if ((json.entry_data.ProfilePage) && (isJson(json.entry_data.ProfilePage[0].graphql.user))) {
       // console.log(json);
-      var {
+      let {
         id,
         username,
         full_name,
@@ -79,24 +77,29 @@ instaUserInfo.getUserProfile = function (settings) {
         has_requested_viewer,
         blocked_by_viewer,
         requested_by_viewer,
-        has_blocked_viewer
+        has_blocked_viewer,
+        is_verified,
+        is_business_account,
+        business_category_name,
+        business_email,
+        business_phone_number,
       } = json.entry_data.ProfilePage[0].graphql.user;
-      var follows_count = json.entry_data.ProfilePage[0].graphql.user.edge_follow.count;
-      var followed_by_count = json.entry_data.ProfilePage[0].graphql.user.edge_followed_by.count;
-      var media_count = json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.count;
+      const follows_count = json.entry_data.ProfilePage[0].graphql.user.edge_follow.count;
+      const followed_by_count = json.entry_data.ProfilePage[0].graphql.user.edge_followed_by.count;
+      const media_count = json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.count;
 
+      let latestPostDate;
       if (media_count > 0) { // get the date of the latest post
         if (json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.edges[0]) {
-          var latestPostDate =
-            new Date(json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.edges[0].node.taken_at_timestamp * 1000)
-            // .toLocaleDateString();
+          latestPostDate = new Date(json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.edges[0].node.taken_at_timestamp * 1000);
+          // .toLocaleDateString();
         }
       }
 
       followed_by_viewer = requested_by_viewer ? null : followed_by_viewer;
       follows_viewer = has_requested_viewer ? null : follows_viewer;
 
-      var obj = {};
+      const obj = {};
       Object.assign(obj, {
         id,
         username,
@@ -115,13 +118,18 @@ instaUserInfo.getUserProfile = function (settings) {
         follows_count,
         followed_by_count,
         media_count,
-        latestPostDate
+        latestPostDate,
+        is_verified,
+        is_business_account,
+        business_category_name,
+        business_email,
+        business_phone_number,
       });
       resolve(obj);
     } else {
       console.log(`returned data in getUserProfile is not JSON - ${userId}/${link}`); // eslint-disable-line no-console
       console.log(data); // eslint-disable-line no-console
-      resolve({ //such user should be removed from result list?
+      resolve({ // such user should be removed from result list?
         username: instaDefOptions.you,
         full_name: 'NA',
         biography: 'The detailed user info was not returned by instagram',
@@ -130,7 +138,7 @@ instaUserInfo.getUserProfile = function (settings) {
         follows_viewer: false,
         follows_count: 0,
         followed_by_count: 0,
-        media_count: 0
+        media_count: 0,
       });
     }
   }
@@ -138,32 +146,30 @@ instaUserInfo.getUserProfile = function (settings) {
   function retryError(message, errorNumber, resolve, reject) {
     updateStatusDiv(message, 'red');
     instaTimeout.setTimeout(3000)
-      .then(function () {
-        return instaCountdown.doCountdown('status', errorNumber, 'Getting users profiles', +(new Date()).getTime() + instaDefOptions.retryInterval, vueStatus);
-      })
+      .then(() => instaCountdown.doCountdown('status', errorNumber, 'Getting users profiles', +(new Date()).getTime() + instaDefOptions.retryInterval, vueStatus))
       .then(() => {
-        console.log('Continue execution after HTTP error', errorNumber, new Date()); //eslint-disable-line no-console
+        console.log('Continue execution after HTTP error', errorNumber, new Date()); // eslint-disable-line no-console
         getUserProfile(username, resolve, reject);
       });
   }
 
   function errorGetUserProfile(error, resolve, reject) {
-    console.log(error); //eslint-disable-line no-console
-    var errorCode = error.response ? error.response.status : 0;
+    console.log(error); // eslint-disable-line no-console
+    const errorCode = error.response ? error.response.status : 0;
     if (errorCode > 0) {
-      console.log(`error response data - ${error.response.data}/${errorCode}`); //eslint-disable-line no-console
+      console.log(`error response data - ${error.response.data}/${errorCode}`); // eslint-disable-line no-console
     }
-    console.log(`Error making http request to get user profile ${username}, status - ${errorCode}`); //eslint-disable-line no-console
+    console.log(`Error making http request to get user profile ${username}, status - ${errorCode}`); // eslint-disable-line no-console
 
     if (errorCode === 404) {
-      console.log('>>>HTTP404 error getting the user profile.', username, new Date()); //eslint-disable-line no-console
+      console.log('>>>HTTP404 error getting the user profile.', username, new Date()); // eslint-disable-line no-console
       if (userId) {
-        console.log('>>>user id is defined - ' + userId); // eslint-disable-line no-console
-        promiseGetUsernameById(userId).then(function (username) {
+        console.log(`>>>user id is defined - ${userId}`); // eslint-disable-line no-console
+        promiseGetUsernameById(userId).then((username) => {
           console.log('>>>', userId, username); // eslint-disable-line no-console
           getUserProfile(username, resolve, reject);
-        }).catch(function () {
-          alert('The error trying to find a new username for - ' + userId);
+        }).catch(() => {
+          alert(`The error trying to find a new username for - ${userId}`);
         });
       } else {
         if (!silient) {
@@ -172,10 +178,9 @@ instaUserInfo.getUserProfile = function (settings) {
         reject();
       }
     } else if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
-      console.log(`HTTP${errorCode} error trying to get the user profile.`, new Date()); //eslint-disable-line no-console
-      var message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], errorCode, +instaDefOptions.retryInterval / 60000);
+      console.log(`HTTP${errorCode} error trying to get the user profile.`, new Date()); // eslint-disable-line no-console
+      const message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], errorCode, +instaDefOptions.retryInterval / 60000);
       retryError(message, errorCode, resolve, reject);
-      return;
     } else {
       alert(instaMessages.getMessage('ERRGETTINGUSER', username, errorCode));
       reject();
@@ -183,21 +188,20 @@ instaUserInfo.getUserProfile = function (settings) {
   }
 
   function getUserProfile(username, resolve, reject) {
+    const link = `https://www.instagram.com/${username}/`;
 
-    var link = `https://www.instagram.com/${username}/`;
-
-    var config = {
+    const config = {
       headers: {
         'x-instagram-ajax': 1,
-        'eferer': 'https://www.instagram.com/'
-      }
+        eferer: 'https://www.instagram.com/',
+      },
     };
-    axios.get(link, {}, config).
-      then(
-        response => {
+    axios.get(link, {}, config)
+      .then(
+        (response) => {
           successGetUserProfile(response.data, link, resolve);
         },
-        error => errorGetUserProfile(error, resolve, reject)
+        error => errorGetUserProfile(error, resolve, reject),
       );
   }
 };
