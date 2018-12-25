@@ -24,13 +24,14 @@ Free Chrome Extension [Helper Tools for Instagram.com](https://github.com/OllegK
         - [Constant HTTP400 error](#constant-http400-error)
         - [Constant HTTP502 error](#constant-http502-error)
     - [Refresh the inactive tab](#refresh-the-inactive-tab)
+- [How to Report Defects](#how-to-report-defects)
 - [Links](#links)
 - [Donations](#donations)
 
 
 # What the Extension Does
 
-1. Create a list of people following/followers your own or another user's account. If you want to create a list for another user's account, this account should be public, or you should follow it. **You will not be able to create a list for the private account you do not follow, so you need to be a follower of the private account if you want to generate a list for it.** The [created list](#create-a-list-of-followingfollowers) could be exported to Excel (XLSX/CSV). Invoked by clicking the "Get Insta Users" on extension's popup applet.
+1. Create a list of people following/followers your own or another user's account. If you want to create a list for another user's account, this account should be public, or you should follow it. **You will not be able to create a list for the private account you do not follow, so you need to be a follower of the private account if you want to generate a list for it.** The [created list](#create-a-list-of-followingfollowers) could be exported to Excel (supported output formats are XLSX and CSV). Invoked by clicking the "Get Insta Users" on extension's popup applet.
     * When you generated a list of somebody's else followers/following, you can [follow the people from the generated list](#follow-the-users-from-the-generated-list). Some of them will follow you back.
     * When you generated a list of your followers/following, you can also [unfollow some people](#unfollow-the-users-from-the-generated-list), e.g. who don't follow you. There is a way to keep some people - this option is not very comfortable now, and probably it will be improved in future versions. For now, you need to put the IDs of people who should be kept followed in the textarea control; pay attention that it should be precisely numeric ID (not username, as the user can easily change the username, however, ID is not changeable), and each ID should be put on the separate line.  
 2. Find [the common users](#find-the-common-users-between-two-instagram-accounts) between two Instagram accounts. Invoked by clicking the "Find Common Users" on extension's popup applet.
@@ -49,6 +50,7 @@ Click on it, and extension's popup applet appears.
 
 ![Extension's Popup Applet](https://raw.githubusercontent.com/OllegK/InstagramHelper/master/img/extPopupApplet.png)
 
+**Please also read [How to Make the Process Faster](#how-to-make-the-process-faster) and try to adjust the page size settings as described there.**
 
 # Create a List of Following/Followers
 
@@ -112,6 +114,8 @@ There are two supported output formats:
 * XLSX (default option)
 * CSV
 
+Please note that the Excel output includes some not-displayed in the grid information, e.g. indication if an user is verified, and also some attributes related to business accout: business account phone number, email, category, etc.
+
 ## How to Make the Process Faster
 
 Change the extension's options. Right click on the extension's icon in Chrome's toolbar, the context menu will be displayed. 
@@ -161,7 +165,7 @@ On the extension's popup applet specify the usernames to be compared in the foll
 
 Both users should be either public accounts, or the private accounts you follow. Click the "Find Common Users" button, and wait for the process to be finished.
 
-The generated list could be exported [into Excel](#export-the-generate-list-into-excel).
+The generated list could be exported [into Excel](#export-the-generate-list-into-excel). The output supported formats are XLSX/CSV.
 
 Read also about [options to make the process faster](#how-to-make-the-process-faster).
 
@@ -207,14 +211,14 @@ When it is completed, it displays all users who liked (also optionally commented
 
 If you are calculating the likes on your profile, it makes sense to click the "ADD FOLLOWERS!" button to find the followers who never liked your post. This button adds the followers of the user currently being calculated. *Note: it is open question should it add the followers of the user currently being calculated or the followers of the viewer (your followers); if your followers are added, it would help to find the engaged audience of another profile similar to you, and who is currently not following you.*
 
-The created list could be exported into Excel.
+The created list could be exported into Excel (XLSX/CSV).
 
 The [same delays' randomization rules](#randomization-of-delay-interval) as for Liker are effective.
 
 
 # Mass follow/unfollow
 
-On the extension's popup applet, click the "Follow/Unfollow!" button.
+On the extension's popup applet, click the "Follow/Unfollow!" button. Insert the list of the accounts to be followed/unfollowed into the text area and click the appropriate button to start the process. The input is either usernames or user ids. It is better and safer to use user id, as the extension needs to resolve the username to the user id anyway, and also the account's username could be easily changed by the account's owner, but user id always remains the same.
 
 The [same delays' randomization rules](#randomization-of-delay-interval) as for Liker are effective.
 
@@ -225,7 +229,7 @@ Read also the blog about possible following issues ["If you cannot follow more a
 
 # Mass block/unblock
 
-On the extension's popup applet, click the "Block/Unblock users!" button.
+On the extension's popup applet, click the "Block/Unblock users!" button. Insert the list of the accounts to be blocked/unblocked into the text area and click the appropriate button to start the process. The input is either usernames or user ids. It is better and safer to use user id, as the extension needs to resolve the username to the user id anyway, and also the account's username could be easily changed by the account's owner, but user id always remains the same.  
 
 The functionality and behavior is very similar to [Mass follow/unfollow](#mass-followunfollow).
 
@@ -266,6 +270,12 @@ If you meet constant HTTP502 error that doesn't disappear and you cannot also fe
 When a tab is not active for a long time, the Chrome could refresh it when it is activated again.
 
 Please try to keep the tab active during the process, it is also described [here](https://superuser.com/questions/1048029/disable-auto-refresh-tabs-in-chrome-desktop#comment1467739_1048029) how to disable this behavior.
+
+
+# How to Report Defects
+If you have an issue, please open the developer console window and check if there are error/warning messages there. To open the the developer console window on Chrome, use the keyboard shortcut `Ctrl+Shift+J` (on Windows) or `Ctrl+Option+J` (on Mac).
+
+Please provide the steps to reproduce the defect.
 
 
 # Links

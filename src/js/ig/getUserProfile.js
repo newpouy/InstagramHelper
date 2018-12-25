@@ -59,80 +59,17 @@ instaUserInfo.getUserProfile = function (settings) {
   }
 
   function successGetUserProfile(data, link, resolve) {
-    // handle the content is temporary not available
-    const json = JSON.parse(igUserProfileRegularExpression.exec(data)[1]);
-    if ((json.entry_data.ProfilePage) && (isJson(json.entry_data.ProfilePage[0].graphql.user))) {
-      // console.log(json);
-      let {
-        id,
-        username,
-        full_name,
-        profile_pic_url_hd,
-        biography,
-        connected_fb_page,
-        external_url,
-        followed_by_viewer,
-        follows_viewer,
-        is_private,
-        has_requested_viewer,
-        blocked_by_viewer,
-        requested_by_viewer,
-        has_blocked_viewer,
-        is_verified,
-        is_business_account,
-        business_category_name,
-        business_email,
-        business_phone_number,
-      } = json.entry_data.ProfilePage[0].graphql.user;
-      const follows_count = json.entry_data.ProfilePage[0].graphql.user.edge_follow.count;
-      const followed_by_count = json.entry_data.ProfilePage[0].graphql.user.edge_followed_by.count;
-      const media_count = json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.count;
-
-      let latestPostDate;
-      if (media_count > 0) { // get the date of the latest post
-        if (json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.edges[0]) {
-          latestPostDate = new Date(json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.edges[0].node.taken_at_timestamp * 1000);
-          // .toLocaleDateString();
-        }
-      }
-
-      followed_by_viewer = requested_by_viewer ? null : followed_by_viewer;
-      follows_viewer = has_requested_viewer ? null : follows_viewer;
-
-      const obj = {};
-      Object.assign(obj, {
-        id,
-        username,
-        full_name,
-        profile_pic_url_hd,
-        biography,
-        connected_fb_page,
-        external_url,
-        followed_by_viewer,
-        follows_viewer,
-        is_private,
-        has_requested_viewer,
-        blocked_by_viewer,
-        requested_by_viewer,
-        has_blocked_viewer,
-        follows_count,
-        followed_by_count,
-        media_count,
-        latestPostDate,
-        is_verified,
-        is_business_account,
-        business_category_name,
-        business_email,
-        business_phone_number,
-      });
-      resolve(obj);
-    } else {
-      console.log(`returned data in getUserProfile is not JSON - ${userId}/${link}`); // eslint-disable-line no-console
+    // getUserProfile.js:1 Uncaught (in promise) TypeError: Cannot read property '1' of null
+    // at a (getUserProfile.js:1)
+    // at axios.get.then.e (getUserProfile.js:1)
+    const arr = igUserProfileRegularExpression.exec(data);
+    if (!arr) {
+      console.log(`exec failed in getUserProfile - ${userId}/${link}`); // eslint-disable-line no-console
       console.log(data); // eslint-disable-line no-console
       resolve({ // such user should be removed from result list?
         username: instaDefOptions.you,
-        full_name: 'NA',
-        biography: 'The detailed user info was not returned by instagram',
+        full_name: 'NA0',
+        biography: 'The detailed user info was not returned by instagram (exec)',
         is_private: true,
         followed_by_viewer: false,
         follows_viewer: false,
@@ -140,6 +77,87 @@ instaUserInfo.getUserProfile = function (settings) {
         followed_by_count: 0,
         media_count: 0,
       });
+    } else {
+      const json = JSON.parse(arr[1]);
+      if ((json.entry_data.ProfilePage) && (isJson(json.entry_data.ProfilePage[0].graphql.user))) {
+        let {
+          id,
+          username,
+          full_name,
+          profile_pic_url_hd,
+          biography,
+          connected_fb_page,
+          external_url,
+          followed_by_viewer,
+          follows_viewer,
+          is_private,
+          has_requested_viewer,
+          blocked_by_viewer,
+          requested_by_viewer,
+          has_blocked_viewer,
+          is_verified,
+          is_business_account,
+          business_category_name,
+          business_email,
+          business_phone_number,
+        } = json.entry_data.ProfilePage[0].graphql.user;
+        const follows_count = json.entry_data.ProfilePage[0].graphql.user.edge_follow.count;
+        const followed_by_count = json.entry_data.ProfilePage[0].graphql.user.edge_followed_by.count;
+        const media_count = json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.count;
+
+        let latestPostDate;
+        if (media_count > 0) { // get the date of the latest post
+          if (json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.edges[0]) {
+            latestPostDate = new Date(json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.edges[0].node.taken_at_timestamp * 1000);
+            // .toLocaleDateString();
+          }
+        }
+
+        followed_by_viewer = requested_by_viewer ? null : followed_by_viewer;
+        follows_viewer = has_requested_viewer ? null : follows_viewer;
+
+        const obj = {};
+        Object.assign(obj, {
+          id,
+          username,
+          full_name,
+          profile_pic_url_hd,
+          biography,
+          connected_fb_page,
+          external_url,
+          followed_by_viewer,
+          follows_viewer,
+          is_private,
+          has_requested_viewer,
+          blocked_by_viewer,
+          requested_by_viewer,
+          has_blocked_viewer,
+          follows_count,
+          followed_by_count,
+          media_count,
+          latestPostDate,
+          is_verified,
+          is_business_account,
+          business_category_name,
+          business_email,
+          business_phone_number,
+        });
+        resolve(obj);
+      } else {
+        console.log(`returned data in getUserProfile is not JSON - ${userId}/${link}`); // eslint-disable-line no-console
+        console.log(data); // eslint-disable-line no-console
+        resolve({ // such user should be removed from result list?
+          username: instaDefOptions.you,
+          full_name: 'NA',
+          biography: 'The detailed user info was not returned by instagram (no-json)',
+          is_private: true,
+          followed_by_viewer: false,
+          follows_viewer: false,
+          follows_count: 0,
+          followed_by_count: 0,
+          media_count: 0,
+        });
+      }
     }
   }
 
