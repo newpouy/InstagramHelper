@@ -1,5 +1,5 @@
+/* exported GetPosts */
 /* globals GetFeed, GetProfile, GetPostInfo, instaUserInfo, instaDefOptions */
-/* jshint -W106 */
 
 const GetPosts = function (settings) {
   'use strict';

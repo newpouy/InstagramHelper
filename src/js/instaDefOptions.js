@@ -1,7 +1,6 @@
 /* exported instaDefOptions */
-/* jshint -W106 */
 
-var instaDefOptions = (function () {
+const instaDefOptions = (function () {
   return {
     you: '<<YOU>>',
     defDelay: 2000,
@@ -23,7 +22,7 @@ var instaDefOptions = (function () {
       follows: '17874545323001329',
       feed: '17842794232208280',
       profile: '17888483320059182',
-      likes: '17864450716183058'
+      likes: '17864450716183058',
     },
     queryHash: {
       followed_by: '37479f2b8209594dde7facb0d904896a',
@@ -31,7 +30,7 @@ var instaDefOptions = (function () {
       feed: '485c25657308f08317c1e4b967356828',
       profile: '42323d64886122307be10013ad2dcc44',
       likes: '1cb6ec562846122743b61e492c85999f',
-      comments: '33ba35852cb50da46f5b5e889df7d159'
+      comments: '33ba35852cb50da46f5b5e889df7d159',
 
     },
     httpErrorMap: {
@@ -42,7 +41,7 @@ var instaDefOptions = (function () {
       500: 'HTTP50X',
       502: 'HTTP50X',
       503: 'HTTP50X',
-      504: 'HTTP50X'
-    }
+      504: 'HTTP50X',
+    },
   };
 }());

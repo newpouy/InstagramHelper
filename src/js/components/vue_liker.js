@@ -172,7 +172,7 @@ const liker = new Vue({ // eslint-disable-line no-unused-vars
       const i = media.length;
       if (i > index) { // we still have something to like
         const obj = media[index];
-        const id = obj.node.id;
+        const { id } = obj.node;
         if (this.toLike(obj)) {
           instaPosts.isNotLiked(obj).then((result) => {
             if (result) { // not yet liked
