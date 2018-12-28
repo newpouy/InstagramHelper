@@ -1,47 +1,46 @@
 /* globals GetFeed, GetProfile, GetPostInfo, instaUserInfo, instaDefOptions */
 /* jshint -W106 */
 
-var GetPosts = function (settings) { //eslint-disable-line no-unused-vars
-
+const GetPosts = function (settings) {
   'use strict';
 
-  var instaPosts, postInfo;
+  let instaPosts;
+  let postInfo;
 
-  var {
-    pageSize, mode, updateStatusDiv, end_cursor, vueStatus, userName, userId
+  const {
+    mode, updateStatusDiv, end_cursor, vueStatus, userName, userId,
   } = settings;
 
-  pageSize = Math.min(pageSize, instaDefOptions.maxPageSizeForFeed); //to avoid HTTP400 error
+  let { pageSize } = settings;
 
-  var init = {
-    'likeFeed': () => {
-      instaPosts = new GetFeed({ updateStatusDiv: updateStatusDiv, end_cursor: end_cursor, vueStatus: vueStatus, pageSize : pageSize });
+  pageSize = Math.min(pageSize, instaDefOptions.maxPageSizeForFeed); // to avoid HTTP400 error
+
+  const init = {
+    likeFeed: () => {
+      instaPosts = new GetFeed({
+        updateStatusDiv, end_cursor, vueStatus, pageSize,
+      });
     },
-    'likeProfile': () => {
-      instaPosts =
-        new GetProfile({ updateStatusDiv: updateStatusDiv, end_cursor: end_cursor, userId: userId, pageSize: pageSize, vueStatus: vueStatus });
-      postInfo =
-        new GetPostInfo({ updateStatusDiv: updateStatusDiv, vueStatus: vueStatus });
-    }
+    likeProfile: () => {
+      instaPosts = new GetProfile({
+        updateStatusDiv, end_cursor, userId, pageSize, vueStatus,
+      });
+      postInfo = new GetPostInfo({ updateStatusDiv, vueStatus });
+    },
   };
 
-  var get = {
-    'likeFeed': (restart) => {
-      return instaPosts.getFeed(restart);
-    },
-    'likeProfile': () => {
-      return instaPosts.getProfile();
-    }
+  const get = {
+    likeFeed: restart => instaPosts.getFeed(restart),
+    likeProfile: () => instaPosts.getProfile(),
   };
 
-  init[mode]();  //initialize the needed class
+  init[mode](); // initialize the needed class
 
-  function getTotal() { //only for getProfile
+  function getTotal() { // only for getProfile
     if (typeof instaPosts.getTotal === 'function') {
       return instaPosts.getTotal();
-    } else {
-      return -1;
     }
+    return -1;
   }
 
   function getPosts(restart) {
@@ -51,7 +50,7 @@ var GetPosts = function (settings) { //eslint-disable-line no-unused-vars
   function resolveUserName() {
     return new Promise((resolve, reject) => {
       if (('likeProfile' === mode) && ('' === userId)) {
-        instaUserInfo.getUserProfile({ username: userName }).then(obj => {
+        instaUserInfo.getUserProfile({ username: userName }).then((obj) => {
           instaPosts.setUserId(obj.id);
           resolve(obj);
         }, () => reject());
@@ -62,12 +61,12 @@ var GetPosts = function (settings) { //eslint-disable-line no-unused-vars
   }
 
   function isNotLiked(media) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       if ('likeProfile' === mode) {
-        postInfo.getPostInfo(media.node.shortcode).then(obj => {
+        postInfo.getPostInfo(media.node.shortcode).then((obj) => {
           resolve(!obj.viewer_has_liked);
         });
-      } else { //liking the feed
+      } else { // liking the feed
         resolve(!media.node.viewer_has_liked);
       }
     });
@@ -78,11 +77,10 @@ var GetPosts = function (settings) { //eslint-disable-line no-unused-vars
   }
 
   return {
-    getPosts: getPosts,
-    resolveUserName: resolveUserName,
-    isNotLiked: isNotLiked,
-    hasMore: hasMore,
-    getTotal: getTotal
+    getPosts,
+    resolveUserName,
+    isNotLiked,
+    hasMore,
+    getTotal,
   };
-
 };
