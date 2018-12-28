@@ -9,7 +9,7 @@ const instaUserInfo = function () {
 instaUserInfo.getUserProfile = function (settings) {
   'use strict';
 
-  const {
+  let {
     username, userId, updateStatusDiv, silient, vueStatus,
   } = settings;
 
@@ -32,7 +32,9 @@ instaUserInfo.getUserProfile = function (settings) {
           if ((arr || []).length > 0) {
             resolve(arr[1]);
           } else {
-            reject();
+            // reject();
+            // We are here if "Sorry, this page isn't available."
+            resolve();
           }
         },
         error => function (error) {
@@ -185,7 +187,22 @@ instaUserInfo.getUserProfile = function (settings) {
         console.log(`>>>user id is defined - ${userId}`); // eslint-disable-line no-console
         promiseGetUsernameById(userId).then((username) => {
           console.log('>>>', userId, username); // eslint-disable-line no-console
-          getUserProfile(username, resolve, reject);
+          if (username) {
+            getUserProfile(username, resolve, reject);
+          } else {
+            // need to resolve here as it comes from Content Unavailable - Sorry, this page isn't available.
+            resolve({ // such user should be removed from result list?
+              username: instaDefOptions.you,
+              full_name: 'NA1',
+              biography: 'The detailed user info was not returned by instagram (content unavailable)',
+              is_private: true,
+              followed_by_viewer: false,
+              follows_viewer: false,
+              follows_count: 0,
+              followed_by_count: 0,
+              media_count: 0,
+            });
+          }
         }).catch(() => {
           alert(`The error trying to find a new username for - ${userId}`);
         });

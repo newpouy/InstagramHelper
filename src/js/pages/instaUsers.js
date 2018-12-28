@@ -574,15 +574,6 @@ $(() => {
         arr = myData; // if we do not have filtered data set?
       }
 
-      const wb = XLSX.utils.book_new();
-      wb.Props = {
-        Title: 'Users Title',
-        Subject: 'Users Subject',
-        Author: 'Instagram Helper',
-        CreatedDate: new Date(),
-      };
-      wb.SheetNames.push('UsersSheet');
-
       const headers = [
         'id',
         'username',
@@ -609,18 +600,35 @@ $(() => {
         'is_verified',
       ];
 
-      const ws = XLSX.utils.json_to_sheet(arr, { header: headers, cellDates: true });
-      // console.log(ws['!cols']);
+      if ('xlsx' === bookType) {
+        const wb = XLSX.utils.book_new();
+        wb.Props = {
+          Title: 'Users Title',
+          Subject: 'Users Subject',
+          Author: 'Instagram Helper',
+          CreatedDate: new Date(),
+        };
+        wb.SheetNames.push('UsersSheet');
 
-      const endRow = XLSX.utils.decode_range(ws['!ref']).e.r + 1;
-      // ws['H2'].f = "HYPERLINK('http://www.test.com', 'U')";
-      for (let i = 2; i <= endRow; i += 1) { // format URL for user profile
-        XLSX.utils.cell_set_hyperlink(ws[`D${i}`], ws[`D${i}`].v, ws[`D${i}`].v);
+        const ws = XLSX.utils.json_to_sheet(arr, { header: headers, cellDates: true });
+        // console.log(ws['!cols']);
+
+        const endRow = XLSX.utils.decode_range(ws['!ref']).e.r + 1;
+        // ws['H2'].f = "HYPERLINK('http://www.test.com', 'U')";
+        for (let i = 2; i <= endRow; i += 1) { // format URL for user profile
+          XLSX.utils.cell_set_hyperlink(ws[`D${i}`], ws[`D${i}`].v, ws[`D${i}`].v);
+        }
+
+        wb.Sheets.UsersSheet = ws;
+        const wbout = XLSX.write(wb, { bookType, type: 'binary' });
+        saveAs(new Blob([exportUtils.s2ab(wbout)], { type: 'application/octet-stream' }), fileName);
+
+      } else { // THIS IS CVS
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(arr);
+        XLSX.utils.book_append_sheet(wb, ws, 'output');
+        XLSX.writeFile(wb, fileName);
       }
-
-      wb.Sheets.UsersSheet = ws;
-      const wbout = XLSX.write(wb, { bookType, type: 'binary' });
-      saveAs(new Blob([exportUtils.s2ab(wbout)], { type: 'application/octet-stream' }), fileName);
     });
 
     $('#massFollow').on('click', () => {
@@ -704,6 +712,7 @@ $(() => {
         min: 0,
         max: followed_by_count,
         goal: followed_by_count,
+        easing: 'linear',
         labelCallback(n) {
           const percentage = this.getPercentage(n);
           return `Followed by:${obj.followed_by_processed}/${followed_by_count}/${percentage}%`;
@@ -727,6 +736,7 @@ $(() => {
         min: 0,
         max: follows_count,
         goal: follows_count,
+        easing: 'linear',
         labelCallback(n) {
           const percentage = this.getPercentage(n);
           return `Follows:${obj.follows_processed}/${follows_count}/${percentage}%`;
@@ -807,6 +817,7 @@ $(() => {
       min: 0,
       max: arr.length,
       goal: arr.length,
+      easing: 'linear',
       labelCallback(n) {
         const percentage = this.getPercentage(n);
         return `Users: ${obj.processedUsers}/${arr.length}/${percentage}%`;
