@@ -1,5 +1,5 @@
 /* exported GetPosts */
-/* globals GetFeed, GetProfile, GetPostInfo, instaUserInfo, instaDefOptions */
+/* globals GetFeed, GetProfile, GetHashTag, GetPostInfo, instaUserInfo, instaDefOptions */
 
 const GetPosts = function (settings) {
   'use strict';
@@ -8,7 +8,7 @@ const GetPosts = function (settings) {
   let postInfo;
 
   const {
-    mode, updateStatusDiv, end_cursor, vueStatus, userName, userId,
+    mode, updateStatusDiv, end_cursor, vueStatus, userName, userId, hashTag
   } = settings;
 
   let { pageSize } = settings;
@@ -18,7 +18,7 @@ const GetPosts = function (settings) {
   const init = {
     likeFeed: () => {
       instaPosts = new GetFeed({
-        updateStatusDiv, end_cursor, vueStatus, pageSize,
+        updateStatusDiv, end_cursor, pageSize, vueStatus,
       });
     },
     likeProfile: () => {
@@ -27,11 +27,17 @@ const GetPosts = function (settings) {
       });
       postInfo = new GetPostInfo({ updateStatusDiv, vueStatus });
     },
+    likeHashTag: () => {
+      instaPosts = new GetHashTag({
+        updateStatusDiv, end_cursor, hashTag, pageSize, vueStatus,
+      });
+    },
   };
 
   const get = {
     likeFeed: restart => instaPosts.getFeed(restart),
     likeProfile: () => instaPosts.getProfile(),
+    likeHashTag: restart => instaPosts.getHashTag(restart)
   };
 
   init[mode](); // initialize the needed class

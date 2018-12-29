@@ -1,17 +1,19 @@
+/* exported GetProfile */
 /* globals alert, axios, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
-/* jshint -W106 */
 
-var GetProfile = function (settings) { //eslint-disable-line no-unused-vars
-
+const GetProfile = function (settings) {
   'use strict';
 
-  var has_next_page;
-  var totalMedia;
+  let has_next_page;
+  let totalMedia;
 
-  var {
-    userId, updateStatusDiv, end_cursor, pageSize, vueStatus
+  const {
+    updateStatusDiv, vueStatus,
   } = settings;
 
+  let {
+    userId, pageSize, end_cursor,
+  } = settings;
   pageSize = Math.min(pageSize, instaDefOptions.maxPageSizeForFeed); // to avoid HTTP400
 
   function setUserId(value) {
@@ -19,9 +21,9 @@ var GetProfile = function (settings) { //eslint-disable-line no-unused-vars
   }
 
   function getProfile() {
-    return new Promise(function (resolve, reject) {
+    return new Promise(((resolve, reject) => {
       getProfileInternal(resolve, reject);
-    });
+    }));
   }
 
   function hasMore() {
@@ -42,31 +44,30 @@ var GetProfile = function (settings) { //eslint-disable-line no-unused-vars
   function retryError(message, errorNumber, resolve, reject) {
     updateStatusDiv(message, 'red');
     instaTimeout.setTimeout(3000)
-      .then(function () {
-        return instaCountdown.doCountdown(
-          'status',
-          errorNumber,
-          'Getting the posts',
-          +(new Date()).getTime() + instaDefOptions.retryInterval,
-          vueStatus);
-      })
+      .then(() => instaCountdown.doCountdown(
+        'status',
+        errorNumber,
+        'Getting the posts',
+        +(new Date()).getTime() + instaDefOptions.retryInterval,
+        vueStatus,
+      ))
       .then(() => {
-        console.log('Continue execution after HTTP error', errorNumber, new Date()); //eslint-disable-line no-console
+        console.log('Continue execution after HTTP error', errorNumber, new Date()); // eslint-disable-line no-console
         getProfileInternal(resolve, reject);
       });
   }
 
   function errorGetProfile(error, resolve, reject) {
-    console.log(error); //eslint-disable-line no-console
-    var errorCode = error.response ? error.response.status : 0;
+    console.log(error); // eslint-disable-line no-console
+    const errorCode = error.response ? error.response.status : 0;
     if (errorCode > 0) {
-      console.log(`error response data - ${JSON.stringify(error.response.data)}/${errorCode}`); //eslint-disable-line no-console
+      console.log(`error response data - ${JSON.stringify(error.response.data)}/${errorCode}`); // eslint-disable-line no-console
     }
-    console.log(`Error making http request to get the user profile, status - ${errorCode}`); //eslint-disable-line no-console
+    console.log(`Error making http request to get the user profile, status - ${errorCode}`); // eslint-disable-line no-console
 
     if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
-      console.log(`HTTP${errorCode} error trying to get the user profile.`, new Date()); //eslint-disable-line no-console
-      var message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], errorCode, +instaDefOptions.retryInterval / 60000);
+      console.log(`HTTP${errorCode} error trying to get the user profile.`, new Date()); // eslint-disable-line no-console
+      const message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], errorCode, +instaDefOptions.retryInterval / 60000);
       retryError(message, errorCode, resolve, reject);
       return;
     }
@@ -76,35 +77,33 @@ var GetProfile = function (settings) { //eslint-disable-line no-unused-vars
   }
 
   function getProfileInternal(resolve, reject) {
-    var link = 'https://www.instagram.com/graphql/query/';
-    var config = {
+    const link = 'https://www.instagram.com/graphql/query/';
+    const config = {
       headers: {
         'x-instagram-ajax': 1,
-        'eferer': 'https://www.instagram.com/' //+ obj.userName + '/'
-      }
+        eferer: 'https://www.instagram.com/', // + obj.userName + '/'
+      },
     };
     axios.get(link, {
       params: {
-        //query_id: instaDefOptions.queryId.profile,
         query_hash: instaDefOptions.queryHash.profile,
         variables: JSON.stringify({
-          'id': userId,
-          'first': pageSize,
-          'after': end_cursor
-        })
-      }
-    }, config).
-      then(
+          id: userId,
+          first: pageSize,
+          after: end_cursor,
+        }),
+      },
+    }, config)
+      .then(
         response => successGetProfile(response, resolve),
-        error => errorGetProfile(error, resolve, reject)
+        error => errorGetProfile(error, resolve, reject),
       );
   }
 
   return {
-    setUserId: setUserId,
-    getProfile: getProfile,
-    hasMore: hasMore,
-    getTotal: getTotal
+    setUserId,
+    getProfile,
+    hasMore,
+    getTotal,
   };
-
 };

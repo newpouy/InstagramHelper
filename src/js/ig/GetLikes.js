@@ -1,5 +1,4 @@
 /* globals alert, axios, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
-/* jshint -W106 */
 
 var GetLikes = function (settings) { //eslint-disable-line no-unused-vars
 
@@ -77,7 +76,6 @@ var GetLikes = function (settings) { //eslint-disable-line no-unused-vars
     };
     axios.get(link, {
       params: {
-        //query_id: instaDefOptions.queryId.likes,
         query_hash: instaDefOptions.queryHash.likes,
         variables: JSON.stringify({
           'shortcode': shortCode,

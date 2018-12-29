@@ -17,13 +17,6 @@ const instaDefOptions = (function () {
     retryInterval: 180000,
     regFindUser: /link rel="canonical" href="https:\/\/www.instagram.com\/([^"/]*)\/?"/i,
     regExtractUserName: /instagram.com.*\/(?:\?taken-by=)?([^/?]+)\/?/, // fixes #10, respects the URL with parameters
-    queryId: {
-      followed_by: '17851374694183129',
-      follows: '17874545323001329',
-      feed: '17842794232208280',
-      profile: '17888483320059182',
-      likes: '17864450716183058',
-    },
     queryHash: {
       followed_by: '37479f2b8209594dde7facb0d904896a',
       follows: '58712303d941c6855d4e888c5f0cd22f',
@@ -31,7 +24,7 @@ const instaDefOptions = (function () {
       profile: '42323d64886122307be10013ad2dcc44',
       likes: '1cb6ec562846122743b61e492c85999f',
       comments: '33ba35852cb50da46f5b5e889df7d159',
-
+      hashTag: 'f92f56d47dc7a55b606908374b43a314',
     },
     httpErrorMap: {
       0: 'NOTCONNECTED',

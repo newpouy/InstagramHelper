@@ -21,12 +21,14 @@
             <div style="height: 3em;" v-bind:style="{ color : statusColor}">
               <strong>{{ status }}</strong>
             </div>
-            <strong>Started at {{startDate}}/Liked {{liked}}/Met already liked {{alreadyLiked}}/Fetched posts {{fetched}}/fetching
+            <strong>Started at {{startDate}}/Liked {{liked}}/Met already liked {{alreadyLiked}}/Fetched posts
+              {{fetched}}/fetching
               feed restarted {{restarted}}</strong>
           </v-flex>
           <v-flex xs12 v-if="!isInProgress">
             <strong>
-              You can like the posts in your feed. It is useful when you are following 1k+ users, and you want to make them all happy :)
+              You can like the posts in your feed. It is useful when you are following 1k+ users, and you want to make
+              them all happy :)
               You can also like the posts of the specific user.
             </strong>
           </v-flex>
@@ -35,8 +37,11 @@
             <v-radio-group label="I want to like..." v-model="whatToLike" :disabled="isInProgress" v-bind:class="{ disabled: isInProgress }">
               <v-radio :key="1" label="The posts in my feed" value="likeFeed"></v-radio>
               <v-radio :key="2" label="The posts of " value="likeProfile"></v-radio>
-              <v-text-field label="username" type="string" v-validate="whatToLike == 'likeProfile' ? 'required' : ''" v-model="userToLike"
-                v-if="whatToLike == 'likeProfile'" v-on:blur="validateUserProfile($event)"></v-text-field>
+              <v-text-field label="username" type="string" v-validate="whatToLike == 'likeProfile' ? 'required' : ''"
+                v-model="userToLike" v-if="whatToLike == 'likeProfile'" v-on:blur="validateUserProfile($event)"></v-text-field>
+              <v-radio :key="3" label="The hashtag " value="likeHashTag"></v-radio>
+              <v-text-field label="hashtag" type="string" v-validate="whatToLike == 'likeHashTag' ? 'required' : ''"
+                v-model="hashTagToLike" v-if="whatToLike == 'likeHashTag'"></v-text-field>
             </v-radio-group>
           </v-flex>
           <v-flex xs4>
@@ -60,17 +65,21 @@
             -->
             <v-layout row wrap>
               <v-flex md6>
-                <v-text-field @input="checkDelay()" label="Delay between requests, ms" type="number" min=100 step=100 v-model.number="delay"></v-text-field>
+                <v-text-field @input="checkDelay()" label="Delay between requests, ms" type="number" min=100 step=100
+                  v-model.number="delay"></v-text-field>
               </v-flex>
               <v-flex md6>
                 <v-tooltip bottom>
-                  <v-text-field slot="activator" @input="checkRndDelay()" label="Random Delay, %" type="number" min=0 step=1 max=100 v-model.number="rndDelay"></v-text-field>
-                  <span>Adds random part to the specified delay, max value to be added to the specified delay - {{Math.floor(rndDelay/100*delay)}}ms</span>
+                  <v-text-field slot="activator" @input="checkRndDelay()" label="Random Delay, %" type="number" min=0
+                    step=1 max=100 v-model.number="rndDelay"></v-text-field>
+                  <span>Adds random part to the specified delay, max value to be added to the specified delay -
+                    {{Math.floor(rndDelay/100*delay)}}ms</span>
                 </v-tooltip>
               </v-flex>
             </v-layout>
 
-            <v-btn id="start" :disabled="startButtonDisabled" color="primary" v-on:click="startButtonClick">Like the posts!</v-btn>
+            <v-btn id="start" :disabled="startButtonDisabled" color="primary" v-on:click="startButtonClick">Like the
+              posts!</v-btn>
             <v-btn :disabled="!isInProgress" color="primary" v-on:click="stop=true">Stop it!</v-btn>
             <v-text-field id="log_text_area" rows="10" label="Log" multi-line v-model="log"></v-text-field>
           </v-flex>
@@ -84,6 +93,7 @@
   <script src="js/ig/GetPosts.js"></script>
   <script src="js/ig/GetFeed.js"></script>
   <script src="js/ig/GetProfile.js"></script>
+  <script src="js/ig/GetHashTag.js"></script>
   <script src="js/ig/GetPostInfo.js"></script>
   <script src="js/ig/getUserProfile.js"></script>
   <script src="js/ig/like.js"></script>

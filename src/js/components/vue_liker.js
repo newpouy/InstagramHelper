@@ -1,16 +1,14 @@
 /* globals Vue, chrome, _gaq, instaDefOptions, instaLike, GetPosts */
 
-const liker = new Vue({ // eslint-disable-line no-unused-vars
+const liker = new Vue({
   el: '#app',
   created() {
-    console.log('liker created...'); // eslint-disable-line no-console
     this.viewerUserId = '';
     this.viewerUserName = '';
     this.csrfToken = '';
     this.startDate = null; // timestamp when process was started
   },
   mounted: () => {
-    // console.log('liker mounted...'); // eslint-disable-line no-console
     _gaq.push(['_trackPageview']);
 
     chrome.runtime.onMessage.addListener((request) => {
@@ -48,8 +46,9 @@ const liker = new Vue({ // eslint-disable-line no-unused-vars
     statusColor: '',
     log: '', // the text displayed in text are
 
-    whatToLike: 'likeFeed', // radiobutton - like your feed or posts of another user (likeFeed or likeProfile)
+    whatToLike: 'likeFeed', // radiobutton - like your feed or posts of another user (likeFeed, likeProfile, or likeHashTag)
     userToLike: '',
+    hashTagToLike: '',
     allPostsFetched: false, // when all posts from user's profile are fetched
 
     skipVideo: true, // do not like video
@@ -77,7 +76,8 @@ const liker = new Vue({ // eslint-disable-line no-unused-vars
     },
     startButtonDisabled() {
       return this.isInProgress // process is not running
-        || (('likeProfile' === this.whatToLike) && ('' === this.userToLike)); // profile is specified when profile should be liked
+        || (('likeProfile' === this.whatToLike) && ('' === this.userToLike)) // profile is not specified when profile should be liked
+        || (('likeHashTag' === this.whatToLike) && ('' === this.hashTagToLike)) //hashtag is not specified when hashtag should be liked
     },
   },
   methods: {
@@ -224,6 +224,7 @@ const liker = new Vue({ // eslint-disable-line no-unused-vars
         vueStatus: this,
         userName: this.userToLike,
         userId: this.viewerUserName === this.userToLike ? this.viewerUserId : '',
+        hashTag: this.hashTagToLike,
       });
 
       instaPosts.resolveUserName().then(() => {

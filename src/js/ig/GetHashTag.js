@@ -1,13 +1,13 @@
-/* exported GetFeed */
+/* exported GetHashTag */
 /* globals alert, axios, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
 
-const GetFeed = function (settings) {
+const GetHashTag = function (settings) {
   'use strict';
 
   let has_next_page;
 
   const {
-    updateStatusDiv, vueStatus,
+    updateStatusDiv, vueStatus, hashTag,
   } = settings;
 
   let {
@@ -15,12 +15,12 @@ const GetFeed = function (settings) {
   } = settings;
   pageSize = Math.min(pageSize, instaDefOptions.maxPageSizeForFeed); // to avoid HTTP400
 
-  function getFeed(restart) {
+  function getHashTag(restart) {
     if (restart) {
       end_cursor = null;
     }
     return new Promise(((resolve, reject) => {
-      getFeedInternal(resolve, reject);
+      getHashTagInternal(resolve, reject);
     }));
   }
 
@@ -28,10 +28,10 @@ const GetFeed = function (settings) {
     return has_next_page;
   }
 
-  function successGetFeed(data, resolve) {
-    has_next_page = data.data.data.user.edge_web_feed_timeline.page_info.has_next_page;
-    end_cursor = data.data.data.user.edge_web_feed_timeline.page_info.end_cursor;
-    resolve(data.data.data.user.edge_web_feed_timeline.edges);
+  function successGetHashTag(data, resolve) {
+    has_next_page = data.data.data.hashtag.edge_hashtag_to_media.page_info.has_next_page;
+    end_cursor = data.data.data.hashtag.edge_hashtag_to_media.page_info.end_cursor;
+    resolve(data.data.data.hashtag.edge_hashtag_to_media.edges);
   }
 
   function retryError(message, errorNumber, resolve, reject) {
@@ -40,23 +40,23 @@ const GetFeed = function (settings) {
       .then(() => instaCountdown.doCountdown(
         'status',
         errorNumber,
-        'Getting your feed',
+        `Getting the ${hashTag} hashtag`,
         +(new Date()).getTime() + instaDefOptions.retryInterval,
         vueStatus,
       ))
       .then(() => {
         console.log('Continue execution after HTTP error', errorNumber, new Date()); // eslint-disable-line no-console
-        getFeedInternal(resolve, reject); // 20171110: changed to internal
+        getHashTagInternal(resolve, reject); // 20171110: changed to internal
       });
   }
 
-  function errorGetFeed(error, resolve, reject) {
+  function errorGetHashTag(error, resolve, reject) {
     console.log(error); // eslint-disable-line no-console
     const errorCode = error.response ? error.response.status : 0;
     if (errorCode > 0) {
       console.log(`error response data - ${error.response.data}/${errorCode}`); // eslint-disable-line no-console
     }
-    console.log(`Error making http request to get your feed, status - ${errorCode}`); // eslint-disable-line no-console
+    console.log(`Error making http request to get ${hashTag} hashtag, status - ${errorCode}`); // eslint-disable-line no-console
 
     if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
       console.log(`HTTP${errorCode} error trying to get your feed.`, new Date()); // eslint-disable-line no-console
@@ -65,39 +65,38 @@ const GetFeed = function (settings) {
       return;
     }
 
-    alert(instaMessages.getMessage('ERRFETCHINGUSER', errorCode));
+    alert(instaMessages.getMessage('ERRFETCHINGHASHTAG', errorCode));
     reject();
   }
 
-  function getFeedInternal(resolve, reject) {
+  function getHashTagInternal(resolve, reject) {
     const link = 'https://www.instagram.com/graphql/query/';
 
     const config = {
       headers: {
         'x-instagram-ajax': 1,
-        eferer: 'https://www.instagram.com/', // + obj.userName + '/'
+        eferer: 'https://www.instagram.com/',
       },
     };
     axios.get(link, {
       params: {
-        query_hash: instaDefOptions.queryHash.feed,
+        query_hash: instaDefOptions.queryHash.hashTag,
         variables: JSON.stringify({
-          fetch_media_item_count: pageSize,
-          fetch_media_item_cursor: end_cursor,
-          fetch_comment_count: 0,
-          fetch_like: 0,
-          has_stories: false,
+          tag_name: hashTag,
+          show_ranked: false,
+          after: end_cursor,
+          first: pageSize,
         }),
       },
     }, config)
       .then(
-        response => successGetFeed(response, resolve),
-        error => errorGetFeed(error, resolve, reject),
+        response => successGetHashTag(response, resolve),
+        error => errorGetHashTag(error, resolve, reject),
       );
   }
 
   return {
-    getFeed,
+    getHashTag,
     hasMore,
   };
 };
