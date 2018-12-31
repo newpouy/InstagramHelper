@@ -187,7 +187,7 @@ var follow = new Vue({ // eslint-disable-line no-unused-vars
 
         try {
           var obj = await instaUserInfo.getUserProfile({
-            username: userId, updateStatusDiv: this.updateStatusDiv, silient: true, vueStatus: this
+            username: userId, updateStatusDiv: this.updateStatusDiv, silent: true, vueStatus: this
           });
         } catch (e) {
           this.updateStatusDiv(`${userId} error 404 resolving the username`);

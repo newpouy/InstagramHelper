@@ -106,7 +106,7 @@ const block = new Vue({ // eslint-disable-line no-unused-vars
             this.updateStatusDiv(`${userId} does not look as user id, maybe username, resolve username to userid`);
             try {
               const obj = await instaUserInfo.getUserProfile({
-                username: userId, updateStatusDiv: this.updateStatusDiv, silient: true, vueStatus: this,
+                username: userId, updateStatusDiv: this.updateStatusDiv, silent: true, vueStatus: this,
               });
               userId = obj.id;
             } catch (e) {

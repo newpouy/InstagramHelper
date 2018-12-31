@@ -10,7 +10,8 @@ instaUserInfo.getUserProfile = function (settings) {
   'use strict';
 
   let {
-    username, userId, updateStatusDiv, silient, vueStatus,
+    // silent is set to true from vue_block, vue_follow
+    username, userId, updateStatusDiv, silent, vueStatus,
   } = settings;
 
   return new Promise(((resolve, reject) => {
@@ -164,13 +165,19 @@ instaUserInfo.getUserProfile = function (settings) {
   }
 
   function retryError(message, errorNumber, resolve, reject) {
-    updateStatusDiv(message, 'red');
-    instaTimeout.setTimeout(3000)
-      .then(() => instaCountdown.doCountdown('status', errorNumber, 'Getting users profiles', +(new Date()).getTime() + instaDefOptions.retryInterval, vueStatus))
-      .then(() => {
-        console.log('Continue execution after HTTP error', errorNumber, new Date()); // eslint-disable-line no-console
-        getUserProfile(username, resolve, reject);
-      });
+    if (typeof updateStatusDiv === 'function') {
+      updateStatusDiv(message, 'red');
+      instaTimeout.setTimeout(3000)
+        .then(() => instaCountdown.doCountdown('status', errorNumber, 'Getting users profiles', +(new Date()).getTime() + instaDefOptions.retryInterval, vueStatus))
+        .then(() => {
+          console.log('Continue execution after HTTP error', errorNumber, new Date()); // eslint-disable-line no-console
+          getUserProfile(username, resolve, reject);
+        });
+    } else {
+      // this is from the popup applet?
+      alert(`Error ${errorNumber} trying to get the detailed user info for ${username}. Please try again later`);
+      reject();
+    }
   }
 
   function errorGetUserProfile(error, resolve, reject) {
@@ -207,7 +214,7 @@ instaUserInfo.getUserProfile = function (settings) {
           alert(`The error trying to find a new username for - ${userId}`);
         });
       } else {
-        if (!silient) {
+        if (!silent) { // silent is set to true from vue_follow and vue_block
           alert('404 error trying to retrieve user profile, userid is not specified, check if username is correct');
         }
         reject();
@@ -222,8 +229,8 @@ instaUserInfo.getUserProfile = function (settings) {
     }
   }
 
-  function getUserProfile(username, resolve, reject) {
-    const link = `https://www.instagram.com/${username}/`;
+  function getUserProfile(name, resolve, reject) {
+    const link = `https://www.instagram.com/${name}/`;
 
     const config = {
       headers: {
