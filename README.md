@@ -2,6 +2,8 @@
 
 Free Chrome Extension [Helper Tools for Instagram.com](https://github.com/OllegK/InstagramHelper).
 
+# Please fill the [Helper Tools for Instagram.com Survey](https://goo.gl/forms/yoLiFqAPtwH41HlH3). It takes just several minutes and will help to make it better.
+
 
 - [What the Extension Does](#what-the-extension-does)
 - [How to start](#how-to-start)
