@@ -68,8 +68,8 @@ const liker = new Vue({
       } if ((this.stopCriterion === 'amountPosts') && (this.amountToLike <= this.liked)) {
         this.updateStatusDiv(`${new Date().toLocaleString()}/The process is stopped because ${this.liked} posts were liked`);
         return true;
-      } if ((this.whatToLike === 'likeProfile') && (this.allPostsFetched)) {
-        this.updateStatusDiv(`${new Date().toLocaleString()}/The process is stopped because no more posts in the user's profile`);
+      } if (((this.whatToLike === 'likeProfile') || (this.whatToLike === 'likeHashTag')) && (this.allPostsFetched)) {
+        this.updateStatusDiv(`${new Date().toLocaleString()}/The process is stopped because no more posts to fetch`);
         return true;
       }
       return false;
@@ -87,9 +87,9 @@ const liker = new Vue({
       return val;
     },
     checkDelay() {
-      if (!this.delay || (this.delay < 10000)) {
+      if (!this.delay || (this.delay < 5000)) {
         this.$nextTick(() => {
-          this.delay = 10000;
+          this.delay = 5000;
         });
       }
     },
@@ -131,7 +131,7 @@ const liker = new Vue({
 
       const url = obj.node.display_url;
       const taken = new Date(obj.node.taken_at_timestamp * 1000).toLocaleString();
-      const userName = 'likeProfile' === this.whatToLike ? this.userToLike : obj.node.owner.username;
+      const userName = 'likeProfile' === this.whatToLike ? this.userToLike : obj.node.owner.username ? obj.node.owner.username : obj.node.owner.id;
       const likesCount = obj.node.edge_media_preview_like.count;
       this.updateStatusDiv(`${obj.node.is_video === true ? 'Video' : 'Post'} ${url} taken on ${taken} by ${userName} has ${likesCount} likes`);
       if (obj.node.is_video && obj.node.is_video === this.skipVideo) {

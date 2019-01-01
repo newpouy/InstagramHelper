@@ -2,7 +2,7 @@
 
 Free Chrome Extension [Helper Tools for Instagram.com](https://github.com/OllegK/InstagramHelper).
 
-# Please fill the [Helper Tools for Instagram.com Survey](https://goo.gl/forms/yoLiFqAPtwH41HlH3). There are only two required to answer questions, so filling the survey will take several minutes, and it will help to make it better. You can also click on the Website link in the "Additional Information" right-side panel.
+# Please fill the [Helper Tools for Instagram.com Survey](https://goo.gl/forms/yoLiFqAPtwH41HlH3). There are only two required to answer questions, so filling the survey will take several minutes, and it will help to make it better.
 
 - [What the Extension Does](#what-the-extension-does)
 - [How to start](#how-to-start)
@@ -109,7 +109,7 @@ The export is useful to get the list of user IDs or usernames that could be used
 
 If you exported the short list when the detailed info being collected, the records already processed have the detailed information in the exported file. 
 
-If you have a long list with more than 100k+ accounts, the export could take significant time. During this time the tab is not responsive, and you could assume that the process hangs. Please be patient and just wait, it will be finished successfully. One time I tried the export of 100k+ users, and it took about 30 minutes. 
+If you have a long list with more than 100k+ accounts, the XLSX-export could take significant time. During this time the tab is not responsive, and you could assume that the process hangs. Please be patient and just wait, it will be finished successfully. One time I tried the XLSX-export of 100k+ users, and it took about 30 minutes; the same export to CSV was completed in less than 1 minute.
 
 There are two supported output formats:
 * XLSX (default option)

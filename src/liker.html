@@ -37,10 +37,10 @@
             <v-radio-group label="I want to like..." v-model="whatToLike" :disabled="isInProgress" v-bind:class="{ disabled: isInProgress }">
               <v-radio :key="1" label="The posts in my feed" value="likeFeed"></v-radio>
               <v-radio :key="2" label="The posts of " value="likeProfile"></v-radio>
-              <v-text-field label="username" type="string" v-validate="whatToLike == 'likeProfile' ? 'required' : ''"
+              <v-text-field label="username" type="string"
                 v-model="userToLike" v-if="whatToLike == 'likeProfile'" v-on:blur="validateUserProfile($event)"></v-text-field>
               <v-radio :key="3" label="The hashtag " value="likeHashTag"></v-radio>
-              <v-text-field label="hashtag" type="string" v-validate="whatToLike == 'likeHashTag' ? 'required' : ''"
+              <v-text-field label="hashtag" type="string"
                 v-model="hashTagToLike" v-if="whatToLike == 'likeHashTag'"></v-text-field>
             </v-radio-group>
           </v-flex>

@@ -31,6 +31,7 @@ const GetPosts = function (settings) {
       instaPosts = new GetHashTag({
         updateStatusDiv, end_cursor, hashTag, pageSize, vueStatus,
       });
+      postInfo = new GetPostInfo({ updateStatusDiv, vueStatus });
     },
   };
 
@@ -68,7 +69,7 @@ const GetPosts = function (settings) {
 
   function isNotLiked(media) {
     return new Promise((resolve) => {
-      if ('likeProfile' === mode) {
+      if (('likeProfile' === mode) || ('likeHashTag' === mode)) {
         postInfo.getPostInfo(media.node.shortcode).then((obj) => {
           resolve(!obj.viewer_has_liked);
         });
