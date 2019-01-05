@@ -57,7 +57,7 @@ const block = new Vue({ // eslint-disable-line no-unused-vars
   methods: {
     calcDelay() {
       const val = +Math.floor(Math.random() * this.delay * this.rndDelay / 100) + +this.delay;
-      this.updateStatusDiv(`Calculated delay ${val}`);
+      this.updateStatusDiv(`Calculated delay ${val}ms`);
       return val;
     },
     checkDelay() {
