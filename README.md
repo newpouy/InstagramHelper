@@ -113,7 +113,7 @@ If you have a long list with more than 100k+ accounts, the XLSX-export could tak
 
 There are two supported output formats:
 * XLSX (default option)
-* CSV
+* CSV. CSV export works faster and consumes less memory; however, anyway depending on different criteria, the attempt to export more than 100-120k records with detailed info collected brings to the crash.
 
 Please note that the Excel output includes some not-displayed in the grid information, e.g. indication if an user is verified, and also some attributes related to business accout: business account phone number, email, category, etc.
 
