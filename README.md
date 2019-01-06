@@ -109,11 +109,11 @@ The export is useful to get the list of user IDs or usernames that could be used
 
 If you exported the short list when the detailed info being collected, the records already processed have the detailed information in the exported file. 
 
-If you have a long list with more than 100k+ accounts, the XLSX-export could take significant time. During this time the tab is not responsive, and you could assume that the process hangs. Please be patient and just wait, it will be finished successfully. One time I tried the XLSX-export of 100k+ users, and it took about 30 minutes; the same export to CSV was completed in less than 1 minute.
+If you have a long list with more than 100k+ accounts, the XLSX-export could take significant time. During this time the tab is not responsive, and you could assume that the process hangs. Please be patient and just wait, it will be finished successfully. One time I tried the XLSX-export of 100k+ users (without detailed info), and it took about 30 minutes; the same export to CSV was completed in less than 1 minute.
 
 There are two supported output formats:
 * XLSX (default option)
-* CSV. CSV export works faster and consumes less memory; however, anyway depending on different criteria, the attempt to export more than 100-120k records with detailed info collected brings to the crash.
+* CSV. CSV export works faster and consumes less memory; however, anyway depending on different criteria, it seems that the attempt to export more than 100-120k records with detailed info collected brings to the crash.
 
 Please note that the Excel output includes some not-displayed in the grid information, e.g. indication if an user is verified, and also some attributes related to business accout: business account phone number, email, category, etc.
 
