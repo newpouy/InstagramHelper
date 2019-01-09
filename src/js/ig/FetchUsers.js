@@ -1,9 +1,7 @@
 /* globals alert, axios, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
 /* exported FetchUsers */
-/* jshint -W106 */
 
 var FetchUsers = function (settings) {
-
   'use strict';
 
   var {

@@ -11,9 +11,9 @@
 		"chrome_style": true
 	},
 
-	"content_security_policy": "script-src 'self' 'unsafe-eval' https://ssl.google-analytics.com; object-src 'self'",
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://ssl.google-analytics.com; object-src 'self'",
 
-	"page_action": {
+  "page_action": {
 		"default_icon": "img/icon19.png",
 		"default_title": "Helper Tools for Instagram.com",
 		"default_popup": "popup.html"
@@ -38,8 +38,9 @@
 	],
 
 	"permissions": [
-		"tabs",
-		"storage",
+    "tabs",
+    "storage",
+		"unlimitedStorage",
 		"cookies",
 		"webRequest",
 		"webRequestBlocking",

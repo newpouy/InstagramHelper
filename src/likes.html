@@ -67,6 +67,7 @@
                 post.</span>
             </v-tooltip>
             <v-btn :disabled="exportButtonDisabled" color="primary" v-on:click="exportToExcel">Export to Excel!</v-btn>
+<!--            <v-btn color="primary" v-on:click="test">TEST!</v-btn> -->
           </v-flex>
           <v-flex>
             <v-text-field v-show="isRunning" id="log_text_area" label="Log" multi-line v-model="log"></v-text-field>
@@ -144,6 +145,8 @@
   </div>
 
   <script src="lib/axios.min.js"></script>
+  <script src="https://apis.google.com/js/client.js"></script>
+
   <script src="js/ig/GetLikes.js"></script>
   <script src="js/ig/GetComments.js"></script>
   <script src="js/ig/GetPosts.js"></script>

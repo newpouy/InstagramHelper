@@ -1,6 +1,5 @@
 /* globals confirm, chrome, $, _gaq */
 /* globals instaDefOptions, instaUserInfo, followUser, exportUtils, FetchUsers, XLSX, saveAs */
-/* jshint -W106 */
 
 $(() => {
   'use strict';
@@ -573,6 +572,17 @@ $(() => {
         console.log('DO NOT have filtered list', myData.length); // eslint-disable-line no-console
         arr = myData; // if we do not have filtered data set?
       }
+
+      // storing to storage
+      try {
+        console.log(new Date(), arr.length);
+        const val = JSON.stringify(arr);
+        localStorage.setItem(fileName, val);
+        console.log(new Date(), val.length);
+      } catch(e) {
+        console.log(`Error  ${e.name} : ${e.message} : ${e.stack}`);
+      }
+
 
       const headers = [
         'id',
