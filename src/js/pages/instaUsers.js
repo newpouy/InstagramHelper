@@ -573,12 +573,46 @@ $(() => {
         arr = myData; // if we do not have filtered data set?
       }
 
+      var idb;
       // storing to storage
+      let obj1 = {test: '1222', test1: '1223', test2: '1224', test3: '1225', test4: '1226', test5: '1226', test6: '1227'};
       try {
-        console.log(new Date(), arr.length);
-        const val = JSON.stringify(arr);
-        localStorage.setItem(fileName, val);
-        console.log(new Date(), val.length);
+        const arr1 = [];
+        console.log(new Date(), arr1.length);
+        for (let j = 0; j < 1000000; j++ ) {
+          obj1.id = j;
+          arr1.push(Object.assign({}, obj1));
+        }
+        console.log(new Date(), arr1.length);
+        // const val = JSON.stringify(arr1);
+        // localStorage.setItem(fileName, val);
+        // chrome.storage.sync.set({key: val}, function(){
+        // console.log(new Date(), val.length);
+
+        var request = indexedDB.open("the_name", 1);
+        request.onerror = function(err){
+          console.log(err);
+        };
+        request.onsuccess = function(){
+          console.log('onsuccess 1', new Date());
+          idb = request.result;
+          var objectStore = idb.transaction("customers", "readwrite").objectStore("customers");
+          for (var i in arr1) {
+             objectStore.add(arr1[i]);
+          }
+          // db.close();
+          console.log('onsuccess 2', new Date());
+        }
+        request.onupgradeneeded = (event) => {
+          console.log('onupgradeneeded 1', new Date());
+          var db = request.result;
+          db.createObjectStore("customers", {keyPath: "id", autoIncrement: true}).onsuccess = () => {
+            idb = db;
+        };
+
+          console.log('onupgradeneeded 2', new Date());
+        };
+
       } catch(e) {
         console.log(`Error  ${e.name} : ${e.message} : ${e.stack}`);
       }
