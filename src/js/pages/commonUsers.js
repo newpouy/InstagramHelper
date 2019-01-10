@@ -1,6 +1,5 @@
 /* globals chrome, $, _gaq */
 /* globals instaDefOptions, instaUserInfo, exportUtils, FetchUsers, XLSX, saveAs */
-/* jshint -W106 */
 
 $(() => {
   'use strict';
@@ -57,7 +56,7 @@ $(() => {
       request: null,
       userName: request.user_1.userName,
       pageSize: request.pageSize,
-      delay: request.delay,
+      delay: +1000 + request.delay,
       csrfToken: request.csrfToken,
       userId: request.user_1.userId,
       relType: 'All' === request.relType
@@ -81,7 +80,7 @@ $(() => {
       request: null,
       userName: request.user_2.userName,
       pageSize: request.pageSize,
-      delay: request.delay,
+      delay: +1000 + request.delay,
       csrfToken: request.csrfToken,
       userId: request.user_2.userId,
       relType: 'All' === request.relType
@@ -279,18 +278,26 @@ $(() => {
         arr = myData; // if we do not have filtered data set?
       } */
       const arr = myData;
-      const wb = XLSX.utils.book_new();
-      wb.Props = {
-        Title: 'Users Title',
-        Subject: 'Users Subject',
-        Author: 'Instagram Helper',
-        CreatedDate: new Date(),
-      };
-      wb.SheetNames.push('UsersSheet');
-      const ws = XLSX.utils.json_to_sheet(arr);
-      wb.Sheets.UsersSheet = ws;
-      const wbout = XLSX.write(wb, { bookType, type: 'binary' });
-      saveAs(new Blob([exportUtils.s2ab(wbout)], { type: 'application/octet-stream' }), fileName);
+
+      if ('xlsx' === bookType) {
+        const wb = XLSX.utils.book_new();
+        wb.Props = {
+          Title: 'Users Title',
+          Subject: 'Users Subject',
+          Author: 'Instagram Helper',
+          CreatedDate: new Date(),
+        };
+        wb.SheetNames.push('UsersSheet');
+        const ws = XLSX.utils.json_to_sheet(arr);
+        wb.Sheets.UsersSheet = ws;
+        const wbout = XLSX.write(wb, { bookType, type: 'binary' });
+        saveAs(new Blob([exportUtils.s2ab(wbout)], { type: 'application/octet-stream' }), fileName);
+      } else { // THIS IS CVS
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(arr);
+        XLSX.utils.book_append_sheet(wb, ws, 'output');
+        XLSX.writeFile(wb, fileName);
+      }
     });
 
     $('#exportDiv').show();

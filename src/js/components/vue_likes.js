@@ -213,7 +213,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
     init: true,
 
-    outType: 'xlsx'
+    outType: 'csv'
   },
   computed: {
     isCompleted() {
@@ -523,22 +523,33 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       }
     },
     exportToExcel() {
+
       const fileName = `getLikes_${this.userToGetLikes}_${exportUtils.formatDate(new Date())}.${this.outType}`;
 
-      const wb = XLSX.utils.book_new();
-      wb.Props = {
-        Title: 'Get Likes Title',
-        Subject: 'Get Likes Subject',
-        Author: 'Instagram Helper',
-        CreatedDate: new Date(),
-      };
-      wb.SheetNames.push('GetLikesSheet');
+      if ('xlsx' === this.outType) {
 
-      const ws = XLSX.utils.json_to_sheet(__items, { cellDates: true });
+        const wb = XLSX.utils.book_new();
+        wb.Props = {
+          Title: 'Get Likes Title',
+          Subject: 'Get Likes Subject',
+          Author: 'Instagram Helper',
+          CreatedDate: new Date(),
+        };
+        wb.SheetNames.push('GetLikesSheet');
 
-      wb.Sheets.GetLikesSheet = ws;
-      const wbout = XLSX.write(wb, { bookType: this.outType, type: 'binary' });
-      saveAs(new Blob([exportUtils.s2ab(wbout)], { type: 'application/octet-stream' }), fileName);
+        const ws = XLSX.utils.json_to_sheet(__items, { cellDates: true });
+
+        wb.Sheets.GetLikesSheet = ws;
+        const wbout = XLSX.write(wb, { bookType: this.outType, type: 'binary' });
+        saveAs(new Blob([exportUtils.s2ab(wbout)], { type: 'application/octet-stream' }), fileName);
+
+      } else { // THIS IS CVS
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(__items);
+        XLSX.utils.book_append_sheet(wb, ws, 'output');
+        XLSX.writeFile(wb, fileName);
+      }
+
     },
     async addFollowers() {
       if (!likes.userInfo) {

@@ -13,7 +13,7 @@ const instaDefOptions = (function () {
     defPageSizeForLikes: 50, // TODO: parametrize
     gridPageSize: 500,
     noDelayForInit: true, // respect requestsToSkipDelay
-    requestsToSkipDelay: 100, // for insta and common users
+    requestsToSkipDelay: 80, // for insta and common users
     retryInterval: 180000,
     regFindUser: /link rel="canonical" href="https:\/\/www.instagram.com\/([^"/]*)\/?"/i,
     regExtractUserName: /instagram.com.*\/(?:\?taken-by=)?([^/?]+)\/?/, // fixes #10, respects the URL with parameters
