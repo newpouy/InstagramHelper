@@ -572,9 +572,7 @@ $(() => {
         console.log('DO NOT have filtered list', myData.length); // eslint-disable-line no-console
         arr = myData; // if we do not have filtered data set?
       }
-
-      var idb;
-      // storing to storage
+/*
       let obj1 = {test: '1222', test1: '1223', test2: '1224', test3: '1225', test4: '1226', test5: '1226', test6: '1227'};
       try {
         const arr1 = [];
@@ -584,40 +582,39 @@ $(() => {
           arr1.push(Object.assign({}, obj1));
         }
         console.log(new Date(), arr1.length);
-        // const val = JSON.stringify(arr1);
-        // localStorage.setItem(fileName, val);
-        // chrome.storage.sync.set({key: val}, function(){
-        // console.log(new Date(), val.length);
+        const val = JSON.stringify(arr1);
+        console.log(new Date(), val.length);
 
-        var request = indexedDB.open("the_name", 1);
-        request.onerror = function(err){
-          console.log(err);
-        };
-        request.onsuccess = function(){
-          console.log('onsuccess 1', new Date());
-          idb = request.result;
-          var objectStore = idb.transaction("customers", "readwrite").objectStore("customers");
-          for (var i in arr1) {
-             objectStore.add(arr1[i]);
-          }
-          // db.close();
-          console.log('onsuccess 2', new Date());
-        }
-        request.onupgradeneeded = (event) => {
-          console.log('onupgradeneeded 1', new Date());
-          var db = request.result;
-          db.createObjectStore("customers", {keyPath: "id", autoIncrement: true}).onsuccess = () => {
-            idb = db;
-        };
+        window.webkitRequestFileSystem(window.PERSISTENT, 1024*1024*1024, (fs)=>{
+          fs.root.getFile('log123.txt', {create: true}, function(fileEntry) {
 
-          console.log('onupgradeneeded 2', new Date());
-        };
+            // Create a FileWriter object for our FileEntry (log.txt).
+            fileEntry.createWriter(function(fileWriter) {
+
+              fileWriter.onwriteend = function(e) {
+                console.log('Write completed.');
+              };
+
+              fileWriter.onerror = function(e) {
+                console.log('Write failed: ' + e.toString());
+              };
+
+              // Create a new Blob and write it to log.txt.
+              var blob = new Blob([val], {type: 'text/plain'});
+
+              fileWriter.write(blob);
+
+            }, (e)=>{console.log(e)});
+
+          }, (e)=>{console.log(e)});
+
+        }, (e)=>{console.log(e)});
 
       } catch(e) {
         console.log(`Error  ${e.name} : ${e.message} : ${e.stack}`);
       }
 
-
+*/
       const headers = [
         'id',
         'username',
