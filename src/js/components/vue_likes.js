@@ -213,7 +213,8 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
     init: true,
 
-    outType: 'csv'
+    outType: 'csv',
+    itemsLength: 0
   },
   computed: {
     isCompleted() {

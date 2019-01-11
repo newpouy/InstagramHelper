@@ -573,20 +573,13 @@ $(() => {
         arr = myData; // if we do not have filtered data set?
       }
 
-      let obj1 = {test: '1222', test1: '1223', test2: '1224', test3: '1225', test4: '1226', test5: '1226', test6: '1227'};
       try {
-        const arr1 = [];
-        console.log(new Date(), arr1.length);
-        for (let j = 0; j < 1000000; j++ ) {
-          obj1.id = j;
-          arr1.push(Object.assign({}, obj1));
-        }
-        console.log(new Date(), arr1.length);
-        const val = JSON.stringify(arr1);
+        console.log(new Date(), arr.length);
+        const val = JSON.stringify(arr);
         console.log(new Date(), val.length);
 
         window.webkitRequestFileSystem(window.PERSISTENT, 1024*1024*1024, (fs)=>{
-          fs.root.getFile('log123.txt', {create: true}, function(fileEntry) {
+          fs.root.getFile(fileName, {create: true}, function(fileEntry) {
 
             // Create a FileWriter object for our FileEntry (log.txt).
             fileEntry.createWriter(function(fileWriter) {
