@@ -26,7 +26,7 @@
             <div v-show="isRunning">
               <strong>Started at {{startDate}}/Fetched {{fetchedPosts}}posts/Processed {{processedPosts}}posts/{{processedLikes}}likes of
                 {{totalPosts}}posts/{{postEntity}}:
-                {{postProcessedEntity}} of {{postTotalEntity}}/{{itemsLength}}</strong>
+                {{postProcessedEntity}} of {{postTotalEntity}}/users {{itemsLength}}</strong>
             </div>
           </v-flex>
           <v-flex>
@@ -47,10 +47,17 @@
                     {{Math.floor(rndDelay/100*delay)}}ms</span>
                 </v-tooltip>
               </v-flex>
-              <v-flex md6>
+              <v-flex md4>
                 <v-checkbox :disabled="!init" label="Get comments" v-model="calcComments"></v-checkbox>
               </v-flex>
-              <v-flex md6>
+              <v-flex md4>
+                <v-tooltip bottom>
+                  <v-text-field slot="activator" @input="checkNumberToCalc()" label="How many last posts to analyze" type="number" min=0
+                    step=1 max=9999 v-model.number="numberToCalc"></v-text-field>
+                  <span>0 means that all posts in the profile will be analyzed. To stop the process, you can always click the "STOP IT" button when process is running.</span>
+                </v-tooltip>
+              </v-flex>
+              <v-flex md4>
                 <v-radio-group label="The Excel export format..." v-model="outType" style="padding-top: 0px">
                   <v-radio :key="1" label="xlsx" value="xlsx"></v-radio>
                   <v-radio :key="2" label="csv" value="csv"></v-radio>

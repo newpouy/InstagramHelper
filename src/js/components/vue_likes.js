@@ -214,12 +214,17 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
     init: true,
 
     outType: 'csv',
-    itemsLength: 0
+    itemsLength: 0,
+    numberToCalc: 0
   },
   computed: {
     isCompleted() {
       if (this.stop) {
         this.updateStatusDiv(`${new Date().toLocaleString()}/The process will be stopped now because you clicked the Stop button`);
+        return true;
+      }
+      if ((this.numberToCalc > 0) && (this.numberToCalc <= this.processedPosts)) {
+        this.updateStatusDiv(`${new Date().toLocaleString()}/The process will be stopped now because all posts to analyzed are processed - ${this.processedPosts}`);
         return true;
       }
       return false;
@@ -256,6 +261,13 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       const val = +Math.floor(Math.random() * this.delay * this.rndDelay / 100) + +this.delay;
       this.updateStatusDiv(`Calculated delay ${val}ms`);
       return val;
+    },
+    checkNumberToCalc() {
+      if (!this.numberToCalc || (this.numberToCalc < 0)) {
+        this.$nextTick(() => {
+          this.numberToCalc = 0;
+        });
+      }
     },
     checkDelay() {
       if (!this.delay || (this.delay < 100)) {
@@ -312,7 +324,6 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         });
       }
 
-      // likes.updateStatusDiv(`Started at ${likes.startDate}`);
       likes.updateStatusDiv(`Processed ${likes.processedPosts} posts/${likes.processedLikes} likes/${likes.processedComments} comments`);
 
       likes.isGettingLikesInProgress = false;
@@ -328,7 +339,6 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         }
         __items.push(e);
       });
-      // console.log(__items);
     },
     async getPostLikesAndComments(instaPosts, media, index) {
       if (media.length > index) { // we still have something to get
@@ -403,6 +413,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         }
 
         likes.processedPosts += 1;
+        if (this.isCompleted) {
+          return;
+        }
         // update progress bar
         likes.progressValue = (likes.processedPosts / likes.totalPosts) * 100;
         await this.timeout(likes.calcDelay());
@@ -452,6 +465,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
               url: `https://www.instagram.com/p/${result.shortCode}`,
             }],
           });
+          this.itemsLength = this.data.size;
         }
         likes.postProcessedEntity += 1;
         likes.processedComments += 1;
@@ -514,6 +528,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
             }],
             commentedPosts: [],
           });
+          this.itemsLength = this.data.size;
         }
         likes.postProcessedEntity += 1;
         likes.processedLikes += 1;
@@ -685,7 +700,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
         likes.userInfo = obj;
 
-        likes.data = new Map();
+        likes.data = new Map(); // to store values
 
         likes.startDate = (new Date()).toLocaleTimeString();
         likes.fetchedPosts = 0;
