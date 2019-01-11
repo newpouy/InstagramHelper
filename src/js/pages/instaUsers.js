@@ -572,7 +572,7 @@ $(() => {
         console.log('DO NOT have filtered list', myData.length); // eslint-disable-line no-console
         arr = myData; // if we do not have filtered data set?
       }
-/*
+
       let obj1 = {test: '1222', test1: '1223', test2: '1224', test3: '1225', test4: '1226', test5: '1226', test6: '1227'};
       try {
         const arr1 = [];
@@ -614,7 +614,6 @@ $(() => {
         console.log(`Error  ${e.name} : ${e.message} : ${e.stack}`);
       }
 
-*/
       const headers = [
         'id',
         'username',

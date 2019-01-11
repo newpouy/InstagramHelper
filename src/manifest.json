@@ -39,7 +39,7 @@
 
 	"permissions": [
     "tabs",
-    { "fileSystem": ["write"] },
+    "fileSystem",
     "storage",
 		"unlimitedStorage",
 		"cookies",
