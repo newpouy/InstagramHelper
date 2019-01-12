@@ -548,6 +548,64 @@ $(() => {
     }, 1000);
   }
 
+  function exportToExcelFile(bookType, fileName, arr) {
+    const headers = [
+      'id',
+      'username',
+      'full_name',
+      'user_profile',
+      'followed_by_viewer',
+      'requested_by_viewer',
+      'user_follows',
+      'user_followed_by',
+      'profile_pic_url',
+      'profile_pic_url_hd',
+      'is_private',
+      'follows_count',
+      'followed_by_count',
+      'media_count',
+      'latestPostDate',
+      'follows_viewer',
+      'has_requested_viewer',
+      'blocked_by_viewer',
+      'has_blocked_viewer',
+      'biography',
+      'connected_fb_page',
+      'external_url',
+      'is_verified',
+    ];
+
+    if ('xlsx' === bookType) {
+      const wb = XLSX.utils.book_new();
+      wb.Props = {
+        Title: 'Users Title',
+        Subject: 'Users Subject',
+        Author: 'Instagram Helper',
+        CreatedDate: new Date(),
+      };
+      wb.SheetNames.push('UsersSheet');
+
+      const ws = XLSX.utils.json_to_sheet(arr, { header: headers, cellDates: true });
+      // console.log(ws['!cols']);
+
+      const endRow = XLSX.utils.decode_range(ws['!ref']).e.r + 1;
+      // ws['H2'].f = "HYPERLINK('http://www.test.com', 'U')";
+      for (let i = 2; i <= endRow; i += 1) { // format URL for user profile
+        XLSX.utils.cell_set_hyperlink(ws[`D${i}`], ws[`D${i}`].v, ws[`D${i}`].v);
+      }
+
+      wb.Sheets.UsersSheet = ws;
+      const wbout = XLSX.write(wb, { bookType, type: 'binary' });
+      saveAs(new Blob([exportUtils.s2ab(wbout)], { type: 'application/octet-stream' }), fileName);
+
+    } else { // THIS IS CVS
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(arr);
+      XLSX.utils.book_append_sheet(wb, ws, 'output');
+      XLSX.writeFile(wb, fileName);
+    }
+  }
+
   function showExportDiv(obj) {
     $('#exportDiv').show();
 
@@ -578,89 +636,30 @@ $(() => {
         const val = JSON.stringify(arr);
         console.log(new Date(), val.length);
 
-        window.webkitRequestFileSystem(window.PERSISTENT, 1024*1024*1024, (fs)=>{
-          fs.root.getFile(fileName, {create: true}, function(fileEntry) {
+        window.webkitRequestFileSystem(window.PERSISTENT, 1024 * 1024 * 1024 * 10, (fs) => {
+          fs.root.getFile(fileName, { create: true }, function (fileEntry) {
 
             // Create a FileWriter object for our FileEntry (log.txt).
-            fileEntry.createWriter(function(fileWriter) {
+            fileEntry.createWriter(function (fileWriter) {
 
-              fileWriter.onwriteend = function(e) {
+              fileWriter.onwriteend = function (e) {
                 console.log('Write completed.');
+                exportToExcelFile(bookType, fileName, arr)
               };
 
-              fileWriter.onerror = function(e) {
+              fileWriter.onerror = function (e) {
                 console.log('Write failed: ' + e.toString());
               };
 
-              // Create a new Blob and write it to log.txt.
-              var blob = new Blob([val], {type: 'text/plain'});
+              var blob = new Blob([val], { type: 'text/plain' });
 
               fileWriter.write(blob);
 
-            }, (e)=>{console.log(e)});
-
-          }, (e)=>{console.log(e)});
-
-        }, (e)=>{console.log(e)});
-
-      } catch(e) {
+            }, (e) => { console.log(e) });
+          }, (e) => { console.log(e) });
+        }, (e) => { console.log(e) });
+      } catch (e) {
         console.log(`Error  ${e.name} : ${e.message} : ${e.stack}`);
-      }
-
-      const headers = [
-        'id',
-        'username',
-        'full_name',
-        'user_profile',
-        'followed_by_viewer',
-        'requested_by_viewer',
-        'user_follows',
-        'user_followed_by',
-        'profile_pic_url',
-        'profile_pic_url_hd',
-        'is_private',
-        'follows_count',
-        'followed_by_count',
-        'media_count',
-        'latestPostDate',
-        'follows_viewer',
-        'has_requested_viewer',
-        'blocked_by_viewer',
-        'has_blocked_viewer',
-        'biography',
-        'connected_fb_page',
-        'external_url',
-        'is_verified',
-      ];
-
-      if ('xlsx' === bookType) {
-        const wb = XLSX.utils.book_new();
-        wb.Props = {
-          Title: 'Users Title',
-          Subject: 'Users Subject',
-          Author: 'Instagram Helper',
-          CreatedDate: new Date(),
-        };
-        wb.SheetNames.push('UsersSheet');
-
-        const ws = XLSX.utils.json_to_sheet(arr, { header: headers, cellDates: true });
-        // console.log(ws['!cols']);
-
-        const endRow = XLSX.utils.decode_range(ws['!ref']).e.r + 1;
-        // ws['H2'].f = "HYPERLINK('http://www.test.com', 'U')";
-        for (let i = 2; i <= endRow; i += 1) { // format URL for user profile
-          XLSX.utils.cell_set_hyperlink(ws[`D${i}`], ws[`D${i}`].v, ws[`D${i}`].v);
-        }
-
-        wb.Sheets.UsersSheet = ws;
-        const wbout = XLSX.write(wb, { bookType, type: 'binary' });
-        saveAs(new Blob([exportUtils.s2ab(wbout)], { type: 'application/octet-stream' }), fileName);
-
-      } else { // THIS IS CVS
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet(arr);
-        XLSX.utils.book_append_sheet(wb, ws, 'output');
-        XLSX.writeFile(wb, fileName);
       }
     });
 
