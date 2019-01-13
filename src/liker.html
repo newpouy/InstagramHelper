@@ -14,10 +14,10 @@
 
   <div id="app">
     <v-app>
-
       <v-container grid-list-md>
         <v-layout row wrap>
-          <v-flex xs12 v-if="isInProgress">
+
+          <v-flex md12 v-if="isInProgress">
             <div style="height: 3em;" v-bind:style="{ color : statusColor}">
               <strong>{{ status }}</strong>
             </div>
@@ -25,7 +25,7 @@
               {{fetched}}/fetching
               feed restarted {{restarted}}</strong>
           </v-flex>
-          <v-flex xs12 v-if="!isInProgress">
+          <v-flex md12 v-if="!isInProgress">
             <strong>
               You can like the posts in your feed. It is useful when you are following 1k+ users, and you want to make
               them all happy :)
@@ -33,59 +33,67 @@
             </strong>
           </v-flex>
 
-          <v-flex xs4>
+          <v-flex md4>
             <v-radio-group label="I want to like..." v-model="whatToLike" :disabled="isInProgress" v-bind:class="{ disabled: isInProgress }">
               <v-radio :key="1" label="The posts in my feed" value="likeFeed"></v-radio>
               <v-radio :key="2" label="The posts of " value="likeProfile"></v-radio>
-              <v-text-field label="username" type="string"
-                v-model="userToLike" v-if="whatToLike == 'likeProfile'" v-on:blur="validateUserProfile($event)"></v-text-field>
+              <v-text-field label="username" type="string" v-model="userToLike" v-if="whatToLike == 'likeProfile'"
+                v-on:blur="validateUserProfile($event)"></v-text-field>
               <v-radio :key="3" label="The hashtag " value="likeHashTag"></v-radio>
-              <v-text-field label="hashtag" type="string"
-                v-model="hashTagToLike" v-if="whatToLike == 'likeHashTag'"></v-text-field>
+              <v-text-field label="hashtag" type="string" v-model="hashTagToLike" v-if="whatToLike == 'likeHashTag'"></v-text-field>
             </v-radio-group>
           </v-flex>
-          <v-flex xs4>
+          <v-flex md4>
             <v-radio-group label="I want to stop..." v-model="stopCriterion">
               <v-radio :key="1" label="When a liked post is met" value="alreadyLiked"></v-radio>
               <v-radio :key="2" label="When liked " value="amountPosts"></v-radio>
               <v-text-field label="posts" type="number" min=100 step=100 v-model.number="amountToLike" v-if="stopCriterion == 'amountPosts'"></v-text-field>
             </v-radio-group>
           </v-flex>
-          <v-flex xs4 pt5>
-            <v-container>
-              <v-checkbox label="Don't Like Video" v-model="skipVideo"></v-checkbox>
-              <v-checkbox label="Don't Like Your Own Posts" v-model="skipOwnPosts"></v-checkbox>
-              <v-text-field label="Like a post only when it has likes >= " type="number" min=0 step=1 v-model.number="minLike"></v-text-field>
-            </v-container>
+          <v-flex md4>
+            <v-checkbox label="Don't Like Video" v-model="skipVideo"></v-checkbox>
+            <v-checkbox label="Don't Like Your Own Posts" v-model="skipOwnPosts"></v-checkbox>
+            <v-text-field label="Like a post only when it has likes >= " type="number" min=0 step=1 v-model.number="minLike"></v-text-field>
           </v-flex>
 
-          <v-flex xs12 text-xs-center>
-            <!--
-            <v-text-field rows="5" label="Do not like the posts of the following users (specify IDs, each on the separate line)" multi-line v-model="ids"></v-text-field>
-            -->
-            <v-layout row wrap>
-              <v-flex md6>
-                <v-text-field @input="checkDelay()" label="Delay between requests, ms" type="number" min=100 step=100
-                  v-model.number="delay"></v-text-field>
-              </v-flex>
-              <v-flex md6>
-                <v-tooltip bottom>
-                  <v-text-field slot="activator" @input="checkRndDelay()" label="Random Delay, %" type="number" min=0
-                    step=1 max=100 v-model.number="rndDelay"></v-text-field>
-                  <span>Adds random part to the specified delay, max value to be added to the specified delay -
-                    {{Math.floor(rndDelay/100*delay)}}ms</span>
-                </v-tooltip>
-              </v-flex>
-            </v-layout>
+          <v-flex md3>
+            <v-text-field @input="checkDelay()" label="Delay between requests, ms" type="number" min=100 step=100
+              v-model.number="delay"></v-text-field>
+          </v-flex>
+          <v-flex md3>
+            <v-tooltip bottom>
+              <v-text-field slot="activator" @input="checkRndDelay()" label="Random Delay, %" type="number" min=0 step=1
+                max=100 v-model.number="rndDelay"></v-text-field>
+              <span>Adds random part to the specified delay, max value to be added to the specified delay -
+                {{Math.floor(rndDelay/100*delay)}}ms</span>
+            </v-tooltip>
+          </v-flex>
+          <v-flex md3>
+            <v-tooltip bottom>
+              <v-text-field slot="activator" label="How many likes per period" type="number" min=1 step=1 max=1000
+                v-model.number="likesPerPeriod"></v-text-field>
+              <span>How many likes should be set during the specified period</span>
+            </v-tooltip>
+          </v-flex>
+          <v-flex md3>
+            <v-tooltip bottom>
+              <v-text-field slot="activator" label="Duration of the period, hours" type="number" min=1 step=1 max=24
+                v-model.number="hoursPerPeriod"></v-text-field>
+              <span>How many likes should be set during the specified period</span>
+            </v-tooltip>
+          </v-flex>
 
+          <v-flex md12>
             <v-btn id="start" :disabled="startButtonDisabled" color="primary" v-on:click="startButtonClick">Like the
               posts!</v-btn>
             <v-btn :disabled="!isInProgress" color="primary" v-on:click="stop=true">Stop it!</v-btn>
+          </v-flex>
+          <v-flex md12>
             <v-text-field id="log_text_area" rows="10" label="Log" multi-line v-model="log"></v-text-field>
           </v-flex>
+
         </v-layout>
       </v-container>
-
     </v-app>
   </div>
   <script src="lib/axios.min.js"></script>

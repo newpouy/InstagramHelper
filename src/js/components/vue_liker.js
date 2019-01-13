@@ -55,7 +55,8 @@ const liker = new Vue({
     skipOwnPosts: true, // do not like your own posts
     minLike: 2, // like a post when already amount of likes >=
 
-    ids: '', // ???
+    hoursPerPeriod: 1,
+    likesPerPeriod: 100,
   },
   computed: {
     isCompleted() {

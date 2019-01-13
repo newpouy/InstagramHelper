@@ -89,18 +89,18 @@ const block = new Vue({ // eslint-disable-line no-unused-vars
     async blockButtonClick(mode) {
       this.isInProgress = true;
 
-      const value = document.getElementById('ids').value;
+      const { value } = document.getElementById('ids');
       this.processUsers = value.replace(/[\n\r]/g, ',').split(',');
       this.blockedUsers = 0;
       this.processedUsers = 0;
       this.errorsResolvingUserId = 0;
 
       for (let i = 0; i < this.processUsers.length; i += 1) {
-        if (this.processUsers[i] != '') {
+        if (this.processUsers[i] !== '') {
           this.updateStatusDiv(`Mass ${mode}ing users: ${this.processUsers[i]}/${i + 1} of ${this.processUsers.length}`);
 
           let userId = this.processUsers[i];
-          this.processedUsers++;
+          this.processedUsers += 1;
 
           if (!/^\d+$/.test(userId)) {
             this.updateStatusDiv(`${userId} does not look as user id, maybe username, resolve username to userid`);

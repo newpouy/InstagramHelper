@@ -215,7 +215,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
     outType: 'csv',
     itemsLength: 0,
-    numberToCalc: 0
+    numberToCalc: 0,
   },
   computed: {
     isCompleted() {
@@ -539,11 +539,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       }
     },
     exportToExcel() {
-
       const fileName = `getLikes_${this.userToGetLikes}_${exportUtils.formatDate(new Date())}.${this.outType}`;
 
       if ('xlsx' === this.outType) {
-
         const wb = XLSX.utils.book_new();
         wb.Props = {
           Title: 'Get Likes Title',
@@ -558,14 +556,12 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         wb.Sheets.GetLikesSheet = ws;
         const wbout = XLSX.write(wb, { bookType: this.outType, type: 'binary' });
         saveAs(new Blob([exportUtils.s2ab(wbout)], { type: 'application/octet-stream' }), fileName);
-
       } else { // THIS IS CVS
         const wb = XLSX.utils.book_new();
         const ws = XLSX.utils.json_to_sheet(__items);
         XLSX.utils.book_append_sheet(wb, ws, 'output');
         XLSX.writeFile(wb, fileName);
       }
-
     },
     async addFollowers() {
       if (!likes.userInfo) {

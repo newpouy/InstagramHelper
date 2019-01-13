@@ -6,41 +6,40 @@ var follow = new Vue({ // eslint-disable-line no-unused-vars
     this.viewerUserId = '';
     this.viewerUserName = '';
 
-    this.startDate = null; //timestamp when process was started
+    this.startDate = null; // timestamp when process was started
   },
   mounted: () => {
     _gaq.push(['_trackPageview']);
 
-    chrome.runtime.onMessage.addListener(function (request) {
+    chrome.runtime.onMessage.addListener((request) => {
       if (request.action === 'openMassFollowPage') {
-
         follow.delay = request.followDelay;
         follow.csrfToken = request.csrfToken;
 
         follow.viewerUserName = request.viewerUserName;
         follow.viewerUserId = request.viewerUserId;
 
-        follow.pageSize = request.pageSizeForFeed; //is not binded
+        follow.pageSize = request.pageSizeForFeed; // is not binded
       }
     });
   },
   data: {
     isInProgress: false,
 
-    delay: 0, //interval between sending the http requests
+    delay: 0, // interval between sending the http requests
     rndDelay: 30,
 
-    stop: false, //if user requested the proceess to be stopped by clicking the button
+    stop: false, // if user requested the proceess to be stopped by clicking the button
 
-    status: '', //the message displayed in status div
+    status: '', // the message displayed in status div
     statusColor: '',
 
-    log: '', //the text displayed in log area
-    ids: ''
+    log: '', // the text displayed in log area
+    ids: '',
   },
   computed: {
-    startButtonDisabled: function () {
-      return this.isInProgress
+    startButtonDisabled() {
+      return this.isInProgress;
     },
     binding() {
       const binding = {};
@@ -50,71 +49,72 @@ var follow = new Vue({ // eslint-disable-line no-unused-vars
       }
 
       return binding;
-    }
+    },
   },
   methods: {
-    calcDelay: function() {
-      var val = + Math.floor(Math.random() * this.delay * this.rndDelay/100) + + this.delay;
+    calcDelay() {
+      const val = +Math.floor(Math.random() * this.delay * this.rndDelay / 100) + +this.delay;
       this.updateStatusDiv(`Calculated delay ${val}ms`);
       return val;
     },
-    checkDelay: function () {
+    checkDelay() {
       if (!this.delay || (this.delay < 10000)) {
         this.$nextTick(() => {
           this.delay = 10000;
-        })
+        });
       }
     },
-    checkRndDelay: function () {
+    checkRndDelay() {
       if (!this.rndDelay || (this.rndDelay < 0)) {
         this.$nextTick(() => {
           this.rndDelay = 0;
-        })
+        });
       }
     },
-    timeout: function (ms) {
-      return new Promise(res => setTimeout(res, ms))
+    timeout(ms) {
+      return new Promise(res => setTimeout(res, ms));
     },
-    updateStatusDiv: function (message, color) {
-      this.log += message + '\n';
+    updateStatusDiv(message, color) {
+      this.log += `${message}\n`;
       this.status = message;
       this.statusColor = color || 'black';
-      setTimeout(function () {
-        var textarea = document.getElementById('log_text_area');
+      setTimeout(() => {
+        const textarea = document.getElementById('log_text_area');
         textarea.scrollTop = textarea.scrollHeight;
       }, 0);
     },
-    unFollowButtonClick: async function () {
+    async unFollowButtonClick() {
       follow.isInProgress = true;
 
-      var value = document.getElementById('ids').value;
+      const value = document.getElementById('ids').value;
       follow.processUsers = value.replace(/[\n\r]/g, ',').split(',');
       follow.unFollowedUsers = 0;
       follow.errorsResolvingUserId = 0;
 
-      for (var i = 0; i < follow.processUsers.length; i++) {
+      for (let i = 0; i < follow.processUsers.length; i++) {
         if (follow.processUsers[i] != '') {
           follow.updateStatusDiv(`Mass unfollowing users: ${follow.processUsers[i]}/${i + 1} of ${follow.processUsers.length}`);
 
-          let userId = await this.getUserId(follow.processUsers[i]);
-          if ("" === userId) {
+          const userId = await this.getUserId(follow.processUsers[i]);
+          if ('' === userId) {
             console.log('continue to next iteration');
             continue;
           }
 
-          var result = await followUser.unFollow(
+          const result = await followUser.unFollow(
             {
               username: follow.processUsers[i],
-              userId: userId,
+              userId,
               csrfToken: follow.csrfToken,
               updateStatusDiv: follow.updateStatusDiv,
-              vueStatus: follow
-            });
+              vueStatus: follow,
+            },
+          );
 
           if ('ok' === result) {
             follow.unFollowedUsers++;
           } else {
-            console.log('Not recognized result - ' + result); // eslint-disable-line no-console
+            console.log(`Not recognized result - ${result}`); // eslint-disable-line no-console
           }
 
           await this.timeout(follow.calcDelay());
@@ -126,43 +126,44 @@ var follow = new Vue({ // eslint-disable-line no-unused-vars
       follow.updateStatusDiv(
         `Completed!
           UnFollowed: ${follow.unFollowedUsers}
-          Errors resolving username: ${this.errorsResolvingUserId}`);
+          Errors resolving username: ${this.errorsResolvingUserId}`,
+      );
     },
-    followButtonClick: async function () {
-
+    async followButtonClick() {
       follow.isInProgress = true;
 
-      var value = document.getElementById('ids').value;
+      const value = document.getElementById('ids').value;
       follow.processUsers = value.replace(/[\n\r]/g, ',').split(',');
       follow.followedUsers = 0;
       follow.requestedUsers = 0;
       follow.errorsResolvingUserId = 0;
 
-      for (var i = 0; i < follow.processUsers.length; i++) {
+      for (let i = 0; i < follow.processUsers.length; i++) {
         if (follow.processUsers[i] != '') {
           follow.updateStatusDiv(`Mass following users: ${follow.processUsers[i]}/${i + 1} of ${follow.processUsers.length}`);
 
-          let userId = await this.getUserId(follow.processUsers[i]);
-          if ("" === userId) {
+          const userId = await this.getUserId(follow.processUsers[i]);
+          if ('' === userId) {
             console.log('continue to next iteration');
             continue;
           }
 
-          var result = await followUser.follow(
+          const result = await followUser.follow(
             {
               username: follow.processUsers[i],
-              userId: userId,
+              userId,
               csrfToken: follow.csrfToken,
               updateStatusDiv: follow.updateStatusDiv,
-              vueStatus: follow
-            });
+              vueStatus: follow,
+            },
+          );
 
           if ('following' === result) {
             follow.followedUsers++;
           } else if ('requested' === result) {
             follow.requestedUsers++;
           } else {
-            console.log('Not recognized result - ' + result); // eslint-disable-line no-console
+            console.log(`Not recognized result - ${result}`); // eslint-disable-line no-console
           }
 
           await this.timeout(follow.calcDelay());
@@ -175,11 +176,11 @@ var follow = new Vue({ // eslint-disable-line no-unused-vars
         `Completed!
           Followed: ${follow.followedUsers}
           Requested: ${follow.requestedUsers}
-          Errors resolving username: ${this.errorsResolvingUserId}`);
+          Errors resolving username: ${this.errorsResolvingUserId}`,
+      );
     },
-    getUserId: async function(userId) {
-
-      var ret_value = "";
+    async getUserId(userId) {
+      let ret_value = '';
 
       if (!/^\d+$/.test(userId)) {
         this.updateStatusDiv(`${userId} does not look as user id, maybe username, try to convert username to userid`);
@@ -187,7 +188,7 @@ var follow = new Vue({ // eslint-disable-line no-unused-vars
 
         try {
           var obj = await instaUserInfo.getUserProfile({
-            username: userId, updateStatusDiv: this.updateStatusDiv, silent: true, vueStatus: this
+            username: userId, updateStatusDiv: this.updateStatusDiv, silent: true, vueStatus: this,
           });
         } catch (e) {
           this.updateStatusDiv(`${userId} error 404 resolving the username`);
@@ -203,6 +204,6 @@ var follow = new Vue({ // eslint-disable-line no-unused-vars
         ret_value = userId;
       }
       return ret_value;
-    }
-  }
+    },
+  },
 });
