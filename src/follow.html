@@ -14,33 +14,50 @@
 
   <div id="app">
     <v-app>
-
-      <v-container grid-list-xl>
-        <v-layout v-bind="binding">
-          <v-flex v-if="isInProgress">
+      <v-container grid-list-md>
+        <v-layout row wrap>
+          <v-flex md12 v-if="isInProgress">
             <div v-bind:style="{ color : statusColor}">
               <strong>{{ status }}</strong>
             </div>
           </v-flex>
-          <v-flex>
-            <v-layout row wrap>
-              <v-flex md6>
-                <v-text-field @input="checkDelay()" label="Delay between requests, ms" type="number" min=1000 step=100 v-model.number="delay"></v-text-field>
-              </v-flex>
-              <v-flex md6>
-                <v-tooltip bottom>
-                  <v-text-field slot="activator" @input="checkRndDelay()" label="Random Delay, %" type="number" min=0 step=1 max=100 v-model.number="rndDelay"></v-text-field>
-                  <span>Adds random part to the specified delay, max value to be added to the specified delay - {{Math.floor(rndDelay/100*delay)}}ms</span>
-                </v-tooltip>
-              </v-flex>
-            </v-layout>
-            <v-btn id="startUnFollow" :disabled="startButtonDisabled" v-on:click="unFollowButtonClick" color="primary">Start UnFollow!</v-btn>
-            <v-btn id="startFollow" :disabled="startButtonDisabled" v-on:click="followButtonClick" color="primary">Start Follow!</v-btn>
+          <v-flex md3>
+            <v-text-field @input="checkDelay()" label="Delay between requests, ms" type="number" min=1000 step=100
+              v-model.number="delay"></v-text-field>
           </v-flex>
-          <v-flex>
-            <v-text-field id="ids" label="Input of User Ids" multi-line v-model="ids" :readonly="startButtonDisabled" placeholder="Specify the id of users you want to follow/unfollow. Put each id on separate line. Please pay attention that it should be id (numeric value), not username."></v-text-field>
+          <v-flex md3>
+            <v-tooltip bottom>
+              <v-text-field slot="activator" @input="checkRndDelay()" label="Random Delay, %" type="number" min=0 step=1
+                max=100 v-model.number="rndDelay"></v-text-field>
+              <span>Adds random part to the specified delay, max value to be added to the specified delay -
+                {{Math.floor(rndDelay/100*delay)}}ms</span>
+            </v-tooltip>
           </v-flex>
-          <v-flex>
+          <v-flex md3>
+              <v-tooltip bottom>
+                <v-text-field slot="activator" label="How many follow/unfollow actions per period" type="number" min=1 step=1 max=1000
+                  v-model.number="actionsPerPeriod"></v-text-field>
+                <span>How many follow/unfollow requests should be done during the specified period</span>
+              </v-tooltip>
+            </v-flex>
+            <v-flex md3>
+              <v-tooltip bottom>
+                <v-text-field slot="activator" label="Duration of the period, hours" type="number" min=1 step=1 max=24
+                  v-model.number="hoursPerPeriod"></v-text-field>
+                <span>Duration of the period in hours</span>
+              </v-tooltip>
+            </v-flex>
+          <v-flex md12>
+            <v-btn id="startUnFollow" :disabled="startButtonDisabled" v-on:click="unFollowButtonClick" color="primary">Start
+              UnFollow!</v-btn>
+            <v-btn id="startFollow" :disabled="startButtonDisabled" v-on:click="followButtonClick" color="primary">Start
+              Follow!</v-btn>
+          </v-flex>
+          <v-flex md12>
+            <v-text-field id="ids" label="Input of User Ids" multi-line :readonly="startButtonDisabled"
+              placeholder="Specify the id of users you want to follow/unfollow. Put each id on separate line. Please pay attention that it should be id (numeric value), not username."></v-text-field>
+          </v-flex>
+          <v-flex md12>
             <v-text-field id="log_text_area" label="Log" multi-line v-model="log"></v-text-field>
           </v-flex>
         </v-layout>

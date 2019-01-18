@@ -28,10 +28,14 @@ const GetHashTag = function (settings) {
     return has_next_page;
   }
 
-  function successGetHashTag(data, resolve) {
-    has_next_page = data.data.data.hashtag.edge_hashtag_to_media.page_info.has_next_page;
-    end_cursor = data.data.data.hashtag.edge_hashtag_to_media.page_info.end_cursor;
-    resolve(data.data.data.hashtag.edge_hashtag_to_media.edges);
+  function successGetHashTag(data, resolve, reject) {
+    if (data.data.data.hashtag) { // if hashtag found
+      has_next_page = data.data.data.hashtag.edge_hashtag_to_media.page_info.has_next_page;
+      end_cursor = data.data.data.hashtag.edge_hashtag_to_media.page_info.end_cursor;
+      resolve(data.data.data.hashtag.edge_hashtag_to_media.edges);
+    } else { // no found posts for hashtag
+      reject('Hashtag does not have the posts?');
+    }
   }
 
   function retryError(message, errorNumber, resolve, reject) {
@@ -90,7 +94,7 @@ const GetHashTag = function (settings) {
       },
     }, config)
       .then(
-        response => successGetHashTag(response, resolve),
+        response => successGetHashTag(response, resolve, reject),
         error => errorGetHashTag(error, resolve, reject),
       );
   }

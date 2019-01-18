@@ -1,6 +1,6 @@
 /* globals Vue, chrome, _gaq, followUser, instaUserInfo */
 
-var follow = new Vue({ // eslint-disable-line no-unused-vars
+const follow = new Vue({
   el: '#app',
   created() {
     this.viewerUserId = '';
@@ -35,27 +35,53 @@ var follow = new Vue({ // eslint-disable-line no-unused-vars
     statusColor: '',
 
     log: '', // the text displayed in log area
-    ids: '',
+
+    hoursPerPeriod: 1,
+    actionsPerPeriod: 50,
+    donePerPeriod: 0,
+    periodStarted: null,
   },
   computed: {
     startButtonDisabled() {
       return this.isInProgress;
     },
-    binding() {
-      const binding = {};
-
-      if (this.$vuetify.breakpoint.mdAndUp) {
-        binding.column = true;
+    isPaused() {
+      if (this.actionsPerPeriod <= this.donePerPeriod) {
+        this.updateStatusDiv(
+          `${new Date().toLocaleString()}/The process will be paused because the actions limit per period is reached: ${this.actionsPerPeriod}/${this.donePerPeriod}`,
+        );
+        this.donePerPeriod = 0;
+        return true;
       }
-
-      return binding;
+      if (Date.now() - this.periodStarted > this.hoursPerPeriod * 60 * 60 * 1000) {
+        this.updateStatusDiv(
+          `${new Date().toLocaleString()}/WE ARE GOING TO START A NEW PERIOD EVEN IF AMOUNT OF LIKES IS NOT REACHED: ${this.actionsPerPeriod}/${this.donePerPeriod}`,
+        );
+        this.periodStarted = Date.now();
+        this.donePerPeriod = 0;
+      }
+      return false;
     },
   },
   methods: {
-    calcDelay() {
-      const val = +Math.floor(Math.random() * this.delay * this.rndDelay / 100) + +this.delay;
-      this.updateStatusDiv(`Calculated delay ${val}ms`);
-      return val;
+    calcDelay(isPeriodPaused) {
+      if (isPeriodPaused) {
+        this.updateStatusDiv(`${new Date().toLocaleString()}: Calculating the time to start a new period.`);
+
+        const endOfCurrentPeriod = this.periodStarted + this.hoursPerPeriod * 60 * 60 * 1000;
+
+        const ret = endOfCurrentPeriod - Date.now();
+
+        this.updateStatusDiv(`${new Date().toLocaleString()}: End of this period should be on
+          ${new Date(endOfCurrentPeriod).toLocaleString()}/${ret}, so we start a new period on that time.`);
+
+        return ret;
+
+      } else {
+        const val = +Math.floor(Math.random() * this.delay * this.rndDelay / 100) + +this.delay;
+        this.updateStatusDiv(`Calculated delay ${val}ms`);
+        return val;
+      }
     },
     checkDelay() {
       if (!this.delay || (this.delay < 10000)) {
@@ -86,43 +112,48 @@ var follow = new Vue({ // eslint-disable-line no-unused-vars
     async unFollowButtonClick() {
       follow.isInProgress = true;
 
-      const value = document.getElementById('ids').value;
+      const { value } = document.getElementById('ids');
       follow.processUsers = value.replace(/[\n\r]/g, ',').split(',');
       follow.unFollowedUsers = 0;
       follow.errorsResolvingUserId = 0;
+      this.periodStarted = Date.now();
+      this.donePerPeriod = 0;
 
-      for (let i = 0; i < follow.processUsers.length; i++) {
-        if (follow.processUsers[i] != '') {
+      for (let i = 0; i < follow.processUsers.length; i += 1) {
+        if (follow.processUsers[i] !== '') {
           follow.updateStatusDiv(`Mass unfollowing users: ${follow.processUsers[i]}/${i + 1} of ${follow.processUsers.length}`);
 
           const userId = await this.getUserId(follow.processUsers[i]);
           if ('' === userId) {
-            console.log('continue to next iteration');
+            console.log('userId is empty, continue to next iteration');
             continue;
           }
 
-          const result = await followUser.unFollow(
-            {
-              username: follow.processUsers[i],
-              userId,
-              csrfToken: follow.csrfToken,
-              updateStatusDiv: follow.updateStatusDiv,
-              vueStatus: follow,
-            },
-          );
+          const result = await followUser.unFollow({
+            username: follow.processUsers[i],
+            userId,
+            csrfToken: follow.csrfToken,
+            updateStatusDiv: follow.updateStatusDiv,
+            vueStatus: follow,
+          });
 
           if ('ok' === result) {
-            follow.unFollowedUsers++;
+            follow.unFollowedUsers += 1;
           } else {
             console.log(`Not recognized result - ${result}`); // eslint-disable-line no-console
           }
+          this.donePerPeriod += 1;
 
-          await this.timeout(follow.calcDelay());
+          if (this.isPaused) {
+            await this.timeout(follow.calcDelay(true));
+            this.periodStarted = Date.now();
+            follow.updateStatusDiv(`${new Date().toLocaleString()} Starting a new period`);
+          } else {
+            await this.timeout(follow.calcDelay());
+          }
         }
       }
-
       follow.isInProgress = false;
-
       follow.updateStatusDiv(
         `Completed!
           UnFollowed: ${follow.unFollowedUsers}
@@ -132,46 +163,51 @@ var follow = new Vue({ // eslint-disable-line no-unused-vars
     async followButtonClick() {
       follow.isInProgress = true;
 
-      const value = document.getElementById('ids').value;
+      const { value } = document.getElementById('ids');
       follow.processUsers = value.replace(/[\n\r]/g, ',').split(',');
       follow.followedUsers = 0;
       follow.requestedUsers = 0;
       follow.errorsResolvingUserId = 0;
+      this.periodStarted = Date.now();
+      this.donePerPeriod = 0;
 
-      for (let i = 0; i < follow.processUsers.length; i++) {
-        if (follow.processUsers[i] != '') {
+      for (let i = 0; i < follow.processUsers.length; i += 1) {
+        if (follow.processUsers[i] !== '') {
           follow.updateStatusDiv(`Mass following users: ${follow.processUsers[i]}/${i + 1} of ${follow.processUsers.length}`);
 
           const userId = await this.getUserId(follow.processUsers[i]);
           if ('' === userId) {
-            console.log('continue to next iteration');
+            console.log('userId is empty, continue to next iteration');
             continue;
           }
 
-          const result = await followUser.follow(
-            {
-              username: follow.processUsers[i],
-              userId,
-              csrfToken: follow.csrfToken,
-              updateStatusDiv: follow.updateStatusDiv,
-              vueStatus: follow,
-            },
-          );
+          const result = await followUser.follow({
+            username: follow.processUsers[i],
+            userId,
+            csrfToken: follow.csrfToken,
+            updateStatusDiv: follow.updateStatusDiv,
+            vueStatus: follow,
+          });
 
           if ('following' === result) {
-            follow.followedUsers++;
+            follow.followedUsers += 1;
           } else if ('requested' === result) {
-            follow.requestedUsers++;
+            follow.requestedUsers += 1;
           } else {
             console.log(`Not recognized result - ${result}`); // eslint-disable-line no-console
           }
+          this.donePerPeriod += 1;
+          if (this.isPaused) {
+            await this.timeout(follow.calcDelay(true));
+            this.periodStarted = Date.now();
+            follow.updateStatusDiv(`${new Date().toLocaleString()} Starting a new period`);
 
-          await this.timeout(follow.calcDelay());
+          } else {
+            await this.timeout(follow.calcDelay());
+          }
         }
       }
-
       follow.isInProgress = false;
-
       follow.updateStatusDiv(
         `Completed!
           Followed: ${follow.followedUsers}
@@ -185,15 +221,15 @@ var follow = new Vue({ // eslint-disable-line no-unused-vars
       if (!/^\d+$/.test(userId)) {
         this.updateStatusDiv(`${userId} does not look as user id, maybe username, try to convert username to userid`);
         console.log('resolving username to userid', userId);
-
+        let obj;
         try {
-          var obj = await instaUserInfo.getUserProfile({
+          obj = await instaUserInfo.getUserProfile({
             username: userId, updateStatusDiv: this.updateStatusDiv, silent: true, vueStatus: this,
           });
         } catch (e) {
           this.updateStatusDiv(`${userId} error 404 resolving the username`);
           console.log('error resolving username to userid', userId);
-          this.errorsResolvingUserId++;
+          this.errorsResolvingUserId += 1;
           return ret_value;
         }
         console.log(obj);

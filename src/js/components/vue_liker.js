@@ -56,9 +56,28 @@ const liker = new Vue({
     minLike: 2, // like a post when already amount of likes >=
 
     hoursPerPeriod: 1,
-    likesPerPeriod: 100,
+    likesPerPeriod: 50,
+    likedPerPeriod: 0,
+    periodStarted: null,
   },
   computed: {
+    isPaused() {
+      if (this.likesPerPeriod <= this.likedPerPeriod) {
+        this.updateStatusDiv(
+          `${new Date().toLocaleString()}/The process will be paused because the likes limit per period is reached: ${this.likesPerPeriod}/${this.likedPerPeriod}`,
+        );
+        this.likedPerPeriod = 0;
+        return true;
+      }
+      if (Date.now() - this.periodStarted > this.hoursPerPeriod * 60 * 60 * 1000) {
+        this.updateStatusDiv(
+          `${new Date().toLocaleString()}/WE ARE GOING TO START A NEW PERIOD EVEN IF AMOUNT OF LIKES IS NOT REACHED: ${this.likesPerPeriod}/${this.likedPerPeriod}`,
+        );
+        this.periodStarted = Date.now();
+        this.likedPerPeriod = 0;
+      }
+      return false;
+    },
     isCompleted() {
       if (this.stop) {
         this.updateStatusDiv(`${new Date().toLocaleString()}/The process is stopped now because you clicked the Stop button`);
@@ -69,7 +88,7 @@ const liker = new Vue({
       } if ((this.stopCriterion === 'amountPosts') && (this.amountToLike <= this.liked)) {
         this.updateStatusDiv(`${new Date().toLocaleString()}/The process is stopped because ${this.liked} posts were liked`);
         return true;
-      } if (((this.whatToLike === 'likeProfile') || (this.whatToLike === 'likeHashTag')) && (this.allPostsFetched)) {
+      } if ((this.whatToLike === 'likeProfile') && (this.allPostsFetched)) {
         this.updateStatusDiv(`${new Date().toLocaleString()}/The process is stopped because no more posts to fetch`);
         return true;
       }
@@ -78,7 +97,7 @@ const liker = new Vue({
     startButtonDisabled() {
       return this.isInProgress // process is not running
         || (('likeProfile' === this.whatToLike) && ('' === this.userToLike)) // profile is not specified when profile should be liked
-        || (('likeHashTag' === this.whatToLike) && ('' === this.hashTagToLike)) //hashtag is not specified when hashtag should be liked
+        || (('likeHashTag' === this.whatToLike) && ('' === this.hashTagToLike)); // hashtag is not specified when hashtag should be liked
     },
   },
   methods: {
@@ -111,7 +130,8 @@ const liker = new Vue({
       }, 0);
     },
     validateUserProfile(e) {
-      // todo : implement validateUserProfile
+      console.log(e);
+      // todo: implement validateUserProfile
       // e.target.select();
     },
     getPosts(instaPosts, restart) {
@@ -119,7 +139,8 @@ const liker = new Vue({
         this.fetched += media.length;
         this.likeMedia(instaPosts, media, 0);
       }).catch((e) => {
-        this.updateStatusDiv(e.toString());
+        this.updateStatusDiv(e.toString(), 'red');
+        this.isInProgress = false;
       });
     },
     toLike(obj) {
@@ -152,6 +173,18 @@ const liker = new Vue({
       }
       return true;
     },
+    calculateDelayForStartingNextPeriod() {
+      this.updateStatusDiv(`${new Date().toLocaleString()}: Calculating the time to start a new period.`);
+
+      const endOfCurrentPeriod = this.periodStarted + this.hoursPerPeriod * 60 * 60 * 1000;
+
+      const ret = endOfCurrentPeriod - Date.now();
+
+      this.updateStatusDiv(`${new Date().toLocaleString()}: End of this period should be on
+        ${new Date(endOfCurrentPeriod).toLocaleString()}/${ret}, so we start a new period on that time.`);
+
+      return ret;
+    },
     scheduleNextRun(instaPosts, media, index, delay) {
       if (this.isCompleted) {
         this.updateStatusDiv(`Started at ${this.startDate}`);
@@ -163,8 +196,20 @@ const liker = new Vue({
         this.updateStatusDiv(`Skipped: No enough likes - ${this.skippedTooFewLike} posts`);
         this.updateStatusDiv(`Fetched ${this.fetched} posts`);
         this.updateStatusDiv(`Fetching feed restarted ${this.restarted} times`);
-        this.updateStatusDiv(`Completed at ${new Date().toLocaleTimeString()}`);
+        this.updateStatusDiv(`Completed at ${new Date().toLocaleString()}`);
         this.isInProgress = false;
+      } else if (this.isPaused) {
+        setTimeout(() => {
+          this.updateStatusDiv(`${new Date().toLocaleString()}: Starting a new period`);
+          this.periodStarted = Date.now();
+          if ('likeProfile' === this.whatToLike) { // continue to like feed
+            liker.likeMedia(instaPosts, media, index);
+          } else { // likeFeed or likeHashTag >> restart
+            this.updateStatusDiv(`${new Date().toLocaleString()}: Restarting the fetching...`);
+            this.restarted += 1;
+            setTimeout(() => this.getPosts(instaPosts, true), this.calcDelay());
+          }
+        }, this.calculateDelayForStartingNextPeriod());
       } else {
         setTimeout(() => liker.likeMedia(instaPosts, media, index), delay);
       }
@@ -183,6 +228,7 @@ const liker = new Vue({
                 (result) => {
                   if (result) { // liked
                     liker.updateStatusDiv(`...liked post ${++liker.liked} on ${new Date().toLocaleString()}`);
+                    liker.likedPerPeriod += 1;
                   } else { // missing media error
                     // TODO: indicate at the end of processing how many "missing media" errors
                     liker.updateStatusDiv('...missing media, proceeding to the next post!');
@@ -202,7 +248,7 @@ const liker = new Vue({
       } else if (instaPosts.hasMore()) { // do we still have something to fetch
         this.updateStatusDiv(`The more posts will be fetched now...${new Date()}`);
         setTimeout(() => this.getPosts(instaPosts, false), this.calcDelay());
-      } else if ('likeFeed' === this.whatToLike) { // nothing more in feed > restart
+      } else if (('likeFeed' === this.whatToLike) || ('likeHashTag' === this.whatToLike)) { // nothing more in feed/hashtag > restart
         this.updateStatusDiv(`IG has returned no more posts, restart ...${new Date()}`);
         this.restarted += 1;
         setTimeout(() => this.getPosts(instaPosts, true), this.calcDelay());
@@ -249,6 +295,7 @@ const liker = new Vue({
         liker.updateStatusDiv(message[liker.stopCriterion]);
         liker.updateStatusDiv('You can change the stop criteria during running the process');
 
+        this.periodStarted = Date.now();
         liker.getPosts(instaPosts, true);
       }, () => {
         alert('Specified user was not found');

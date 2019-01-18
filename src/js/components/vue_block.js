@@ -1,6 +1,6 @@
 /* globals Vue, , _gaq, chrome, instaUserInfo, blockUser */
 
-const block = new Vue({ // eslint-disable-line no-unused-vars
+const block = new Vue({
   el: '#app',
   created() {
     this.viewerUserId = '';
