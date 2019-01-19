@@ -9,7 +9,7 @@ const instaUserInfo = function () {
 instaUserInfo.getUserProfile = function (settings) {
   'use strict';
 
-  let {
+  const {
     // silent is set to true from vue_block, vue_follow
     username, userId, updateStatusDiv, silent, vueStatus,
   } = settings;
@@ -28,7 +28,7 @@ instaUserInfo.getUserProfile = function (settings) {
     const link = `https://www.instagram.com/web/friendships/${userId}/follow/`;
     axios.get(link, {}, {})
       .then(
-        (response) => {
+        response => {
           const arr = response.data.match(instaDefOptions.regFindUser);
           if ((arr || []).length > 0) {
             resolve(arr[1]);
@@ -38,14 +38,23 @@ instaUserInfo.getUserProfile = function (settings) {
             resolve();
           }
         },
-        error => function (error) {
+        error => {
+          console.log(error); // eslint-disable-line no-console
           const errorCode = error.response ? error.response.status : 0;
-
-          if (errorCode > 0) {
-            console.log(`error response data - ${error.response.data}/${errorCode}`); // eslint-disable-line no-console
+          console.log(`(getUsernameById) ${userId} error code - ${errorCode}`); // eslint-disable-line no-console
+          if (instaDefOptions.httpErrorMap.hasOwnProperty(errorCode)) {
+            const message = instaMessages.getMessage(instaDefOptions.httpErrorMap[errorCode], errorCode, +instaDefOptions.retryInterval / 60000);
+            updateStatusDiv(message, 'red');
+            instaTimeout.setTimeout(3000)
+              .then(() => instaCountdown.doCountdown('status', errorCode, 'Resolving user id to username', +(new Date()).getTime() + instaDefOptions.retryInterval, vueStatus))
+              .then(() => {
+                console.log('Continue execution after HTTP error', errorCode, new Date()); // eslint-disable-line no-console
+                getUsernameById(userId, resolve, reject);
+              });
+          } else {
+            alert(`Error resolving ${userId} to username/${errorCode}`);
+            reject();
           }
-          console.log(`Error making http request to get ${userId} profile, status - ${errorCode}`); // eslint-disable-line no-console
-          reject();
         },
       );
   }
