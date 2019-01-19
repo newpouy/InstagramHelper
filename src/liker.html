@@ -68,18 +68,24 @@
                 {{Math.floor(rndDelay/100*delay)}}ms</span>
             </v-tooltip>
           </v-flex>
-          <v-flex md3>
+          <v-flex md2>
             <v-tooltip bottom>
-              <v-text-field slot="activator" label="How many likes per period" type="number" min=1 step=1 max=1000
-                v-model.number="likesPerPeriod"></v-text-field>
-              <span>How many likes should be set during the specified period</span>
+              <v-text-field slot="activator" @input="checkLikesPerPeriod()" label="How many likes per period" type="number"
+                min=1 step=1 max=1000 v-model.number="likesPerPeriod"></v-text-field>
+              <span>How many likes should be set during the period</span>
             </v-tooltip>
           </v-flex>
-          <v-flex md3>
+          <v-flex md2>
             <v-tooltip bottom>
-              <v-text-field slot="activator" label="Duration of the period, hours" type="number" min=1 step=1 max=24
-                v-model.number="hoursPerPeriod"></v-text-field>
+              <v-text-field slot="activator" @input="checkDurationPeriod()" label="Duration of the period, hours" type="number"
+                min=1 step=1 max=24 v-model.number="hoursPerPeriod"></v-text-field>
               <span>Duration of the period in hours</span>
+            </v-tooltip>
+          </v-flex>
+          <v-flex md2>
+            <v-tooltip bottom>
+              <v-checkbox slot="activator" :disabled="whatToLike=='likeFeed'" label="Restart after pause" v-model="restartAfterPause"></v-checkbox>
+              <span>Restart the fetching of the posts after pause (only for feed and hashtag liking)</span>
             </v-tooltip>
           </v-flex>
 

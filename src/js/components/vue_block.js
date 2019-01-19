@@ -62,16 +62,12 @@ const block = new Vue({
     },
     checkDelay() {
       if (!this.delay || (this.delay < 10000)) {
-        this.$nextTick(() => {
-          this.delay = 10000;
-        });
+        this.$nextTick(() => this.delay = 10000);
       }
     },
     checkRndDelay() {
       if (!this.rndDelay || (this.rndDelay < 0)) {
-        this.$nextTick(() => {
-          this.rndDelay = 0;
-        });
+        this.$nextTick(() => this.rndDelay = 0);
       }
     },
     timeout(ms) {

@@ -55,6 +55,8 @@ const liker = new Vue({
     skipOwnPosts: true, // do not like your own posts
     minLike: 2, // like a post when already amount of likes >=
 
+    restartAfterPause: false,
+
     hoursPerPeriod: 1,
     likesPerPeriod: 50,
     likedPerPeriod: 0,
@@ -103,21 +105,33 @@ const liker = new Vue({
   methods: {
     calcDelay() {
       const val = +Math.floor(Math.random() * this.delay * this.rndDelay / 100) + +this.delay;
-      this.updateStatusDiv(`Calculated delay ${val}ms`);
+      // this.updateStatusDiv(`Calculated delay ${val}ms`);
       return val;
+    },
+    checkDurationPeriod () {
+      if (!this.hoursPerPeriod || (this.hoursPerPeriod < 1)) {
+        this.$nextTick(() => this.hoursPerPeriod = 1);
+      }
+      if (this.hoursPerPeriod > 24) {
+        this.$nextTick(() => this.hoursPerPeriod = 24);
+      }
+    },
+    checkLikesPerPeriod () {
+      if (!this.likesPerPeriod || (this.likesPerPeriod < 1)) {
+        this.$nextTick(() => this.likesPerPeriod = 1);
+      }
+      if (this.likesPerPeriod > 1000) {
+        this.$nextTick(() => this.likesPerPeriod = 1000);
+      }
     },
     checkDelay() {
       if (!this.delay || (this.delay < 5000)) {
-        this.$nextTick(() => {
-          this.delay = 5000;
-        });
+        this.$nextTick(() => this.delay = 5000);
       }
     },
     checkRndDelay() {
       if (!this.rndDelay || (this.rndDelay < 0)) {
-        this.$nextTick(() => {
-          this.rndDelay = 0;
-        });
+        this.$nextTick(() => this.rndDelay = 0);
       }
     },
     updateStatusDiv(message, color) {
@@ -175,14 +189,10 @@ const liker = new Vue({
     },
     calculateDelayForStartingNextPeriod() {
       this.updateStatusDiv(`${new Date().toLocaleString()}: Calculating the time to start a new period.`);
-
       const endOfCurrentPeriod = this.periodStarted + this.hoursPerPeriod * 60 * 60 * 1000;
-
       const ret = endOfCurrentPeriod - Date.now();
-
       this.updateStatusDiv(`${new Date().toLocaleString()}: End of this period should be on
         ${new Date(endOfCurrentPeriod).toLocaleString()}/${ret}, so we start a new period on that time.`);
-
       return ret;
     },
     scheduleNextRun(instaPosts, media, index, delay) {
@@ -192,7 +202,7 @@ const liker = new Vue({
         this.updateStatusDiv(`Found already liked ${this.alreadyLiked} posts`);
         this.updateStatusDiv(`Skipped: Suggested Users ${this.skippedSuggestedUsers} posts`);
         this.updateStatusDiv(`Skipped: Video ${this.skippedVideo} posts`);
-        this.updateStatusDiv(`Skipped: Own Posts ${this.skippedOwnPosts} posts`);
+        this.updascheduleNextRunteStatusDiv(`Skipped: Own Posts ${this.skippedOwnPosts} posts`);
         this.updateStatusDiv(`Skipped: No enough likes - ${this.skippedTooFewLike} posts`);
         this.updateStatusDiv(`Fetched ${this.fetched} posts`);
         this.updateStatusDiv(`Fetching feed restarted ${this.restarted} times`);
@@ -202,12 +212,12 @@ const liker = new Vue({
         setTimeout(() => {
           this.updateStatusDiv(`${new Date().toLocaleString()}: Starting a new period`);
           this.periodStarted = Date.now();
-          if ('likeProfile' === this.whatToLike) { // continue to like feed
+          if (('likeProfile' === this.whatToLike) || (!this.restartAfterPause)) { // continue to like feed or no restart
             liker.likeMedia(instaPosts, media, index);
           } else { // likeFeed or likeHashTag >> restart
             this.updateStatusDiv(`${new Date().toLocaleString()}: Restarting the fetching...`);
             this.restarted += 1;
-            setTimeout(() => this.getPosts(instaPosts, true), this.calcDelay());
+            this.getPosts(instaPosts, true);
           }
         }, this.calculateDelayForStartingNextPeriod());
       } else {

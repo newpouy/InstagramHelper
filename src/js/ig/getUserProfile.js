@@ -39,14 +39,12 @@ instaUserInfo.getUserProfile = function (settings) {
           }
         },
         error => function (error) {
-          console.log(error); // eslint-disable-line no-console
           const errorCode = error.response ? error.response.status : 0;
 
           if (errorCode > 0) {
             console.log(`error response data - ${error.response.data}/${errorCode}`); // eslint-disable-line no-console
           }
           console.log(`Error making http request to get ${userId} profile, status - ${errorCode}`); // eslint-disable-line no-console
-          console.log(arguments); // eslint-disable-line no-console
           reject();
         },
       );
@@ -193,7 +191,7 @@ instaUserInfo.getUserProfile = function (settings) {
       if (userId) {
         console.log(`>>>user id is defined - ${userId}`); // eslint-disable-line no-console
         promiseGetUsernameById(userId).then((username) => {
-          console.log('>>>', userId, username); // eslint-disable-line no-console
+          console.log('>>> resolved a new user name', userId, username); // eslint-disable-line no-console
           if (username) {
             getUserProfile(username, resolve, reject);
           } else {
