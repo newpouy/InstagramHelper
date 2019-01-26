@@ -9,13 +9,11 @@
     if(details.reason === 'update'){
       const thisVersion = chrome.runtime.getManifest().version;
       console.log(`Updated from ${details.previousVersion} to ${thisVersion}`);
-      if ('0.361' === thisVersion) {
-        const url = chrome.extension.getURL('readme.html');
+        const url = chrome.extension.getURL('vue_test.html');
         promiseChrome.promiseCreateTab({
           url,
           selected: true,
         });
-      }
     } else if (details.reason === 'install') {
       const url = chrome.extension.getURL('readme.html');
       promiseChrome.promiseCreateTab({

@@ -1,52 +1,62 @@
 {
-	"manifest_version": 2,
-
-	"name": "Helper Tools for Instagram",
-	"short_name": "Helper For Insta",
-	"description": "Create followers/following list of IG account, find common users of 2 IG accounts, mass following, liking the posts in your feed",
-	"version": "0.363",
-
-	"options_ui": {
-		"page": "options.html",
-		"chrome_style": true
-	},
-
-  "content_security_policy": "script-src 'self' 'unsafe-eval' https://ssl.google-analytics.com; object-src 'self'",
-
+  "manifest_version": 2,
+  "name": "Helper Tools for Instagram",
+  "short_name": "Helper For Insta",
+  "description": "Create followers/following list of IG account, find common users of 2 IG accounts, mass following, liking the posts in your feed",
+  "version": "0.363",
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": true
+  },
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://apis.google.com https://ssl.google-analytics.com; object-src 'self'",
   "page_action": {
-		"default_icon": "img/icon19.png",
-		"default_title": "Helper Tools for Instagram.com",
-		"default_popup": "popup.html"
-	},
-
-	"icons": {
-		"19": "img/icon19.png",
-		"32": "img/icon32.png",
-		"48": "img/icon48.png",
-		"64": "img/icon64.png"
-	},
-
-	"background": {
-		"scripts": ["js/PromiseChrome.js", "js/background.js"],
-		"persistent": true
-	},
-
-	"content_scripts": [{
-			"matches": ["https://www.instagram.com/*"],
-			"js": ["js/instaDefOptions.js", "js/PromiseChrome.js", "js/instaMessages.js", "js/instagramHelper.js"]
-		}
-	],
-
-	"permissions": [
+    "default_icon": "img/icon19.png",
+    "default_title": "Helper Tools for Instagram.com",
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "19": "img/icon19.png",
+    "32": "img/icon32.png",
+    "48": "img/icon48.png",
+    "64": "img/icon64.png"
+  },
+  "background": {
+    "scripts": [
+      "js/PromiseChrome.js",
+      "js/background.js"
+    ],
+    "persistent": true
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.instagram.com/*"
+      ],
+      "js": [
+        "js/instaDefOptions.js",
+        "js/PromiseChrome.js",
+        "js/instaMessages.js",
+        "js/instagramHelper.js"
+      ]
+    }
+  ],
+  "permissions": [
     "tabs",
+    "identity",
     "fileSystem",
     "storage",
-		"unlimitedStorage",
-		"cookies",
-		"webRequest",
-		"webRequestBlocking",
-		"https://www.instagram.com/*"
-	],
-
-  "incognito": "split"
+    "unlimitedStorage",
+    "cookies",
+    "webRequest",
+    "webRequestBlocking",
+    "https://www.instagram.com/*"
+  ],
+  "incognito": "split",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsNLZoTUEZIQJ8VR9u6vjPVRRgOqsh3RSRv2O2fEp1vunNryb5sG3oYahN/L/8wFTOKdHVSo3pTVuDqUg+rVi08lYh4AmBBsbjvfDAkuJYz/28iD9nbqr1dgIEdFMXtk+1maj1jvmfSpbjHCuXhESQvkyDdMxFr4OM6vLS462pn1QBChuNDJf1s08P2yhmGpoPL6A3HkhbGTcL9uN6Bqeomzt/leNKbhW7WV+FWgRvFbuvwjLfJhdkOZUSE3gvw3wWQpuq5XQQCw7yqAzSBSInlXiVkYm/lmiKh3YuhR7Ns9JR6181TKzY2ct6z+EoGZmHLjHZ0rYIzgQrzei/ciiowIDAQAB",
+  "oauth2": {
+    "client_id": "700289249625-ttnu9l2hs0k25ols8la339mufqe5fh6m.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/spreadsheets"
+    ]
+  }
 }
