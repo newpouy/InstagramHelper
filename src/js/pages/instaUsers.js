@@ -631,36 +631,7 @@ $(() => {
         arr = myData; // if we do not have filtered data set?
       }
 
-      try {
-        console.log(new Date(), arr.length);
-        const val = JSON.stringify(arr);
-        console.log(new Date(), val.length);
-
-        window.webkitRequestFileSystem(window.PERSISTENT, 1024 * 1024 * 1024 * 10, (fs) => {
-          fs.root.getFile(fileName, { create: true }, function (fileEntry) {
-
-            // Create a FileWriter object for our FileEntry (log.txt).
-            fileEntry.createWriter(function (fileWriter) {
-
-              fileWriter.onwriteend = function (e) {
-                console.log('Write completed.');
-                exportToExcelFile(bookType, fileName, arr)
-              };
-
-              fileWriter.onerror = function (e) {
-                console.log('Write failed: ' + e.toString());
-              };
-
-              var blob = new Blob([val], { type: 'text/plain' });
-
-              fileWriter.write(blob);
-
-            }, (e) => { console.log(e) });
-          }, (e) => { console.log(e) });
-        }, (e) => { console.log(e) });
-      } catch (e) {
-        console.log(`Error  ${e.name} : ${e.message} : ${e.stack}`);
-      }
+      exportToExcelFile(bookType, fileName, arr)
     });
 
     $('#massFollow').on('click', () => {

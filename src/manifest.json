@@ -39,7 +39,6 @@
 
 	"permissions": [
     "tabs",
-    "fileSystem",
     "storage",
 		"unlimitedStorage",
 		"cookies",
