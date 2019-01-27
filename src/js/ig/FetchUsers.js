@@ -40,12 +40,20 @@ var FetchUsers = function (settings) {
     }
   }
 
-  var successFetch = function (res) {
+  var successFetch = async function (res) {
     obj.receivedResponses += 1;
     var data = res.data.user[Object.keys(res.data.user)[0]];
     updateStatusDiv(`received users - ${data.edges.length} (${obj.relType}/${obj.receivedResponses})`);
     updateDataArray(obj, data);
     updateProgressBar(obj, data.edges.length);
+    if (obj.db) { // we have DB object in fetchsettings
+      let arr = data.edges.map(el => el.node.id);
+      if (obj.relType === 'followed_by') {
+        await obj.db.postRelationships(arr, null);
+      } else {
+        await obj.db.postRelationships(null, arr);
+      }
+    }
 
     //Have we already achieved the limit?
     if ((obj.limit === 0) || (obj[obj.relType + '_processed'] < obj.limit)) {

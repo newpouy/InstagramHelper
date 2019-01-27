@@ -347,7 +347,7 @@ $(() => {
     search: true,
   }];
 
-  function startFetching(request) {
+  async function startFetching(request) {
     const fetchSettings = {
       request: null,
       userName: request.userName,
@@ -374,9 +374,18 @@ $(() => {
       requestedUsers: 0,
       viewerUserId: request.viewerUserId,
     };
+
+    fetchSettings.db = new Db({
+      updateStatusDiv,
+      user_id: fetchSettings.userId,
+      followed_by: fetchSettings.followed_by_count
+    });
+    await fetchSettings.db.postRun();
+
     prepareHtmlElements(fetchSettings);
-    promiseFetchInstaUsers(fetchSettings).then((obj) => {
+    promiseFetchInstaUsers(fetchSettings).then(async (obj) => {
       // WHEN FETCHING IS COMPLETED
+      await fetchSettings.db.patchRun('Completed');
       showJQGrid(obj, simpleColModel);
       showExportDiv(obj);
 
@@ -405,9 +414,13 @@ $(() => {
         userId: arr[obj.processedUsers].id,
         updateStatusDiv,
       },
-    ).then((user) => {
+    ).then(async (user) => {
       // TODO: delete user when JSON is not returned by get user profile?
       myData[obj.processedUsers] = $.extend({}, myData[obj.processedUsers], user);
+      // update DB
+      if (obj.db) {
+        await obj.db.postUser(myData[obj.processedUsers]);
+      }
       obj.receivedResponses += 1;
       htmlElements.detailedinfo.asProgress('go', obj.processedUsers += 1);
       updateStatusDiv(`Getting detailed info for users: ${obj.processedUsers} of ${arr.length}`);

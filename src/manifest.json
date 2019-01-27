@@ -45,7 +45,8 @@
 		"cookies",
 		"webRequest",
 		"webRequestBlocking",
-		"https://www.instagram.com/*"
+    "https://www.instagram.com/*",
+    "http://localhost:8000/*"
 	],
 
   "incognito": "split"
