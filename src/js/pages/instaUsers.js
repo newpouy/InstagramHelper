@@ -549,7 +549,7 @@ $(() => {
   }
 
   function exportToExcelFile(bookType, fileName, arr) {
-    const headers = [
+    const headersPublic = [
       'id',
       'username',
       'full_name',
@@ -570,10 +570,45 @@ $(() => {
       'blocked_by_viewer',
       'has_blocked_viewer',
       'biography',
-      'connected_fb_page',
+      'is_verified',
+      'is_business_account',
+    ];
+
+    const headersPrivate = [
+      'id',
+      'username',
+      'full_name',
+      'user_profile',
+      'user_follows',
+      'user_followed_by',
+      'profile_pic_url',
+      'profile_pic_url_hd',
+      'is_private',
+      'follows_count',
+      'followed_by_count',
+      'media_count',
+      'latestPostDate',
+      'biography',
       'external_url',
       'is_verified',
+      'is_business_account',
+      'business_category_name',
+      'business_email',
+      'business_phone_number',
     ];
+
+    const headers = headersPublic;
+
+    const filteredArray = arr.map( el => {
+      const keys = Object.keys(el);
+      const ret = {};
+      for (let i = 0; i < keys.length; i += 1) {
+        if (headers.includes(keys[i])) {
+          ret[keys[i]] = el[keys[i]];
+        }
+      }
+      return ret;
+    });
 
     if ('xlsx' === bookType) {
       const wb = XLSX.utils.book_new();
@@ -585,7 +620,7 @@ $(() => {
       };
       wb.SheetNames.push('UsersSheet');
 
-      const ws = XLSX.utils.json_to_sheet(arr, { header: headers, cellDates: true });
+      const ws = XLSX.utils.json_to_sheet(filteredArray, { header: headers, cellDates: true });
       // console.log(ws['!cols']);
 
       const endRow = XLSX.utils.decode_range(ws['!ref']).e.r + 1;
@@ -600,7 +635,7 @@ $(() => {
 
     } else { // THIS IS CVS
       const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.json_to_sheet(arr);
+      const ws = XLSX.utils.json_to_sheet(filteredArray, { header: headers });
       XLSX.utils.book_append_sheet(wb, ws, 'output');
       XLSX.writeFile(wb, fileName);
     }
