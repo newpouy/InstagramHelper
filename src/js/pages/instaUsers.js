@@ -610,7 +610,7 @@ $(() => {
       'business_phone_number',
     ];
 
-    const headers = headersPublic;
+    const headers = headersPrivate;
 
     const filteredArray = arr.map( el => {
       const keys = Object.keys(el);
