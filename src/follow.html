@@ -33,21 +33,21 @@
                 {{Math.floor(rndDelay/100*delay)}}ms</span>
             </v-tooltip>
           </v-flex>
-          <v-flex md3>
+          <v-flex v-if="p2" md3>
             <v-tooltip bottom>
               <v-text-field slot="activator" @input="checkActionsPerPeriod()" label="How many follow/unfollow actions per period"
                 type="number" min=1 step=1 max=1000 v-model.number="actionsPerPeriod"></v-text-field>
               <span>How many follow/unfollow requests should be done during the specified period</span>
             </v-tooltip>
           </v-flex>
-          <v-flex md3>
+          <v-flex v-if="p2" md3>
             <v-tooltip bottom>
               <v-text-field slot="activator" @input="checkDurationPeriod()" label="Duration of the period, hours" type="number"
                 min=1 step=1 max=24 v-model.number="hoursPerPeriod"></v-text-field>
               <span>Duration of the period in hours</span>
             </v-tooltip>
           </v-flex>
-          <v-flex md12>
+          <v-flex v-if="p2" md12>
             <v-expansion-panel>
               <v-expansion-panel-content>
                 <div slot="header" style="font-size: 16px;"><strong>Statistics</strong></div>
@@ -67,10 +67,12 @@
             </v-expansion-panel>
           </v-flex>
           <v-flex md12>
-            <v-btn id="startUnFollow" :disabled="startButtonDisabled" v-on:click="unFollowButtonClick" color="primary">Start
-              UnFollow!</v-btn>
-            <v-btn id="startFollow" :disabled="startButtonDisabled" v-on:click="followButtonClick" color="primary">Start
-              Follow!</v-btn>
+            <div class="text-xs-center">
+              <v-btn id="startUnFollow" :disabled="startButtonDisabled" v-on:click="unFollowButtonClick" color="primary">Start
+                UnFollow!</v-btn>
+              <v-btn id="startFollow" :disabled="startButtonDisabled" v-on:click="followButtonClick" color="primary">Start
+                Follow!</v-btn>
+            </div>
           </v-flex>
           <v-flex md12 v-if="!isInProgress">
             <v-text-field id="ids" label="Input of User Ids" multi-line :readonly="startButtonDisabled" placeholder="Specify the id of users you want to follow/unfollow. Put each id on separate line. Please pay attention that it should be id (numeric value), not username."></v-text-field>
