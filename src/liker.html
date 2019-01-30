@@ -68,21 +68,21 @@
                 {{Math.floor(rndDelay/100*delay)}}ms</span>
             </v-tooltip>
           </v-flex>
-          <v-flex md2>
+          <v-flex v-if="p2" md2>
             <v-tooltip bottom>
               <v-text-field slot="activator" @input="checkLikesPerPeriod()" label="How many likes per period" type="number"
                 min=1 step=1 max=1000 v-model.number="likesPerPeriod"></v-text-field>
               <span>How many likes should be set during the period</span>
             </v-tooltip>
           </v-flex>
-          <v-flex md2>
+          <v-flex v-if="p2" md2>
             <v-tooltip bottom>
               <v-text-field slot="activator" @input="checkDurationPeriod()" label="Duration of the period, hours" type="number"
                 min=1 step=1 max=24 v-model.number="hoursPerPeriod"></v-text-field>
               <span>Duration of the period in hours</span>
             </v-tooltip>
           </v-flex>
-          <v-flex md2>
+          <v-flex v-if="p2" md2>
             <v-tooltip bottom>
               <v-checkbox slot="activator" :disabled="whatToLike=='likeFeed'" label="Restart after pause" v-model="restartAfterPause"></v-checkbox>
               <span>Restart the fetching of the posts after pause (only for feed and hashtag liking)</span>
@@ -90,9 +90,12 @@
           </v-flex>
 
           <v-flex md12>
-            <v-btn id="start" :disabled="startButtonDisabled" color="primary" v-on:click="startButtonClick">Like the
-              posts!</v-btn>
-            <v-btn :disabled="!isInProgress" color="primary" v-on:click="stop=true">Stop it!</v-btn>
+            <div class="text-xs-center">
+
+              <v-btn id="start" :disabled="startButtonDisabled" color="primary" v-on:click="startButtonClick">Like the
+                posts!</v-btn>
+              <v-btn :disabled="!isInProgress" color="primary" v-on:click="stop=true">Stop it!</v-btn>
+            </div>
           </v-flex>
           <v-flex md12>
             <v-text-field id="log_text_area" rows="10" label="Log" multi-line v-model="log"></v-text-field>

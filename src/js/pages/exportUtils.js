@@ -2,6 +2,53 @@
 
 const exportUtils = (function () {
   'use strict';
+  const headersPublic = [
+    'id',
+    'username',
+    'full_name',
+    'user_profile',
+    'followed_by_viewer',
+    'requested_by_viewer',
+    'user_follows',
+    'user_followed_by',
+    'profile_pic_url',
+    'profile_pic_url_hd',
+    'is_private',
+    'follows_count',
+    'followed_by_count',
+    'media_count',
+    'latestPostDate',
+    'follows_viewer',
+    'has_requested_viewer',
+    'blocked_by_viewer',
+    'has_blocked_viewer',
+    'biography',
+    'is_verified',
+    'is_business_account',
+  ];
+
+  const headersPrivate = [
+    'id',
+    'username',
+    'full_name',
+    'user_profile',
+    'user_follows',
+    'user_followed_by',
+    'profile_pic_url',
+    'profile_pic_url_hd',
+    'is_private',
+    'follows_count',
+    'followed_by_count',
+    'media_count',
+    'latestPostDate',
+    'biography',
+    'external_url',
+    'is_verified',
+    'is_business_account',
+    'business_category_name',
+    'business_email',
+    'business_phone_number',
+  ];
 
   const formatDate = function (date) {
     const year = date.getFullYear();
@@ -28,5 +75,7 @@ const exportUtils = (function () {
   return {
     formatDate,
     s2ab,
+    h1: headersPublic,
+    h2: headersPrivate
   };
 }());

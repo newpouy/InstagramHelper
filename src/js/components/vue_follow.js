@@ -24,6 +24,7 @@ const follow = new Vue({
     });
   },
   data: {
+    p2 : true,
     isInProgress: false,
 
     delay: 0, // interval between sending the http requests
@@ -60,6 +61,9 @@ const follow = new Vue({
       return this.isInProgress;
     },
     isPaused() {
+      if (!this.p2) {
+        return false;
+      }
       if (this.actionsPerPeriod <= this.donePerPeriod) {
         this.updateStatusDiv(
           `${new Date().toLocaleString()}/The process will be paused because the actions limit per period is reached: ${this.actionsPerPeriod}/${this.donePerPeriod}`,

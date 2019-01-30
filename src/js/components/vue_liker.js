@@ -23,6 +23,7 @@ const liker = new Vue({
     });
   },
   data: {
+    p2 : true,
     isInProgress: false, // indicate if liking is in progress
 
     amountToLike: 100, // how many should be liked
@@ -64,6 +65,9 @@ const liker = new Vue({
   },
   computed: {
     isPaused() {
+      if (!this.p2) {
+        return false;
+      }
       if (this.likesPerPeriod <= this.likedPerPeriod) {
         this.updateStatusDiv(
           `${new Date().toLocaleString()}/The process will be paused because the likes limit per period is reached: ${this.likesPerPeriod}/${this.likedPerPeriod}`,

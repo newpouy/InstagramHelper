@@ -277,7 +277,18 @@ $(() => {
         console.log('DO NOT have filtered list', myData.length); // eslint-disable-line no-console
         arr = myData; // if we do not have filtered data set?
       } */
-      const arr = myData;
+      const headers = exportUtils.h2;
+
+      const filteredArray = myData.map( el => {
+        const keys = Object.keys(el);
+        const ret = {};
+        for (let i = 0; i < keys.length; i += 1) {
+          if (headers.includes(keys[i])) {
+            ret[keys[i]] = el[keys[i]];
+          }
+        }
+        return ret;
+      });
 
       if ('xlsx' === bookType) {
         const wb = XLSX.utils.book_new();
@@ -288,13 +299,13 @@ $(() => {
           CreatedDate: new Date(),
         };
         wb.SheetNames.push('UsersSheet');
-        const ws = XLSX.utils.json_to_sheet(arr);
+        const ws = XLSX.utils.json_to_sheet(filteredArray, { header: headers, cellDates: true });
         wb.Sheets.UsersSheet = ws;
         const wbout = XLSX.write(wb, { bookType, type: 'binary' });
         saveAs(new Blob([exportUtils.s2ab(wbout)], { type: 'application/octet-stream' }), fileName);
       } else { // THIS IS CVS
         const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet(arr);
+        const ws = XLSX.utils.json_to_sheet(filteredArray, { header: headers });
         XLSX.utils.book_append_sheet(wb, ws, 'output');
         XLSX.writeFile(wb, fileName);
       }
