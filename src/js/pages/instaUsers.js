@@ -385,9 +385,9 @@ $(() => {
     prepareHtmlElements(fetchSettings);
     promiseFetchInstaUsers(fetchSettings).then(async (obj) => {
       // WHEN FETCHING IS COMPLETED
-      await fetchSettings.db.patchRun('Completed');
       showJQGrid(obj, simpleColModel);
       showExportDiv(obj);
+      await fetchSettings.db.patchRun('Completed');
 
       // DO WE NEED TO RUN DETAILED INFO COLLECTION
       // $('#startDetailedInfoCollection').attr("disabled", "disabled");
