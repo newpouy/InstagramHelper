@@ -48,6 +48,11 @@ const exportUtils = (function () {
     'business_category_name',
     'business_email',
     'business_phone_number',
+    'street_address',
+    'zip_code',
+    'city_name',
+    'region_name',
+    'country_code',
   ];
 
   const formatDate = function (date) {
