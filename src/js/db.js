@@ -119,7 +119,7 @@ const Db = function (settings) {
     const link = `http://${API_HOST}:${API_PORT}/api/user`;
     axios.post(link, user, config).then(
       response => resolve(),
-      error => analyzeError(error, postRunInternal, resolve, reject),
+      error => analyzeError(error, postUserInternal, resolve, reject),
     );
   }
 
