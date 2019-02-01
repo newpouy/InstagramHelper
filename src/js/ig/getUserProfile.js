@@ -68,7 +68,7 @@ instaUserInfo.getUserProfile = function (settings) {
   }
 
   function successGetUserProfile(data, link, resolve) {
-    const p2 = true;
+    const p2 = false;
     // getUserProfile.js:1 Uncaught (in promise) TypeError: Cannot read property '1' of null
     // at a (getUserProfile.js:1)
     // at axios.get.then.e (getUserProfile.js:1)
