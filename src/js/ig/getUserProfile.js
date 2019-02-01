@@ -1,5 +1,4 @@
 /* globals alert, axios, instaDefOptions, instaMessages, instaTimeout, instaCountdown */
-/* jshint -W106 */
 
 const igUserProfileRegularExpression = /window._sharedData = (.*);<\/script>/i;
 
@@ -28,7 +27,7 @@ instaUserInfo.getUserProfile = function (settings) {
     const link = `https://www.instagram.com/web/friendships/${userId}/follow/`;
     axios.get(link, {}, {})
       .then(
-        response => {
+        (response) => {
           const arr = response.data.match(instaDefOptions.regFindUser);
           if ((arr || []).length > 0) {
             resolve(arr[1]);
@@ -38,7 +37,7 @@ instaUserInfo.getUserProfile = function (settings) {
             resolve();
           }
         },
-        error => {
+        (error) => {
           console.log(error); // eslint-disable-line no-console
           const errorCode = error.response ? error.response.status : 0;
           console.log(`(getUsernameById) ${userId} error code - ${errorCode}`); // eslint-disable-line no-console
@@ -69,6 +68,7 @@ instaUserInfo.getUserProfile = function (settings) {
   }
 
   function successGetUserProfile(data, link, resolve) {
+    const p2 = true;
     // getUserProfile.js:1 Uncaught (in promise) TypeError: Cannot read property '1' of null
     // at a (getUserProfile.js:1)
     // at axios.get.then.e (getUserProfile.js:1)
@@ -110,10 +110,22 @@ instaUserInfo.getUserProfile = function (settings) {
           business_category_name,
           business_email,
           business_phone_number,
+          business_address_json,
         } = json.entry_data.ProfilePage[0].graphql.user;
         const follows_count = json.entry_data.ProfilePage[0].graphql.user.edge_follow.count;
         const followed_by_count = json.entry_data.ProfilePage[0].graphql.user.edge_followed_by.count;
         const media_count = json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.count;
+
+        let street_address;
+        let zip_code;
+        let city_name;
+        let region_name;
+        let country_code;
+        if (p2 && business_address_json) {
+          ({
+            street_address, zip_code, city_name, region_name, country_code,
+          } = JSON.parse(business_address_json));
+        }
 
         let latestPostDate;
         if (media_count > 0) { // get the date of the latest post
@@ -148,10 +160,17 @@ instaUserInfo.getUserProfile = function (settings) {
           latestPostDate,
           is_verified,
           is_business_account,
+        }, p2 ? {
           business_category_name,
           business_email,
           business_phone_number,
-        });
+        } : {}, p2 && business_address_json ? {
+          street_address,
+          zip_code,
+          city_name,
+          region_name,
+          country_code,
+        } : {});
         resolve(obj);
       } else {
         console.log(`returned data in getUserProfile is not JSON - ${userId}/${link}`); // eslint-disable-line no-console
