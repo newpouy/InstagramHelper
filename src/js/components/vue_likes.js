@@ -641,6 +641,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       }));
     },
     startButtonClick() {
+      likes.isGettingLikesInProgress = true;
       let instaPosts = new GetPosts({
         pageSize: likes.pageSize,
         mode: 'likeProfile',
@@ -655,7 +656,6 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         likes.init = false;
 
         likes.followersAdded = false;
-        likes.isGettingLikesInProgress = true;
 
         likes.userInfo = obj;
 
@@ -680,8 +680,9 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
         this.whenCompleted();
       }, () => {
-        alert('Specified user was not found');
+        likes.isGettingLikesInProgress = false;
         instaPosts = null;
+        alert('Specified user was not found');
       });
     },
   },
