@@ -48,10 +48,12 @@ var FetchUsers = function (settings) {
     updateProgressBar(obj, data.edges.length);
     if (obj.db) { // we have DB object in fetchsettings
       let arr = data.edges.map(el => el.node.id);
-      if (obj.relType === 'followed_by') {
-        await obj.db.postRelationships(arr, null);
-      } else {
-        await obj.db.postRelationships(null, arr);
+      if (arr.length > 0) { // just to avoid DB call, if for example the scanned account follows 0 users
+        if (obj.relType === 'followed_by') {
+          await obj.db.postRelationships(arr, null);
+        } else {
+          await obj.db.postRelationships(null, arr);
+        }
       }
     }
 
