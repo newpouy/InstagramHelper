@@ -1,7 +1,9 @@
+/* globals chrome, instaDefOptions */
 /* exported exportUtils */
 
 const exportUtils = (function () {
   'use strict';
+
   const headersPublic = [
     'id',
     'username',
@@ -81,6 +83,31 @@ const exportUtils = (function () {
     formatDate,
     s2ab,
     h1: headersPublic,
-    h2: headersPrivate
+    h2: headersPrivate,
+    loadExcelFormat: (radios) => {
+      chrome.storage.sync.get({
+        excelFormat: instaDefOptions.defExcelFormat,
+      }, (items) => {
+        const value = items.excelFormat.toUpperCase();
+        for (let i = 0; i < radios.length; i += 1) {
+          if ((radios[i].value).toUpperCase() === value) {
+            radios[i].checked = true;
+            return;
+          }
+        }
+      });
+    },
+    loadExcelFormatPromise: () => {
+      return new Promise(function (resolve) {
+        chrome.storage.sync.get({
+          excelFormat: instaDefOptions.defExcelFormat,
+        }, items => resolve(items.excelFormat));
+      });
+    },
+    saveExcelFormat: (format) => {
+      chrome.storage.sync.set({
+        excelFormat: format,
+      });
+    }
   };
 }());

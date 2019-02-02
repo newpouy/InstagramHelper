@@ -150,7 +150,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
 
     this.startDate = null; // timestamp when process was started
   },
-  mounted: () => {
+  mounted: async function() {
     // console.log('likes mounted...'); // eslint-disable-line no-console
     _gaq.push(['_trackPageview']);
 
@@ -171,6 +171,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
         likes.fetchPageSize = request.pageSize;
       }
     });
+    this.outType = await exportUtils.loadExcelFormatPromise();
   },
   data: {
     rules: {
@@ -539,6 +540,7 @@ var likes = new Vue({ // eslint-disable-line no-unused-vars
       }
     },
     exportToExcel() {
+      exportUtils.saveExcelFormat(this.outType);
       const fileName = `getLikes_${this.userToGetLikes}_${exportUtils.formatDate(new Date())}.${this.outType}`;
 
       if ('xlsx' === this.outType) {

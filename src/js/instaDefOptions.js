@@ -3,6 +3,7 @@
 const instaDefOptions = (function () {
   return {
     you: '<<YOU>>',
+    defExcelFormat: 'CSV',
     defDelay: 2000,
     defFollowDelay: 35000,
     defLikeDelay: 5000, // TODO: separate parameter for Get Likes
