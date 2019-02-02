@@ -600,6 +600,8 @@ $(() => {
   }
 
   function showExportDiv(obj) {
+    exportUtils.loadExcelFormat(document.getElementsByName('outType'));
+
     $('#exportDiv').show();
 
     $('#export_XLSX').on('click', () => {
@@ -609,6 +611,7 @@ $(() => {
       for (let i = 0; i < radios.length; i += 1) {
         if (radios[i].checked) {
           bookType = radios[i].value;
+          exportUtils.saveExcelFormat(bookType);
           break;
         }
       }
