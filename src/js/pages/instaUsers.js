@@ -810,7 +810,9 @@ $(() => {
 
   function prepareHtmlElementsUserDetails(obj, arr) {
     updateStatusDiv(`Found users ${arr.length}`);
-    document.getElementById('detailedinfo_title').textContent = 'Getting the detailed info';
+    document.getElementById('detailedinfo_title').innerHTML =
+      `Getting detailed info; <font color='red'>the delay between requests is ${obj.detailedInfoDelay}ms</font>,
+      you can modify this value in the Options and it will be effective the next time you run the process`;
     htmlElements.detailedinfo.asProgress({
       namespace: 'progress',
       min: 0,

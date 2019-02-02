@@ -108,10 +108,11 @@ $(() => {
 
     Promise.all([p1, p2]).then((values) => {
       const [obj1, obj2] = values;
-      const arr = intersectArrays(obj1.myData, obj2.myData);
+      let arr = [];
+      arr = intersectArrays(obj1.myData, obj2.myData);
       // let arr = obj1.myData.concat(obj2.myData); // to check download issue
       if (arr.length > 0) { // if common users are found
-        prepareHtmlElementsForIntersection(arr);
+        prepareHtmlElementsForIntersection(arr, fetchSettings_1.detailedInfoDelay);
         promiseGetFullInfo(arr, fetchSettings_1.detailedInfoDelay).then(() => {
           generationCompleted(request, obj1, obj2);
         });
@@ -358,9 +359,11 @@ $(() => {
     });
   }
 
-  function prepareHtmlElementsForIntersection(arr) {
+  function prepareHtmlElementsForIntersection(arr, delay) {
     updateStatusDiv('statusDiv', `Found common users ${arr.length}`);
-    document.getElementById('intersection_title').textContent = 'Getting the detailed info';
+    document.getElementById('intersection_title').innerHTML =
+      `Getting detailed info; <font color='red'>the delay between requests is ${delay}ms</font>,
+      you can modify this value in the Options and it will be effective the next time you run the process`;
     htmlElements.intersection.asProgress({
       namespace: 'progress',
       min: 0,
