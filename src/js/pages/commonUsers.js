@@ -56,6 +56,7 @@ $(() => {
       request: null,
       userName: request.user_1.userName,
       pageSize: request.pageSize,
+      detailedInfoDelay: request.detailedInfoDelay,
       delay: +1000 + request.delay,
       csrfToken: request.csrfToken,
       userId: request.user_1.userId,
@@ -80,6 +81,7 @@ $(() => {
       request: null,
       userName: request.user_2.userName,
       pageSize: request.pageSize,
+      detailedInfoDelay: request.detailedInfoDelay,
       delay: +1000 + request.delay,
       csrfToken: request.csrfToken,
       userId: request.user_2.userId,
@@ -106,11 +108,11 @@ $(() => {
 
     Promise.all([p1, p2]).then((values) => {
       const [obj1, obj2] = values;
-      let arr = intersectArrays(obj1.myData, obj2.myData);
+      const arr = intersectArrays(obj1.myData, obj2.myData);
       // let arr = obj1.myData.concat(obj2.myData); // to check download issue
       if (arr.length > 0) { // if common users are found
         prepareHtmlElementsForIntersection(arr);
-        promiseGetFullInfo(arr).then(() => {
+        promiseGetFullInfo(arr, fetchSettings_1.detailedInfoDelay).then(() => {
           generationCompleted(request, obj1, obj2);
         });
       } else {
@@ -119,13 +121,13 @@ $(() => {
     });
   }
 
-  function promiseGetFullInfo(arr) {
+  function promiseGetFullInfo(arr, delay) {
     return new Promise(((resolve) => {
-      getFullInfo(arr, 0, resolve);
+      getFullInfo(arr, 0, delay, resolve);
     }));
   }
 
-  function getFullInfo(arr, index, resolve) {
+  function getFullInfo(arr, index, delay, resolve) {
     instaUserInfo.getUserProfile({
       username: arr[index].username,
       userId: arr[index].id,
@@ -145,10 +147,9 @@ $(() => {
         resolve();
         return;
       }
-
       setTimeout(() => {
-        getFullInfo(arr, ++index, resolve);
-      }, 0);
+        getFullInfo(arr, ++index, delay, resolve);
+      }, delay);
     });
   }
 
@@ -202,7 +203,7 @@ $(() => {
 
   function startTimer(timer, startTime) {
     return setInterval(() => {
-      const ms = parseInt(new Date() - startTime);
+      const ms = parseInt(new Date() - startTime, 10);
       let x = ms / 1000;
       const seconds = parseInt(x % 60, 10);
       x /= 60;
@@ -266,20 +267,10 @@ $(() => {
       }
 
       const fileName = `commonusers_${obj.user_1.userName}_and_${obj.user_2.userName}_${exportUtils.formatDate(new Date())}.${bookType}`;
-      // var fileName =
-      //  `${obj.requestRelType}_users_${obj.userName}${obj.limit > 0 ? '_limit_' + obj.limit : ''}_${exportUtils.formatDate(new Date())}.xlsx`;
-      /* var arr = [];
-      if (lastSelected) {
-        console.log('Have filtered list', lastSelected.length); // eslint-disable-line no-console
-        arr = lastSelected; // if we have filtered data set?
-        //  fileName = 'FILTERED_' + fileName;
-      } else {
-        console.log('DO NOT have filtered list', myData.length); // eslint-disable-line no-console
-        arr = myData; // if we do not have filtered data set?
-      } */
+
       const headers = exportUtils.h1;
 
-      const filteredArray = myData.map( el => {
+      const filteredArray = myData.map((el) => {
         const keys = Object.keys(el);
         const ret = {};
         for (let i = 0; i < keys.length; i += 1) {
@@ -423,7 +414,8 @@ $(() => {
       align: 'center',
       sortable: false,
       formatter(cellvalue, model, row) {
-        return `<a href='https://www.instagram.com/${row.username}' target='_blank'><img src='${cellvalue}' alt='' /></a>`;
+        return `<a href='https://www.instagram.com/${row.username}'
+          target='_blank'><img src='${cellvalue}' alt='' /></a>`;
       },
       search: false,
     }, {
@@ -433,7 +425,8 @@ $(() => {
       formatter(cellvalue, model, row) {
         let ret = `id:${row.id}<br/>username:<strong>${row.username}</strong><br/>`;
         ret += row.full_name ? `full name:<strong>${row.full_name}</strong><br/>` : '';
-        ret += row.connected_fb_page ? `FB:<a href='${row.connected_fb_page}' target='_blank'>${row.connected_fb_page}</a><br/>` : '';
+        ret += row.connected_fb_page
+          ? `FB:<a href='${row.connected_fb_page}' target='_blank'>${row.connected_fb_page}</a><br/>` : '';
         ret += row.external_url ? `url:<a href='${row.external_url}' target='_blank'>${row.external_url}</a>` : '';
         return ret;
       },
@@ -618,6 +611,6 @@ $(() => {
   }
 });
 
-window.onload = function () {
+window.onload = () => {
   _gaq.push(['_trackPageview']);
 };

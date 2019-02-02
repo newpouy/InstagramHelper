@@ -1,5 +1,6 @@
-/* globals confirm, chrome, $, _gaq */
-/* globals instaDefOptions, instaUserInfo, followUser, exportUtils, FetchUsers, XLSX, saveAs */
+/* global confirm, chrome, $, _gaq */
+/* global instaDefOptions, instaUserInfo, followUser, exportUtils, FetchUsers, XLSX, saveAs */
+/* eslint no-restricted-globals: ["confirm"] */
 
 $(() => {
   'use strict';
@@ -21,7 +22,8 @@ $(() => {
 
   chrome.runtime.onMessage.addListener((request) => {
     if (request.action === 'get_insta_users') {
-      const promise = instaDefOptions.you === request.userName ? instaUserInfo.getUserProfile({ username: request.viewerUserName }) : request.userName;
+      const promise = instaDefOptions.you === request.userName
+        ? instaUserInfo.getUserProfile({ username: request.viewerUserName }) : request.userName;
       Promise.all([promise]).then((values) => {
         if (typeof values[0] === 'object') {
           request.userName = request.viewerUserName;
@@ -36,7 +38,7 @@ $(() => {
     }
   });
 
-  const updateStatusDiv = function (message, color) {
+  const updateStatusDiv = (message, color) => {
     htmlElements.statusDiv.textContent = message;
     htmlElements.statusDiv.style.color = color || 'black';
   };
@@ -48,7 +50,8 @@ $(() => {
     align: 'center',
     sortable: false,
     formatter(cellvalue, model, row) {
-      return `<a href='https://www.instagram.com/${row.username}' target='_blank'><img src='${cellvalue}' alt='' /></a>`;
+      return `<a href='https://www.instagram.com/${row.username}'
+        target='_blank'><img src='${cellvalue}' alt='' /></a>`;
     },
     search: false,
   }, {
@@ -67,7 +70,8 @@ $(() => {
     formatter(cellvalue, model, row) {
       let ret = `username:<strong>${row.username}</strong><br/>`;
       ret += row.full_name ? `full name:<strong>${row.full_name}</strong><br/>` : '';
-      ret += row.connected_fb_page ? `FB:<a href='${row.connected_fb_page}' target='_blank'>${row.connected_fb_page}</a><br/>` : '';
+      ret += row.connected_fb_page
+        ? `FB:<a href='${row.connected_fb_page}' target='_blank'>${row.connected_fb_page}</a><br/>` : '';
       ret += row.external_url ? `url:<a href='${row.external_url}' target='_blank'>${row.external_url}</a>` : '';
       return ret;
     },
@@ -262,7 +266,8 @@ $(() => {
     align: 'center',
     sortable: false,
     formatter(cellvalue, model, row) {
-      return `<a href='https://www.instagram.com/${row.username}' target='_blank'><img src='${cellvalue}' alt='' /></a>`;
+      return `<a href='https://www.instagram.com/${row.username}'
+        target='_blank'><img src='${cellvalue}' alt='' /></a>`;
     },
     search: false,
   }, {
@@ -353,13 +358,15 @@ $(() => {
       userName: request.userName,
       pageSize: request.pageSize,
       delay: request.delay,
+      detailedInfoDelay: request.detailedInfoDelay,
       followDelay: request.followDelay,
       csrfToken: request.csrfToken,
       userId: request.userId,
       requestRelType: request.relType,
-      relType: 'All' === request.relType ? request.follows_count > request.followed_by_count ? 'follows' : 'followed_by' : request.relType,
+      relType: 'All' === request.relType
+        ? request.follows_count > request.followed_by_count ? 'follows' : 'followed_by' : request.relType,
       callBoth: 'All' === request.relType,
-      checkDuplicates: myData.length > 0, // probably we are starting with already opened page , now it is obsolete, and actually should be False
+      checkDuplicates: false,
       limit: request.limit, // return only first Nth found
       follows_count: request.follows_count,
       followed_by_count: request.followed_by_count,
@@ -367,8 +374,8 @@ $(() => {
       followed_by_processed: 0,
       startTime: new Date(),
       timerInterval: startTimer(document.querySelector('#timer'), new Date()),
-      receivedResponses: 0,	// received HTTP responses
-      processedUsers: 0, 	// processed users in get full info
+      receivedResponses: 0, // received HTTP responses
+      processedUsers: 0, // processed users in get full info
       followProcessedUsers: 0, // processed users for mass follow
       followedUsers: 0,
       requestedUsers: 0,
@@ -421,7 +428,7 @@ $(() => {
       }
       setTimeout(() => {
         getFullInfo(obj, arr, resolve, reject);
-      }, 0);
+      }, obj.detailedInfoDelay); // added the delay for getting detailed info
     });
   }
 
@@ -502,7 +509,7 @@ $(() => {
           csrfToken: obj.csrfToken,
           updateStatusDiv,
         },
-      ).then((result) => {
+      ).then(() => {
         obj.unFollowProcessedUsers += 1;
         obj.receivedResponses += 1;
         obj.unFollowedUsers += 1;
@@ -515,7 +522,7 @@ $(() => {
         }, obj.followDelay);
       });
     } else {
-      console.log(`>>>>>>>>>>>>>>>${username} is followed and it will NOT be unfollowed.`); // eslint-disable-line no-console
+      console.log(`${username} is followed and it will NOT be unfollowed.`); // eslint-disable-line no-console
       obj.unFollowProcessedUsers += 1;
       massUnFollow(obj, arr, resolve, reject);
     }
@@ -537,7 +544,7 @@ $(() => {
 
   function startTimer(timer, startTime) {
     return setInterval(() => {
-      const ms = parseInt(new Date() - startTime);
+      const ms = parseInt(new Date() - startTime, 10);
       let x = ms / 1000;
       const seconds = parseInt(x % 60, 10);
       x /= 60;
@@ -551,7 +558,7 @@ $(() => {
   function exportToExcelFile(bookType, fileName, arr) {
     const headers = exportUtils.h1;
 
-    const filteredArray = arr.map( el => {
+    const filteredArray = arr.map((el) => {
       const keys = Object.keys(el);
       const ret = {};
       for (let i = 0; i < keys.length; i += 1) {
@@ -584,7 +591,6 @@ $(() => {
       wb.Sheets.UsersSheet = ws;
       const wbout = XLSX.write(wb, { bookType, type: 'binary' });
       saveAs(new Blob([exportUtils.s2ab(wbout)], { type: 'application/octet-stream' }), fileName);
-
     } else { // THIS IS CVS
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.json_to_sheet(filteredArray, { header: headers });
@@ -618,7 +624,7 @@ $(() => {
         arr = myData; // if we do not have filtered data set?
       }
 
-      exportToExcelFile(bookType, fileName, arr)
+      exportToExcelFile(bookType, fileName, arr);
     });
 
     $('#massFollow').on('click', () => {
@@ -840,7 +846,8 @@ $(() => {
       viewrecords: true, // show the current page, data range and total records on the toolbar
       loadonce: true,
       ignoreCase: true,
-      caption: 'All' === obj.requestRelType ? `${obj.requestRelType} users of ${obj.userName}` : `${obj.userName} ${obj.requestRelType}`,
+      caption: 'All' === obj.requestRelType
+        ? `${obj.requestRelType} users of ${obj.userName}` : `${obj.userName} ${obj.requestRelType}`,
     }).jqGrid('filterToolbar', {
       searchOperators: true,
       defaultSearch: 'cn',
@@ -852,14 +859,14 @@ $(() => {
       del: false,
       refresh: true,
     }, {}, {}, {}, {
-        multipleSearch: true,
-        closeAfterSearch: true,
-        closeOnEscape: true,
-        searchOnEnter: true,
-        showQuery: true,
-      },
-      {})
-      .jqGrid('setGridWidth', $('#jqGrid').width() - 20); // TODO: why autowidth doesn't work? what is taken into account
+      multipleSearch: true,
+      closeAfterSearch: true,
+      closeOnEscape: true,
+      searchOnEnter: true,
+      showQuery: true,
+    },
+    {})
+      .jqGrid('setGridWidth', $('#jqGrid').width() - 20); // why autowidth doesn't work? what is taken into account
 
     // https://stackoverflow.com/questions/9775115/get-all-rows-not-filtered-from-jqgrid
     const oldFrom = $.jgrid.from;
@@ -876,6 +883,6 @@ $(() => {
   }
 });
 
-window.onload = function () {
+window.onload = () => {
   _gaq.push(['_trackPageview']);
 };

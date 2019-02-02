@@ -54,6 +54,7 @@
         delay: instaDefOptions.defDelay,
         followDelay: instaDefOptions.defFollowDelay,
         likeDelay: instaDefOptions.defLikeDelay,
+        detailedInfoDelay: instaDefOptions.defDetailedInfoDelay,
         pageSizeForFeed: instaDefOptions.defPageSizeForFeed
       }).then(function (items) {
 
@@ -62,6 +63,7 @@
         request.pageSize = Math.min(items.pageSize, instaDefOptions.maxPageSize); // to avoid HTTP400
         request.delay = items.delay;
         request.followDelay = items.followDelay;
+        request.detailedInfoDelay = items.detailedInfoDelay;
         request.likeDelay = items.likeDelay;
         request.pageSizeForFeed = Math.min(items.pageSizeForFeed, instaDefOptions.maxPageSizeForFeed); // to avoid HTTP400
         request.csrfToken = sharedData.config.csrf_token;
