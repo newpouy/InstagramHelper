@@ -38,6 +38,8 @@
 	],
 
 	"permissions": [
+    "identify",
+    "https://www.googleapis.com/",
     "tabs",
     "storage",
 		"unlimitedStorage",
@@ -47,5 +49,13 @@
 		"https://www.instagram.com/*"
 	],
 
-  "incognito": "split"
+  "incognito": "split",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsNLZoTUEZIQJ8VR9u6vjPVRRgOqsh3RSRv2O2fEp1vunNryb5sG3oYahN/L/8wFTOKdHVSo3pTVuDqUg+rVi08lYh4AmBBsbjvfDAkuJYz/28iD9nbqr1dgIEdFMXtk+1maj1jvmfSpbjHCuXhESQvkyDdMxFr4OM6vLS462pn1QBChuNDJf1s08P2yhmGpoPL6A3HkhbGTcL9uN6Bqeomzt/leNKbhW7WV+FWgRvFbuvwjLfJhdkOZUSE3gvw3wWQpuq5XQQCw7yqAzSBSInlXiVkYm/lmiKh3YuhR7Ns9JR6181TKzY2ct6z+EoGZmHLjHZ0rYIzgQrzei/ciiowIDAQAB",
+  "oauth2": {
+    "client_id": "3351417508-2kfsr3lko9gltmfva1kgujjovkbkjp0g.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/plus.login",
+      "https://www.googleapis.com/auth/chromewebstore.readonly"
+    ]
+  }
 }
