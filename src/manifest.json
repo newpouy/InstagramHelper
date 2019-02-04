@@ -38,7 +38,7 @@
 	],
 
 	"permissions": [
-    "identify",
+    "identity",
     "https://www.googleapis.com/",
     "tabs",
     "storage",
