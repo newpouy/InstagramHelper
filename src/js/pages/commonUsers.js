@@ -57,7 +57,7 @@ $(() => {
       userName: request.user_1.userName,
       pageSize: request.pageSize,
       detailedInfoDelay: request.detailedInfoDelay,
-      delay: +1000 + request.delay,
+      delay: +1000 + Number(request.delay),
       csrfToken: request.csrfToken,
       userId: request.user_1.userId,
       relType: 'All' === request.relType
@@ -82,7 +82,7 @@ $(() => {
       userName: request.user_2.userName,
       pageSize: request.pageSize,
       detailedInfoDelay: request.detailedInfoDelay,
-      delay: +1000 + request.delay,
+      delay: +1000 + Number(request.delay),
       csrfToken: request.csrfToken,
       userId: request.user_2.userId,
       relType: 'All' === request.relType

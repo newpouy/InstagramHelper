@@ -1,13 +1,16 @@
 {
-  "manifest_version": 2,
-  "name": "Helper Tools for Instagram",
-  "short_name": "Helper For Insta",
-  "description": "Create followers/following list of IG account, find common users of 2 IG accounts, mass following, liking the posts in your feed",
-  "version": "0.367",
-  "options_ui": {
-    "page": "options.html",
-    "chrome_style": true
-  },
+	"manifest_version": 2,
+
+	"name": "Helper Tools for Instagram",
+	"short_name": "Helper For Insta",
+	"description": "Create followers/following list of IG account, find common users of 2 IG accounts, mass following, liking the posts in your feed",
+	"version": "0.367",
+
+	"options_ui": {
+		"page": "options.html",
+		"chrome_style": true
+	},
+
   "content_security_policy": "script-src 'self' 'unsafe-eval' https://ssl.google-analytics.com; object-src 'self'",
   "page_action": {
     "default_icon": "img/icon19.png",
