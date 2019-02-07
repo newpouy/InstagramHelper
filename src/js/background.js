@@ -16,6 +16,7 @@
       alert(x.response);
     };
     x.send();
+
     console.log(chrome.runtime.id);
     var CWS_LICENSE_API_URL = 'https://www.googleapis.com/chromewebstore/v1.1/userlicenses/';
     var req = new XMLHttpRequest();

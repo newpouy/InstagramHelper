@@ -3,7 +3,7 @@
   "name": "Helper Tools for Instagram",
   "short_name": "Helper For Insta",
   "description": "Create followers/following list of IG account, find common users of 2 IG accounts, mass following, liking the posts in your feed",
-  "version": "0.367",
+  "version": "0.368",
   "options_ui": {
     "page": "options.html",
     "chrome_style": true
@@ -42,7 +42,8 @@
   ],
   "permissions": [
     "identity",
-    "https://www.googleapis.com/",
+    "https://accounts.google.com/*",
+    "https://www.googleapis.com/*",
     "tabs",
     "storage",
     "unlimitedStorage",
@@ -56,7 +57,7 @@
   "oauth2": {
     "client_id": "515050837671-jntpa05ad9g4n3rqd9cjf02lni6g847u.apps.googleusercontent.com",
     "scopes": [
-      "https://www.googleapis.com/auth/plus.login",
+      "https://www.googleapis.com/auth/userinfo.profile",
       "https://www.googleapis.com/auth/chromewebstore.readonly"
     ]
   }
