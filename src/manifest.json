@@ -3,7 +3,7 @@
   "name": "Helper Tools for Instagram",
   "short_name": "Helper For Insta",
   "description": "Create followers/following list of IG account, find common users of 2 IG accounts, mass following, liking the posts in your feed",
-  "version": "0.368",
+  "version": "0.370",
   "options_ui": {
     "page": "options.html",
     "chrome_style": true
@@ -42,22 +42,21 @@
   ],
   "permissions": [
     "identity",
-    "https://accounts.google.com/*",
-    "https://www.googleapis.com/*",
+    "https://www.googleapis.com/",
     "tabs",
     "storage",
     "unlimitedStorage",
     "cookies",
     "webRequest",
     "webRequestBlocking",
-    "https://www.instagram.com/*"
+    "https://www.instagram.com/*",
+    "management"
   ],
   "incognito": "split",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAycd9WcCfHQ8UKq5tOazgwrdm5aFflagmaDPTOQHDx0t7YCNOhjscVZetfDbfYdc1a6Vu5ONNi/yxOeU+fJb3nLkVy/FRHLrKC3/Uht1cwdkETw2ZnnpPMIYkZKNpsSjs6prt80TS4Eq/4/thQYkoD/b17qwgzJRzNmts17tJOsdMQZhKqNBcMV+f1TcaI16jH/zPQpS3yvbTEtPHldtBuhcipFsCLiauRFHt2/S9QMhEDKEwUHLaJngvQJuZVjBOAmD54t+P1+zthkFk9YjlVvLLh266Kdop+wXIAYXAXQ2Xs9Mg9gVVUfS5/iXUNGUcGHrKRnO9aiwxF/aTmJ5eMQIDAQAB",
   "oauth2": {
-    "client_id": "515050837671-jntpa05ad9g4n3rqd9cjf02lni6g847u.apps.googleusercontent.com",
+    "client_id": "37764987749-39iro8l5un0fm1au9894s43ae1deru38.apps.googleusercontent.com",
     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.profile",
       "https://www.googleapis.com/auth/chromewebstore.readonly"
     ]
   }
